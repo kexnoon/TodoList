@@ -1,3 +1,6 @@
+//import androidx.glance.appwidget.compose
+//import androidx.navigation.compose.navigation
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -56,4 +59,17 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //Koin
+    runtimeOnly(libs.koin.core)
+    implementation(libs.koin.core.coroutines)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.workmanager)
+    runtimeOnly(libs.koin.compose)
+    runtimeOnly(libs.koin.androidx.compose)
+    implementation(libs.koin.androidx.compose.navigation)
+
+    testImplementation(libs.koin.android.test)
+    androidTestImplementation(libs.koin.android.test)
+
 }
