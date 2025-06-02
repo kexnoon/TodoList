@@ -6,6 +6,6 @@ data class NoteTask(
     val status: NoteTaskStatus
 )
 
-enum class NoteTaskStatus(val status: String) {
+enum class NoteTaskStatus(val statusValue: String) {
     IN_PROGRESS("in_progress"), COMPLETE("complete")
 }
