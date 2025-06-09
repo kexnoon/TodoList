@@ -16,6 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import de.telma.todolist.core.ui.state.UiState
+import de.telma.todolist.data.model.Note
 
 
 @Composable
@@ -32,7 +33,7 @@ fun MainScreen(viewModel: MainScreenViewModel) {
             when (uiState) {
                 is UiState.Loading -> StateLoading()
                 is UiState.Result<*> -> StateResult(
-                    message = (uiState as UiState.Result<String>).data
+                    count = (uiState as UiState.Result<List<Note>>).data.size
                 )
             }
         }
@@ -49,16 +50,16 @@ private fun StateLoading(modifier: Modifier = Modifier) {
 
 
 @Composable
-private fun StateResult(message: String, modifier: Modifier = Modifier) {
+private fun StateResult(count: Int, modifier: Modifier = Modifier) {
     Text(
-        text = message,
+        text = "Notes count: $count",
         modifier = modifier
     )
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun Preview_StateResult() {
+private fun Preview_StateLoading() {
     TodoListTheme {
         StateLoading()
     }
@@ -66,8 +67,8 @@ private fun Preview_StateResult() {
 
 @Preview(showBackground = true)
 @Composable
-private fun Preview_StateLoading() {
+private fun Preview_StateResult() {
     TodoListTheme {
-        StateResult("Android")
+        StateResult(228)
     }
 }
