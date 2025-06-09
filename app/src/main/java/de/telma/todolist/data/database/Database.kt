@@ -19,7 +19,7 @@ import de.telma.todolist.data.database.entity.NoteTaskEntity
 abstract class AppDatabase : RoomDatabase() {
 
     companion object {
-        const val DATABASE_NAME = "food_diary_db"
+        const val DATABASE_NAME = "todo_list_db"
     }
 
     abstract fun noteDao(): NoteDao
