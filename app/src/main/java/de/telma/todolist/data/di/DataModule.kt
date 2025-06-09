@@ -14,7 +14,7 @@ val dataModule = module {
                 klass = AppDatabase::class.java,
                 name = AppDatabase.DATABASE_NAME
             )
-            //.createFromAsset("${AppDatabase.DATABASE_NAME}.db")
+            .createFromAsset("${AppDatabase.DATABASE_NAME}.db")
             .build()
     }
 
