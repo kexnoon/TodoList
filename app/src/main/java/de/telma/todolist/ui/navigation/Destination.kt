@@ -1,0 +1,14 @@
+package de.telma.todolist.ui.navigation
+
+import kotlinx.serialization.Serializable
+
+sealed class Destination {
+    @Serializable
+    data object MainScreen: Destination()
+
+    @Serializable
+    data object DummyScreenOne: Destination()
+
+    @Serializable
+    data class DummyScreenTwo(val message: String): Destination()
+}
