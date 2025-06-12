@@ -18,13 +18,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import de.telma.todolist.core.ui.state.UiState
 import de.telma.todolist.core.ui.theme.TodoListTheme
 
 @Composable
 fun DummyScreenTwo(
-    navController: NavController,
     viewModel: DummyScreenTwoViewModel,
     message: String? = null
 ) {
@@ -41,7 +39,7 @@ fun DummyScreenTwo(
                 is UiState.Loading -> StateLoading()
                 is UiState.Result<*> -> StateResult(
                     message = message,
-                    onButtonClick = { navController.popBackStack() }
+                    onButtonClick = { viewModel.onButtonClick() }
                 )
             }
         }

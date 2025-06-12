@@ -5,12 +5,14 @@ import de.telma.todolist.core.ui.state.UiEvents
 import de.telma.todolist.core.ui.state.UiState
 import de.telma.todolist.core.ui.state.toUiState
 import de.telma.todolist.ui.base.BaseViewModel
+import de.telma.todolist.ui.navigation.NavEvent
+import de.telma.todolist.ui.navigation.NavigationCoordinator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class DummyScreenOneViewModel: BaseViewModel<Unit, UiEvents?>() {
+class DummyScreenOneViewModel(private val coordinator: NavigationCoordinator): BaseViewModel<Unit, UiEvents?>() {
     override var _uiState = MutableStateFlow<UiState<Unit>>(UiState.Loading())
     override var _uiEvents = MutableStateFlow<UiEvents?>(null)
 
@@ -20,4 +22,11 @@ class DummyScreenOneViewModel: BaseViewModel<Unit, UiEvents?>() {
             _uiState.value = Unit.toUiState()
         }
     }
+
+    fun onButtonClick() {
+        viewModelScope.launch {
+            coordinator.execute(NavEvent.PopBack)
+        }
+    }
+
 }

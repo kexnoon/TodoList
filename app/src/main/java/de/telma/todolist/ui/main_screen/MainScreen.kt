@@ -19,14 +19,11 @@ import de.telma.todolist.core.ui.theme.TodoListTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.navigation.NavController
 import de.telma.todolist.core.ui.state.UiState
 import de.telma.todolist.data.model.Note
-import de.telma.todolist.ui.navigation.Destination
 
 @Composable
 fun MainScreen(
-    navController: NavController,
     viewModel: MainScreenViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -42,8 +39,8 @@ fun MainScreen(
                 is UiState.Loading -> StateLoading()
                 is UiState.Result<*> -> StateResult(
                     count = (uiState as UiState.Result<List<Note>>).data.size,
-                    onButtonOneClick = { navController.navigate(Destination.DummyScreenOne) },
-                    onButtonTwoClick = { navController.navigate(Destination.DummyScreenTwo(message = "Хуй!")) }
+                    onButtonOneClick = { viewModel.onButtonOneClick() },
+                    onButtonTwoClick = { viewModel.onButtonTwoClick() }
                 )
             }
         }
