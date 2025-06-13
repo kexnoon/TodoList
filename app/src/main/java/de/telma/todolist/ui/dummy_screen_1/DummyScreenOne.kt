@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.telma.todolist.core.ui.state.UiState
 import de.telma.todolist.core.ui.theme.TodoListTheme
+import de.telma.todolist.data.model.Note
 
 @Composable
 fun DummyScreenOne(
@@ -39,6 +40,10 @@ fun DummyScreenOne(
                 is UiState.Result<*> -> StateResult(
                     onButtonClick = { viewModel.onButtonClick() }
                 )
+                is UiState.Error<*> -> {
+                    val throwable = (uiState as UiState.Error).throwable
+                    StateError(throwable)
+                }
             }
         }
     }
@@ -69,6 +74,17 @@ private fun StateResult(
     }
 }
 
+@Composable
+private fun StateError(throwable: Throwable) {
+    Column(
+        modifier = Modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text("Error! ${throwable.message}")
+    }
+
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun StateLoading_Preview() {
@@ -82,5 +98,13 @@ private fun StateLoading_Preview() {
 private fun StateResult_Preview() {
     TodoListTheme {
         StateResult()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun StateError_Preview() {
+    TodoListTheme {
+        StateError(Throwable("Throwable"))
     }
 }

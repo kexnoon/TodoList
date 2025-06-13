@@ -2,7 +2,7 @@ package de.telma.todolist.ui.main_screen
 
 import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
-import de.telma.todolist.core.ui.state.UiEvents
+import de.telma.todolist.core.ui.state.EmptyUiEvents
 import de.telma.todolist.core.ui.state.UiState
 import de.telma.todolist.core.ui.state.toUiState
 import de.telma.todolist.data.NoteRepository
@@ -20,14 +20,15 @@ import kotlin.collections.List
 class MainScreenViewModel(
     private val coordinator: NavigationCoordinator,
     private val repository: NoteRepository
-): BaseViewModel<List<Note>, UiEvents?>() {
-    override var _uiState = MutableStateFlow<UiState<List<Note>>>(UiState.Loading())
-    override var _uiEvents = MutableStateFlow<UiEvents?>(null)
+): BaseViewModel<List<Note>, EmptyUiEvents?>() {
+    override var _uiState = MutableStateFlow<UiState<List<Note>>>(UiState.Result(emptyList()))
+    override var _uiEvents = MutableStateFlow<EmptyUiEvents?>(null)
 
     init {
         viewModelScope.launch(Dispatchers.Main) {
+            showLoading()
             repository.getNotes().collectLatest {
-                _uiState.value = it.toUiState()
+                showResult(it)
             }
         }
     }

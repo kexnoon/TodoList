@@ -1,7 +1,7 @@
 package de.telma.todolist.ui.dummy_screen_3
 
 import androidx.lifecycle.viewModelScope
-import de.telma.todolist.core.ui.state.UiEvents
+import de.telma.todolist.core.ui.state.EmptyUiEvents
 import de.telma.todolist.core.ui.state.UiState
 import de.telma.todolist.ui.base.BaseViewModel
 import de.telma.todolist.ui.navigation.Destination
@@ -14,26 +14,39 @@ import kotlinx.coroutines.launch
 
 class DummyScreenThreeViewModel(
     private val coordinator: NavigationCoordinator
-): BaseViewModel<Unit, UiEvents?>() {
-    override var _uiState = MutableStateFlow<UiState<Unit>>(UiState.Loading())
-    override var _uiEvents = MutableStateFlow<UiEvents?>(null)
+): BaseViewModel<Unit, EmptyUiEvents?>() {
+    override var _uiState = MutableStateFlow<UiState<Unit>>(UiState.Result(Unit))
+    override var _uiEvents = MutableStateFlow<EmptyUiEvents?>(null)
 
     init {
         viewModelScope.launch {
+            showLoading()
             delay(1000L)
-            _uiState.value = UiState.Result(Unit)
+            showResult(Unit)
         }
     }
 
-    fun popBackToMainScreen() {
+    fun onPopBackToMainScreen() {
         viewModelScope.launch {
             coordinator.execute(NavEvent.PopTo(destination = Destination.MainScreen, isInclusive = false))
         }
     }
 
-    fun showToast() {
+    fun onShowToastPressed() {
         viewModelScope.launch {
             coordinator.execute(NavEvent.Toast("This is toast", Length.Short))
+        }
+    }
+
+    fun onShowErrorPressed() {
+        viewModelScope.launch {
+            showError(Throwable("Generic Error!"))
+        }
+    }
+
+    fun onBackToMainScreenPressed() {
+        viewModelScope.launch {
+            coordinator.execute(NavEvent.PopBack)
         }
     }
 }

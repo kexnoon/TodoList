@@ -43,6 +43,10 @@ fun MainScreen(
                     onButtonTwoClick = { viewModel.onButtonTwoClick() },
                     onButtonThreeClick = { viewModel.onButtonThreeClick() }
                 )
+                is UiState.Error<*> -> {
+                    val throwable = (uiState as UiState.Error).throwable
+                    StateError(throwable)
+                }
             }
         }
     }
@@ -88,6 +92,17 @@ private fun StateResult(
     }
 }
 
+@Composable
+private fun StateError(throwable: Throwable) {
+    Column(
+        modifier = Modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text("Error! ${throwable.message}")
+    }
+
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun Preview_StateLoading() {
@@ -101,5 +116,13 @@ private fun Preview_StateLoading() {
 private fun Preview_StateResult() {
     TodoListTheme {
         StateResult(228)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun StateError_Preview() {
+    TodoListTheme {
+        StateError(Throwable("Throwable"))
     }
 }

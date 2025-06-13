@@ -38,9 +38,18 @@ fun DummyScreenThree(
             when (uiState) {
                 is UiState.Loading -> StateLoading()
                 is UiState.Result<*> -> StateResult(
-                    onToastButtonClick = { viewModel.showToast() },
-                    onPopBackButtonClick = { viewModel.popBackToMainScreen() }
+                    number = number,
+                    onToastButtonClick = { viewModel.onShowToastPressed() },
+                    onErrorClick = { viewModel.onShowErrorPressed() },
+                    onPopBackButtonClick = { viewModel.onPopBackToMainScreen() }
                 )
+                is UiState.Error<*> -> {
+                    val throwable = (uiState as UiState.Error).throwable
+                    StateError(
+                        throwable = throwable,
+                        onBackPressed = { viewModel.onBackToMainScreenPressed() }
+                    )
+                }
             }
         }
     }
@@ -56,8 +65,27 @@ private fun StateLoading(modifier: Modifier = Modifier) {
 }
 
 @Composable
+private fun StateError(
+    throwable: Throwable,
+    onBackPressed: () -> Unit = {}
+) {
+    Column(
+        modifier = Modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text("Error! ${throwable.message}")
+        Button(modifier = Modifier.wrapContentSize(), onClick = onBackPressed) {
+            Text("Back")
+        }
+    }
+
+}
+
+@Composable
 private fun StateResult(
+    number: Int = 0,
     onToastButtonClick: () -> Unit = {},
+    onErrorClick: () -> Unit = {},
     onPopBackButtonClick: () -> Unit = {}
 ) {
     Column(
@@ -65,14 +93,18 @@ private fun StateResult(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "Dummy Screen Three"
+            text = "Dummy Screen Three. Number: $number"
         )
         Button(modifier = Modifier.wrapContentSize(), onClick = onToastButtonClick) {
             Text("Show Toast")
         }
+        Button(modifier = Modifier.wrapContentSize(), onClick = onErrorClick) {
+            Text("Show error")
+        }
         Button(modifier = Modifier.wrapContentSize(), onClick = onPopBackButtonClick) {
             Text("Pop back to Main Screen")
         }
+
 
     }
 }
@@ -90,5 +122,13 @@ private fun StateLoading_Preview() {
 private fun StateResult_Preview() {
     TodoListTheme {
         StateResult()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun StateError_Preview() {
+    TodoListTheme {
+        StateError(Throwable("Throwable"))
     }
 }
