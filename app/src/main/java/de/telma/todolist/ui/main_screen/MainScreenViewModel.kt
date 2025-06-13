@@ -1,5 +1,6 @@
 package de.telma.todolist.ui.main_screen
 
+import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
 import de.telma.todolist.core.ui.state.UiEvents
 import de.telma.todolist.core.ui.state.UiState
@@ -43,6 +44,14 @@ class MainScreenViewModel(
         viewModelScope.launch {
             coordinator.execute(
                 NavEvent.ToComposeScreen(Destination.DummyScreenTwo("Хуй!"))
+            )
+        }
+    }
+
+    fun onButtonThreeClick() {
+        viewModelScope.launch {
+            coordinator.execute(
+                NavEvent.ToComposeScreen("myapp://screen_three/1337".toUri())
             )
         }
     }

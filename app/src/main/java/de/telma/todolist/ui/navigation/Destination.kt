@@ -9,4 +9,6 @@ sealed class Destination {
     data object DummyScreenOne: Destination()
     @Serializable
     data class DummyScreenTwo(val message: String): Destination()
+    @Serializable
+    data class DummyScreenThree(val number: Int): Destination()
 }
