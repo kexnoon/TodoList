@@ -24,12 +24,20 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix = ".dev" // Optional: e.g., com.example.myapp.dev
+            versionNameSuffix = "-dev"   // Optional
+            isDebuggable = true
+            buildConfigField("String", "DB_NAME", "\"todo_list_db_dev\"")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "DB_NAME", "\"todo_list_db\"")
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -40,6 +48,7 @@ android {
         jvmTarget = "11"
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
 }

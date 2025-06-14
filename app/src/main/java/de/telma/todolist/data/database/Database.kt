@@ -3,6 +3,7 @@ package de.telma.todolist.data.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import de.telma.todolist.BuildConfig
 import de.telma.todolist.data.database.entity.NoteEntity
 import de.telma.todolist.data.database.entity.NoteTaskEntity
 
@@ -19,7 +20,7 @@ import de.telma.todolist.data.database.entity.NoteTaskEntity
 abstract class AppDatabase : RoomDatabase() {
 
     companion object {
-        const val DATABASE_NAME = "todo_list_db"
+        const val DATABASE_NAME = BuildConfig.DB_NAME
     }
 
     abstract fun noteDao(): NoteDao
