@@ -1,11 +1,10 @@
-package de.telma.todolist.data.database
+package de.telma.todolist.storage.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
-import de.telma.todolist.BuildConfig
-import de.telma.todolist.data.database.entity.NoteEntity
-import de.telma.todolist.data.database.entity.NoteTaskEntity
+import de.telma.todolist.storage.BuildConfig
+import de.telma.todolist.storage.database.entity.NoteEntity
+import de.telma.todolist.storage.database.entity.NoteTaskEntity
 
 @Database(entities = [
         NoteEntity::class,
@@ -13,10 +12,7 @@ import de.telma.todolist.data.database.entity.NoteTaskEntity
     ],
     version = 1
 )
-@TypeConverters(
-    NoteStatusConverter::class,
-    NoteTaskStatusConverter::class
-)
+
 abstract class AppDatabase : RoomDatabase() {
 
     companion object {

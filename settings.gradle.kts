@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "TodoList"
 include(":app")
 include(":core-ui")
+include(":storage")

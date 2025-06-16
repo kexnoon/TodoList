@@ -1,4 +1,4 @@
-package de.telma.todolist.data.database.entity
+package de.telma.todolist.storage.database.entity
 
 import androidx.room.Embedded
 import androidx.room.Relation

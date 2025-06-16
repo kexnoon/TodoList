@@ -1,7 +1,7 @@
 package de.telma.todolist.data
 
-import de.telma.todolist.data.database.AppDatabase
-import de.telma.todolist.data.database.entity.NoteWithTasks
+import de.telma.todolist.storage.database.AppDatabase
+import de.telma.todolist.storage.database.entity.NoteWithTasks
 import de.telma.todolist.data.model.Note
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

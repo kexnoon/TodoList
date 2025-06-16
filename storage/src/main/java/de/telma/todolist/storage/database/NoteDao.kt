@@ -1,4 +1,4 @@
-package de.telma.todolist.data.database
+package de.telma.todolist.storage.database
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -7,8 +7,8 @@ import androidx.room.OnConflictStrategy.Companion.ABORT
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import de.telma.todolist.data.database.entity.NoteEntity
-import de.telma.todolist.data.database.entity.NoteWithTasks
+import de.telma.todolist.storage.database.entity.NoteEntity
+import de.telma.todolist.storage.database.entity.NoteWithTasks
 import kotlinx.coroutines.flow.Flow
 
 @Dao
