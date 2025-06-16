@@ -1,14 +1,14 @@
-package de.telma.todolist.data
+package de.telma.todolist.component_notes
 
+import de.telma.todolist.component_notes.model.Note
+import de.telma.todolist.component_notes.model.NoteStatus
+import de.telma.todolist.component_notes.model.NoteTask
+import de.telma.todolist.component_notes.model.NoteTaskStatus
 import de.telma.todolist.storage.database.entity.NoteWithTasks
-import de.telma.todolist.data.model.Note
-import de.telma.todolist.data.model.NoteStatus
-import de.telma.todolist.data.model.NoteTask
-import de.telma.todolist.data.model.NoteTaskStatus
 
-fun List<NoteWithTasks>.toNotesList(): List<Note> = this.map { it.toNote() }
+internal fun List<NoteWithTasks>.toNotesList(): List<Note> = this.map { it.toNote() }
 
-fun NoteWithTasks.toNote(): Note {
+internal fun NoteWithTasks.toNote(): Note {
     return Note(
         id = this.note.id,
         title = this.note.title,
@@ -23,10 +23,10 @@ fun NoteWithTasks.toNote(): Note {
     )
 }
 
-fun String.toNoteStatus(noteId: Long): NoteStatus {
+internal fun String.toNoteStatus(noteId: Long): NoteStatus {
     return NoteStatus.entries.find { it.statusValue == this } ?: throw RuntimeException("Wrong NoteStatus! (Note id: $noteId)")
 }
 
-fun String.toNoteTaskStatus(noteId: Long): NoteTaskStatus {
+internal fun String.toNoteTaskStatus(noteId: Long): NoteTaskStatus {
     return NoteTaskStatus.entries.find { it.statusValue == this } ?: throw RuntimeException("Wrong NoteStatusStatus! (NoteTask id: $noteId)")
 }

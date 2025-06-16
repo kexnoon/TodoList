@@ -4,8 +4,8 @@ import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
 import de.telma.todolist.core_ui.state.EmptyUiEvents
 import de.telma.todolist.core_ui.state.UiState
-import de.telma.todolist.data.NoteRepository
-import de.telma.todolist.data.model.Note
+import de.telma.todolist.component_notes.NoteRepository
+import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.core_ui.base.BaseViewModel
 import de.telma.todolist.core_ui.navigation.Destination
 import de.telma.todolist.core_ui.navigation.NavEvent

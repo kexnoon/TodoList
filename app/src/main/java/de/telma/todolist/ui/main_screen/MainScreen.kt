@@ -20,7 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import de.telma.todolist.core_ui.state.UiState
-import de.telma.todolist.data.model.Note
+import de.telma.todolist.component_notes.model.Note
 
 @Composable
 fun MainScreen(

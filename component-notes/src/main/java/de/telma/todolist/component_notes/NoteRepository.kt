@@ -1,6 +1,6 @@
-package de.telma.todolist.data
+package de.telma.todolist.component_notes
 
-import de.telma.todolist.data.model.Note
+import de.telma.todolist.component_notes.model.Note
 import kotlinx.coroutines.flow.Flow
 
 interface NoteRepository {

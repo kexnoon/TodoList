@@ -1,4 +1,4 @@
-package de.telma.todolist.data.model
+package de.telma.todolist.component_notes.model
 
 data class Note(
     val id: Long,
