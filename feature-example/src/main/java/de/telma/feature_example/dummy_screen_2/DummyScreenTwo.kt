@@ -1,4 +1,4 @@
-package de.telma.todolist.ui.dummy_screen_1
+package de.telma.feature_example.dummy_screen_2
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,8 +22,9 @@ import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.core_ui.theme.TodoListTheme
 
 @Composable
-fun DummyScreenOne(
-    viewModel: DummyScreenOneViewModel
+internal fun DummyScreenTwo(
+    viewModel: DummyScreenTwoViewModel,
+    message: String? = null
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -37,6 +38,7 @@ fun DummyScreenOne(
             when (uiState) {
                 is UiState.Loading -> StateLoading()
                 is UiState.Result<*> -> StateResult(
+                    message = message,
                     onButtonClick = { viewModel.onButtonClick() }
                 )
                 is UiState.Error<*> -> {
@@ -57,16 +59,18 @@ private fun StateLoading(modifier: Modifier = Modifier) {
     )
 }
 
-
 @Composable
 private fun StateResult(
+    message: String? = null,
     onButtonClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text("Dummy Screen One")
+        Text(
+            text = "Dummy Screen Two. Message: $message",
+        )
         Button(modifier = Modifier.wrapContentSize(), onClick = onButtonClick) {
             Text("Back to Main Screen")
         }
@@ -92,11 +96,12 @@ private fun StateLoading_Preview() {
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
 private fun StateResult_Preview() {
     TodoListTheme {
-        StateResult()
+        StateResult("Preview")
     }
 }
 

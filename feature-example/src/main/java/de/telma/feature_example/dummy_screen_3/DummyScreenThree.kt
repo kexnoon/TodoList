@@ -1,4 +1,4 @@
-package de.telma.todolist.ui.dummy_screen_3
+package de.telma.feature_example.dummy_screen_3
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,7 +22,7 @@ import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.core_ui.theme.TodoListTheme
 
 @Composable
-fun DummyScreenThree(
+internal fun DummyScreenThree(
     number: Int,
     viewModel: DummyScreenThreeViewModel
 ) {

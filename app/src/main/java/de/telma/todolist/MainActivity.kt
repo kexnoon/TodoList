@@ -14,7 +14,7 @@ import de.telma.todolist.core_ui.navigation.ActivityNavEvent
 import de.telma.todolist.core_ui.navigation.ComposableNavEvent
 import de.telma.todolist.core_ui.navigation.Destination
 import de.telma.todolist.core_ui.navigation.NavigationCoordinator
-import de.telma.todolist.ui.exampleScreens
+import de.telma.feature_example.exampleScreens
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 

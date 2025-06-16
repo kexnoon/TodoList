@@ -1,4 +1,4 @@
-package de.telma.todolist.ui.main_screen
+package de.telma.feature_example.main_screen
 
 import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.collections.List
 
-class MainScreenViewModel(
+internal class MainScreenViewModel(
     private val coordinator: NavigationCoordinator,
     private val repository: NoteRepository
 ): BaseViewModel<List<Note>, EmptyUiEvents?>() {
@@ -55,5 +55,4 @@ class MainScreenViewModel(
             )
         }
     }
-
 }

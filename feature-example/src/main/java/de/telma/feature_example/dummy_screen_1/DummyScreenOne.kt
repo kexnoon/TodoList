@@ -1,4 +1,4 @@
-package de.telma.todolist.ui.main_screen
+package de.telma.feature_example.dummy_screen_1
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,19 +12,18 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import de.telma.todolist.core_ui.theme.TodoListTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import de.telma.todolist.core_ui.state.UiState
-import de.telma.todolist.component_notes.model.Note
+import de.telma.todolist.core_ui.theme.TodoListTheme
 
 @Composable
-fun MainScreen(
-    viewModel: MainScreenViewModel
+internal fun DummyScreenOne(
+    viewModel: DummyScreenOneViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -38,10 +37,7 @@ fun MainScreen(
             when (uiState) {
                 is UiState.Loading -> StateLoading()
                 is UiState.Result<*> -> StateResult(
-                    count = (uiState as UiState.Result<List<Note>>).data.size,
-                    onButtonOneClick = { viewModel.onButtonOneClick() },
-                    onButtonTwoClick = { viewModel.onButtonTwoClick() },
-                    onButtonThreeClick = { viewModel.onButtonThreeClick() }
+                    onButtonClick = { viewModel.onButtonClick() }
                 )
                 is UiState.Error<*> -> {
                     val throwable = (uiState as UiState.Error).throwable
@@ -50,6 +46,7 @@ fun MainScreen(
             }
         }
     }
+
 }
 
 @Composable
@@ -63,31 +60,15 @@ private fun StateLoading(modifier: Modifier = Modifier) {
 
 @Composable
 private fun StateResult(
-    count: Int,
-    modifier: Modifier = Modifier,
-    onButtonOneClick: () -> Unit = {},
-    onButtonTwoClick: () -> Unit = {},
-    onButtonThreeClick: () -> Unit = {}
+    onButtonClick: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(
-            text = "Notes count: $count",
-            modifier = modifier
-        )
-
-        Button(modifier = Modifier.wrapContentSize(), onClick = onButtonOneClick) {
-            Text("To Screen One")
-        }
-
-        Button(modifier = Modifier.wrapContentSize(), onClick = onButtonTwoClick) {
-            Text("To Screen Two")
-        }
-
-        Button(modifier = Modifier.wrapContentSize(), onClick = onButtonThreeClick) {
-            Text("To Screen Three")
+        Text("Dummy Screen One")
+        Button(modifier = Modifier.wrapContentSize(), onClick = onButtonClick) {
+            Text("Back to Main Screen")
         }
     }
 }
@@ -105,7 +86,7 @@ private fun StateError(throwable: Throwable) {
 
 @Preview(showBackground = true)
 @Composable
-private fun Preview_StateLoading() {
+private fun StateLoading_Preview() {
     TodoListTheme {
         StateLoading()
     }
@@ -113,9 +94,9 @@ private fun Preview_StateLoading() {
 
 @Preview(showBackground = true)
 @Composable
-private fun Preview_StateResult() {
+private fun StateResult_Preview() {
     TodoListTheme {
-        StateResult(228)
+        StateResult()
     }
 }
 

@@ -3,7 +3,7 @@ package de.telma.todolist
 import android.app.Application
 import de.telma.todolist.component_notes.di.componentNotesModule
 import de.telma.todolist.storage.database.di.storageModule
-import de.telma.todolist.ui.di.uiModule
+import de.telma.feature_example.di.featureExampleModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -15,7 +15,7 @@ class App: Application() {
             modules(
                 storageModule,
                 componentNotesModule,
-                uiModule
+                featureExampleModule
             )
         }
     }

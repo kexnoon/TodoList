@@ -1,4 +1,4 @@
-package de.telma.todolist.ui.dummy_screen_1
+package de.telma.feature_example.dummy_screen_2
 
 import androidx.lifecycle.viewModelScope
 import de.telma.todolist.core_ui.state.EmptyUiEvents
@@ -11,7 +11,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class DummyScreenOneViewModel(private val coordinator: NavigationCoordinator): BaseViewModel<Unit, EmptyUiEvents?>() {
+internal class DummyScreenTwoViewModel(private val coordinator: NavigationCoordinator): BaseViewModel<Unit, EmptyUiEvents?>() {
     override var _uiState = MutableStateFlow<UiState<Unit>>(UiState.Result(Unit))
     override var _uiEvents = MutableStateFlow<EmptyUiEvents?>(null)
 

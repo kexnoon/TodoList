@@ -1,14 +1,14 @@
-package de.telma.todolist.ui.di
+package de.telma.feature_example.di
 
-import de.telma.todolist.ui.dummy_screen_1.DummyScreenOneViewModel
-import de.telma.todolist.ui.dummy_screen_2.DummyScreenTwoViewModel
-import de.telma.todolist.ui.dummy_screen_3.DummyScreenThreeViewModel
-import de.telma.todolist.ui.main_screen.MainScreenViewModel
+import de.telma.feature_example.dummy_screen_1.DummyScreenOneViewModel
+import de.telma.feature_example.dummy_screen_2.DummyScreenTwoViewModel
+import de.telma.feature_example.dummy_screen_3.DummyScreenThreeViewModel
+import de.telma.feature_example.main_screen.MainScreenViewModel
 import de.telma.todolist.core_ui.navigation.NavigationCoordinator
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-val uiModule = module {
+val featureExampleModule = module {
     single { NavigationCoordinator() }
     viewModel { MainScreenViewModel(get(), get()) }
     viewModel { DummyScreenOneViewModel(get()) }
