@@ -14,6 +14,13 @@ import de.telma.todolist.ui.main_screen.MainScreenViewModel
 import de.telma.todolist.core_ui.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
 
+fun NavGraphBuilder.exampleScreens() {
+    mainScreen()
+    dummyScreenOne()
+    dummyScreenTwo()
+    dummyScreenThree()
+}
+
 internal fun NavGraphBuilder.mainScreen() {
     composable<Destination.MainScreen> {
         val viewModel = koinViewModel<MainScreenViewModel>()

@@ -14,10 +14,7 @@ import de.telma.todolist.core_ui.navigation.ActivityNavEvent
 import de.telma.todolist.core_ui.navigation.ComposableNavEvent
 import de.telma.todolist.core_ui.navigation.Destination
 import de.telma.todolist.core_ui.navigation.NavigationCoordinator
-import de.telma.todolist.ui.dummyScreenOne
-import de.telma.todolist.ui.dummyScreenThree
-import de.telma.todolist.ui.dummyScreenTwo
-import de.telma.todolist.ui.mainScreen
+import de.telma.todolist.ui.exampleScreens
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -32,10 +29,7 @@ class MainActivity : ComponentActivity() {
                     navController = navController,
                     startDestination = Destination.MainScreen
                 ) {
-                    mainScreen()
-                    dummyScreenOne()
-                    dummyScreenTwo()
-                    dummyScreenThree()
+                    exampleScreens()
                 }
 
                 val coordinator: NavigationCoordinator = koinInject()
