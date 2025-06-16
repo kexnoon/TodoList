@@ -6,7 +6,7 @@ import de.telma.todolist.core_ui.state.EmptyUiEvents
 import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.data.NoteRepository
 import de.telma.todolist.data.model.Note
-import de.telma.todolist.ui.base.BaseViewModel
+import de.telma.todolist.core_ui.base.BaseViewModel
 import de.telma.todolist.core_ui.navigation.Destination
 import de.telma.todolist.core_ui.navigation.NavEvent
 import de.telma.todolist.core_ui.navigation.NavigationCoordinator

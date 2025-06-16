@@ -1,4 +1,4 @@
-package de.telma.todolist.ui.base
+package de.telma.todolist.core_ui.base
 
 import androidx.lifecycle.ViewModel
 import de.telma.todolist.core_ui.state.EmptyUiEvents
