@@ -1,4 +1,4 @@
-package de.telma.todolist.ui.navigation
+package de.telma.todolist.core.ui.navigation
 
 import kotlinx.serialization.Serializable
 

@@ -4,10 +4,9 @@ import de.telma.todolist.ui.dummy_screen_1.DummyScreenOneViewModel
 import de.telma.todolist.ui.dummy_screen_2.DummyScreenTwoViewModel
 import de.telma.todolist.ui.dummy_screen_3.DummyScreenThreeViewModel
 import de.telma.todolist.ui.main_screen.MainScreenViewModel
-import de.telma.todolist.ui.navigation.NavigationCoordinator
+import de.telma.todolist.core.ui.navigation.NavigationCoordinator
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
-import kotlin.math.sin
 
 val uiModule = module {
     single { NavigationCoordinator() }

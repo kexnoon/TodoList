@@ -1,4 +1,4 @@
-package de.telma.todolist.ui.navigation
+package de.telma.todolist.ui
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
@@ -11,6 +11,7 @@ import de.telma.todolist.ui.dummy_screen_3.DummyScreenThree
 import de.telma.todolist.ui.dummy_screen_3.DummyScreenThreeViewModel
 import de.telma.todolist.ui.main_screen.MainScreen
 import de.telma.todolist.ui.main_screen.MainScreenViewModel
+import de.telma.todolist.core.ui.navigation.Destination
 import org.koin.androidx.compose.koinViewModel
 
 internal fun NavGraphBuilder.mainScreen() {

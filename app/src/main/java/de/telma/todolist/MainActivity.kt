@@ -10,14 +10,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import de.telma.todolist.core.ui.theme.TodoListTheme
-import de.telma.todolist.ui.navigation.ActivityNavEvent
-import de.telma.todolist.ui.navigation.ComposableNavEvent
-import de.telma.todolist.ui.navigation.Destination
-import de.telma.todolist.ui.navigation.NavigationCoordinator
-import de.telma.todolist.ui.navigation.dummyScreenOne
-import de.telma.todolist.ui.navigation.dummyScreenThree
-import de.telma.todolist.ui.navigation.dummyScreenTwo
-import de.telma.todolist.ui.navigation.mainScreen
+import de.telma.todolist.core.ui.navigation.ActivityNavEvent
+import de.telma.todolist.core.ui.navigation.ComposableNavEvent
+import de.telma.todolist.core.ui.navigation.Destination
+import de.telma.todolist.core.ui.navigation.NavigationCoordinator
+import de.telma.todolist.ui.dummyScreenOne
+import de.telma.todolist.ui.dummyScreenThree
+import de.telma.todolist.ui.dummyScreenTwo
+import de.telma.todolist.ui.mainScreen
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
