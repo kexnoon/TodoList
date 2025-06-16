@@ -1,4 +1,4 @@
-package de.telma.todolist.core.ui.theme
+package de.telma.todolist.core_ui.theme
 
 import androidx.compose.ui.graphics.Color
 

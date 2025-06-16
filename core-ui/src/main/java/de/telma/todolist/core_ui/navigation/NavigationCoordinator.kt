@@ -1,4 +1,4 @@
-package de.telma.todolist.core.ui.navigation
+package de.telma.todolist.core_ui.navigation
 
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow

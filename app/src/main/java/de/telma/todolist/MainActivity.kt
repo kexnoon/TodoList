@@ -9,11 +9,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import de.telma.todolist.core.ui.theme.TodoListTheme
-import de.telma.todolist.core.ui.navigation.ActivityNavEvent
-import de.telma.todolist.core.ui.navigation.ComposableNavEvent
-import de.telma.todolist.core.ui.navigation.Destination
-import de.telma.todolist.core.ui.navigation.NavigationCoordinator
+import de.telma.todolist.core_ui.theme.TodoListTheme
+import de.telma.todolist.core_ui.navigation.ActivityNavEvent
+import de.telma.todolist.core_ui.navigation.ComposableNavEvent
+import de.telma.todolist.core_ui.navigation.Destination
+import de.telma.todolist.core_ui.navigation.NavigationCoordinator
 import de.telma.todolist.ui.dummyScreenOne
 import de.telma.todolist.ui.dummyScreenThree
 import de.telma.todolist.ui.dummyScreenTwo

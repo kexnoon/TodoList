@@ -1,8 +1,8 @@
 package de.telma.todolist.ui.base
 
 import androidx.lifecycle.ViewModel
-import de.telma.todolist.core.ui.state.EmptyUiEvents
-import de.telma.todolist.core.ui.state.UiState
+import de.telma.todolist.core_ui.state.EmptyUiEvents
+import de.telma.todolist.core_ui.state.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

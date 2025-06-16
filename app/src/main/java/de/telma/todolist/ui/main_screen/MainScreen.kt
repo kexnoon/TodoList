@@ -15,11 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import de.telma.todolist.core.ui.theme.TodoListTheme
+import de.telma.todolist.core_ui.theme.TodoListTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import de.telma.todolist.core.ui.state.UiState
+import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.data.model.Note
 
 @Composable
