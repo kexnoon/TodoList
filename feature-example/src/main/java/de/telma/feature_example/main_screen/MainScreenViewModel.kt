@@ -2,6 +2,7 @@ package de.telma.feature_example.main_screen
 
 import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
+import de.telma.feature_example.ExampleDestination
 import de.telma.todolist.core_ui.state.EmptyUiEvents
 import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.component_notes.NoteRepository
@@ -35,7 +36,7 @@ internal class MainScreenViewModel(
     fun onButtonOneClick() {
         viewModelScope.launch {
             coordinator.execute(
-                NavEvent.ToComposeScreen(Destination.DummyScreenOne)
+                NavEvent.ToComposeScreen(ExampleDestination.DummyScreenOne)
             )
         }
     }
@@ -43,7 +44,7 @@ internal class MainScreenViewModel(
     fun onButtonTwoClick() {
         viewModelScope.launch {
             coordinator.execute(
-                NavEvent.ToComposeScreen(Destination.DummyScreenTwo("Хуй!"))
+                NavEvent.ToComposeScreen(ExampleDestination.DummyScreenTwo("Хуй!"))
             )
         }
     }

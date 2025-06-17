@@ -49,6 +49,23 @@ android {
         buildConfig = true
         compose = true
     }
+
+    flavorDimensions += "appVersion"
+
+    productFlavors {
+        create("example") {
+            dimension = "appVersion"
+            applicationIdSuffix = ".example"
+            versionNameSuffix = "-example"
+            buildConfigField("boolean", "isExampleVersion", "true")
+        }
+        create("full") {
+            dimension = "appVersion"
+            applicationIdSuffix = ".full"
+            versionNameSuffix = "-full"
+            buildConfigField("boolean", "isExampleVersion", "false")
+        }
+    }
 }
 
 dependencies {
@@ -57,6 +74,7 @@ dependencies {
     implementation(project(":storage"))
     implementation(project(":component-notes"))
     implementation(project(":feature-example"))
+    implementation(project(":feature-main"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

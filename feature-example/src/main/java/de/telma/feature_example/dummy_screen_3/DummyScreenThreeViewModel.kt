@@ -1,6 +1,7 @@
 package de.telma.feature_example.dummy_screen_3
 
 import androidx.lifecycle.viewModelScope
+import de.telma.feature_example.ExampleDestination
 import de.telma.todolist.core_ui.state.EmptyUiEvents
 import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.core_ui.base.BaseViewModel
@@ -28,7 +29,7 @@ internal class DummyScreenThreeViewModel(
 
     fun onPopBackToMainScreen() {
         viewModelScope.launch {
-            coordinator.execute(NavEvent.PopTo(destination = Destination.MainScreen, isInclusive = false))
+            coordinator.execute(NavEvent.PopTo(destination = ExampleDestination.MainScreen, isInclusive = false))
         }
     }
 

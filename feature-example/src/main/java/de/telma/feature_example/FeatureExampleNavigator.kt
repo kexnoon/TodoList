@@ -12,36 +12,69 @@ import de.telma.feature_example.dummy_screen_3.DummyScreenThreeViewModel
 import de.telma.feature_example.main_screen.MainScreen
 import de.telma.feature_example.main_screen.MainScreenViewModel
 import de.telma.todolist.core_ui.navigation.Destination
+import de.telma.todolist.core_ui.navigation.FeatureModuleNavigator
+import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
-fun NavGraphBuilder.exampleScreens() {
-    composable<Destination.MainScreen> {
+class FeatureExampleNavigator: FeatureModuleNavigator() {
+    @Serializable
+    override val startDestination: Destination = ExampleDestination.MainScreen
+}
+
+fun NavGraphBuilder.featureExample() {
+    mainScreen()
+    dummyScreenOne()
+    dummyScreenTwo()
+    dummyScreenThree()
+}
+
+internal fun NavGraphBuilder.mainScreen() {
+    composable<ExampleDestination.MainScreen> {
         val viewModel = koinViewModel<MainScreenViewModel>()
         MainScreen(viewModel)
     }
+}
 
-    composable<Destination.DummyScreenOne> {
+internal fun NavGraphBuilder.dummyScreenOne() {
+    composable<ExampleDestination.DummyScreenOne> {
         val viewModel = koinViewModel<DummyScreenOneViewModel>()
         DummyScreenOne(viewModel)
     }
+}
 
-    composable<Destination.DummyScreenTwo> {
-        val args = it.toRoute<Destination.DummyScreenTwo>()
+internal fun NavGraphBuilder.dummyScreenTwo() {
+    composable<ExampleDestination.DummyScreenTwo> {
+        val args = it.toRoute<ExampleDestination.DummyScreenTwo>()
         val viewModel = koinViewModel<DummyScreenTwoViewModel>()
         DummyScreenTwo(
             viewModel = viewModel,
             message = args.message
         )
     }
+}
 
-    composable<Destination.DummyScreenThree>(
+internal fun NavGraphBuilder.dummyScreenThree() {
+    composable<ExampleDestination.DummyScreenThree>(
         deepLinks = listOf(navDeepLink { uriPattern = "myapp://screen_three/{number}" })
     ) {
-        val args = it.toRoute<Destination.DummyScreenThree>()
+        val args = it.toRoute<ExampleDestination.DummyScreenThree>()
         val viewModel = koinViewModel<DummyScreenThreeViewModel>()
         DummyScreenThree(
             viewModel = viewModel,
             number = args.number
         )
     }
+}
+
+
+internal sealed class ExampleDestination: Destination {
+    @Serializable
+    data object MainScreen: ExampleDestination()
+    @Serializable
+    data object DummyScreenOne: ExampleDestination()
+    @Serializable
+    data class DummyScreenTwo(val message: String): ExampleDestination()
+    @Serializable
+    data class DummyScreenThree(val number: Int): ExampleDestination()
+
 }
