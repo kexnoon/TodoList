@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "de.telma.todolist"
+    namespace = "de.telma.todolist.architecture_example"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "de.telma.todolist"
+        applicationId = "de.telma.todolist.architecture_example"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -21,18 +21,12 @@ android {
     }
 
     buildTypes {
-        debug {
-            applicationIdSuffix = ".dev" // Optional: e.g., com.example.myapp.dev
-            versionNameSuffix = "-dev"   // Optional
-            isDebuggable = true
-        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -54,7 +48,6 @@ dependencies {
     implementation(project(":storage"))
     implementation(project(":component-notes"))
     implementation(project(":feature-example"))
-    implementation(project(":feature-main"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

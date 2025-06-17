@@ -1,4 +1,4 @@
-package de.telma.todolist
+package de.telma.todolist.architecture_example
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,12 +9,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import de.telma.todolist.core_ui.theme.TodoListTheme
+import de.telma.feature_example.ExampleDestination
+import de.telma.feature_example.featureExample
 import de.telma.todolist.core_ui.navigation.ActivityNavEvent
 import de.telma.todolist.core_ui.navigation.ComposableNavEvent
 import de.telma.todolist.core_ui.navigation.NavigationCoordinator
-import de.telma.todolist.feature_main.MainDestination
-import de.telma.todolist.feature_main.featureMain
+import de.telma.todolist.core_ui.theme.TodoListTheme
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -27,9 +27,9 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = MainDestination.MainScreen
+                    startDestination = ExampleDestination.MainScreen
                 ) {
-                    featureMain()
+                    featureExample()
                 }
 
                 val coordinator: NavigationCoordinator = koinInject()

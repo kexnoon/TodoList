@@ -17,7 +17,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "DB_NAME", "\"todo_list_db_dev\"")
+            buildConfigField("String", "DB_NAME", "\"todo_list_dev\"")
         }
         release {
             isMinifyEnabled = false
@@ -25,7 +25,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "DB_NAME", "\"todo_list_db\"")
+            buildConfigField("String", "DB_NAME", "\"todo_list\"")
         }
     }
     compileOptions {

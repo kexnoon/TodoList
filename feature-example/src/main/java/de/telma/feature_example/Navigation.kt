@@ -12,14 +12,8 @@ import de.telma.feature_example.dummy_screen_3.DummyScreenThreeViewModel
 import de.telma.feature_example.main_screen.MainScreen
 import de.telma.feature_example.main_screen.MainScreenViewModel
 import de.telma.todolist.core_ui.navigation.Destination
-import de.telma.todolist.core_ui.navigation.FeatureModuleNavigator
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
-
-class FeatureExampleNavigator: FeatureModuleNavigator() {
-    @Serializable
-    override val startDestination: Destination = ExampleDestination.MainScreen
-}
 
 fun NavGraphBuilder.featureExample() {
     mainScreen()
@@ -67,7 +61,7 @@ internal fun NavGraphBuilder.dummyScreenThree() {
 }
 
 
-internal sealed class ExampleDestination: Destination {
+sealed class ExampleDestination: Destination {
     @Serializable
     data object MainScreen: ExampleDestination()
     @Serializable
