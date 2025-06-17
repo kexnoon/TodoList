@@ -70,3 +70,4 @@ crashlytics.properties
 
 # Others
 .DS_Store
+/.idea/kotlinc.xml
