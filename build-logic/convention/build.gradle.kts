@@ -16,6 +16,10 @@ dependencies {
 
 gradlePlugin {
     plugins {
+        register("coreConventionPlugin") {
+            id = "convention.core"
+            implementationClass = "CoreConventionPlugin"
+        }
         register("roomConventionPlugin") {
             id = "convention.room"
             implementationClass = "RoomConventionPlugin"
