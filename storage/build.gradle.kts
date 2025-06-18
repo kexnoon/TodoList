@@ -1,7 +1,5 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.ksp)
+    id("convention.room")
 }
 
 android {
@@ -59,9 +57,4 @@ dependencies {
     implementation(libs.koin.androidx.compose.navigation)
     testImplementation(libs.koin.android.test)
     androidTestImplementation(libs.koin.android.test)
-
-    //Room
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler) // Use 'ksp' for the compiler
 }
