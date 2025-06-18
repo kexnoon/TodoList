@@ -20,6 +20,10 @@ gradlePlugin {
             id = "convention.core"
             implementationClass = "CoreConventionPlugin"
         }
+        register("composeConventionPlugin") {
+            id = "convention.compose"
+            implementationClass = "ComposeConventionPlugin"
+        }
         register("roomConventionPlugin") {
             id = "convention.room"
             implementationClass = "RoomConventionPlugin"
