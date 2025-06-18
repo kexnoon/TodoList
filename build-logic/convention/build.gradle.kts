@@ -28,5 +28,13 @@ gradlePlugin {
             id = "convention.room"
             implementationClass = "RoomConventionPlugin"
         }
+        register("koinCoreConventionPlugin") {
+            id = "convention.koin.core"
+            implementationClass = "KoinCoreConventionPlugin"
+        }
+        register("koinComposeConventionPlugin") {
+            id = "convention.koin.compose"
+            implementationClass = "KoinComposeConventionPlugin"
+        }
     }
 }

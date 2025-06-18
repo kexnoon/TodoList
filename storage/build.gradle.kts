@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     id("convention.core")
+    id("convention.koin.core")
     id("convention.room")
 }
 
@@ -42,15 +43,4 @@ android {
 }
 
 dependencies {
-
-    //Koin
-    runtimeOnly(libs.koin.core)
-    implementation(libs.koin.core.coroutines)
-    implementation(libs.koin.android)
-    implementation(libs.koin.workmanager)
-    runtimeOnly(libs.koin.compose)
-    runtimeOnly(libs.koin.androidx.compose)
-    implementation(libs.koin.androidx.compose.navigation)
-    testImplementation(libs.koin.android.test)
-    androidTestImplementation(libs.koin.android.test)
 }

@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("convention.core")
     id("convention.compose")
+    id("convention.koin.core")
+    id("convention.koin.compose")
 }
 
 android {
@@ -38,22 +40,8 @@ android {
 }
 
 dependencies {
-    dependencies {
+    implementation(project(":component-notes"))
+    implementation(project(":core-ui"))
 
-        implementation(project(":component-notes"))
-        implementation(project(":core-ui"))
-
-        implementation(libs.kotlinx.serialization.json)
-
-        //Koin
-        runtimeOnly(libs.koin.core)
-        implementation(libs.koin.core.coroutines)
-        implementation(libs.koin.android)
-        implementation(libs.koin.workmanager)
-        runtimeOnly(libs.koin.compose)
-        runtimeOnly(libs.koin.androidx.compose)
-        implementation(libs.koin.androidx.compose.navigation)
-        testImplementation(libs.koin.android.test)
-        androidTestImplementation(libs.koin.android.test)
-    }
+    implementation(libs.kotlinx.serialization.json)
 }

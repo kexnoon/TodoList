@@ -4,6 +4,8 @@ plugins {
     id("convention.core")
     id("convention.compose")
     id("convention.room")
+    id("convention.koin.core")
+    id("convention.koin.compose")
 }
 
 android {
@@ -49,21 +51,9 @@ android {
 }
 
 dependencies {
-
     implementation(project(":core-ui"))
     implementation(project(":storage"))
     implementation(project(":component-notes"))
     implementation(project(":feature-example"))
     implementation(project(":feature-main"))
-
-    //Koin
-    runtimeOnly(libs.koin.core)
-    implementation(libs.koin.core.coroutines)
-    implementation(libs.koin.android)
-    implementation(libs.koin.workmanager)
-    runtimeOnly(libs.koin.compose)
-    runtimeOnly(libs.koin.androidx.compose)
-    implementation(libs.koin.androidx.compose.navigation)
-    testImplementation(libs.koin.android.test)
-    androidTestImplementation(libs.koin.android.test)
 }
