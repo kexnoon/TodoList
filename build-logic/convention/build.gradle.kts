@@ -16,9 +16,13 @@ dependencies {
 
 gradlePlugin {
     plugins {
-        register("coreConventionPlugin") {
-            id = "convention.core"
-            implementationClass = "CoreConventionPlugin"
+        register("appCoreConventionPlugin") {
+            id = "convention.core.app"
+            implementationClass = "AppCoreConventionPlugin"
+        }
+        register("libraryCoreConventionPlugin") {
+            id = "convention.core.library"
+            implementationClass = "LibraryCoreConventionPlugin"
         }
         register("composeConventionPlugin") {
             id = "convention.compose"

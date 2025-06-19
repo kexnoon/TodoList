@@ -4,10 +4,30 @@ import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 
-class CoreConventionPlugin: Plugin<Project> {
+private class AppCoreConventionPlugin: Plugin<Project> {
+    override fun apply(target: Project) {
+        target.run {
+            plugins.apply("com.android.application")
+            CoreConventionPlugin().apply(this)
+        }
+    }
+}
+
+private class LibraryCoreConventionPlugin: Plugin<Project> {
+    override fun apply(target: Project) {
+        target.run {
+            plugins.apply("com.android.library")
+            CoreConventionPlugin().apply(this)
+        }
+    }
+}
+
+private class CoreConventionPlugin: Plugin<Project> {
     override fun apply(target: Project) {
         target.run {
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+
+            plugins.apply("org.jetbrains.kotlin.android")
 
             dependencies {
                 add("implementation", libs.findLibrary("androidx.core.ktx").get())

@@ -1,7 +1,5 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    id("convention.core")
+    id("convention.core.library")
     id("convention.compose")
     id("convention.koin.core")
     id("convention.koin.compose")
