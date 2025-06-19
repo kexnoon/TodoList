@@ -49,9 +49,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":core-ui"))
-    implementation(project(":storage"))
-    implementation(project(":component-notes"))
-    implementation(project(":feature-example"))
-    implementation(project(":feature-main"))
+    implementation(coreUi)
+    implementation(storage)
+    implementation(componentNotes)
+    implementation(featureMain)
 }

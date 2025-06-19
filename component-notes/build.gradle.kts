@@ -34,5 +34,5 @@ android {
 }
 
 dependencies {
-    implementation(project(":storage"))
+    implementation(storage)
 }

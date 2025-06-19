@@ -38,8 +38,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":component-notes"))
-    implementation(project(":core-ui"))
+    implementation(coreUi)
+    implementation(componentNotes)
 
     implementation(libs.kotlinx.serialization.json)
 }
