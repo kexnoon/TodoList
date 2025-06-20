@@ -13,6 +13,8 @@ This project is a simple note-taking application inspired by the default notes a
 
 ## 🧭 Project Structure
 
+![Modules Diagram](docs/modules-diagram.png)
+
 ```
 :app               → Base application module
 :app-example       → Demo app showcasing UI-layer architecture and navigation
