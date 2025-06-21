@@ -25,6 +25,11 @@ This project is a simple note-taking application inspired by the default notes a
 :storage           → Data storage layer (currently using Room)
 ```
 
+You can read more about some aspects of this app here:
+[Modularization](docs/modularization.md)
+[Navigation](docs/navigation.md)
+[Gradle Convention Plugins](docs/convention_plugins.md)
+
 ## 🎯 Current Goal
 
 The primary focus is building a minimum viable version of the application that supports:
