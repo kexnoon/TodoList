@@ -26,9 +26,9 @@ This project is a simple note-taking application inspired by the default notes a
 ```
 
 You can read more about some aspects of this app here:
-[Modularization](docs/modularization.md)
-[Navigation](docs/navigation.md)
-[Gradle Convention Plugins](docs/convention_plugins.md)
+- [Modularization](docs/modularization.md)
+- [Navigation](docs/navigation.md)
+- [Gradle Convention Plugins](docs/convention_plugins.md)
 
 ## 🎯 Current Goal
 
@@ -47,7 +47,7 @@ The primary focus is building a minimum viable version of the application that s
 - 🔐 **Authentication & Sync** – Firebase integration for login and cloud storage
 - 🖼 **Rich Notes** – Support for text, images, media files, etc.
 - ⏰ **Reminders** – Add alarms or time-based notifications
-- 🧠 **More Tools** – Calendar, tagging, prioritization, and more
+- 🧠 **More Tools** – Calendar, prioritization, and more
 
 ---
 
