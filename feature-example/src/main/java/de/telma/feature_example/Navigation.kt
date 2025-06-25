@@ -60,8 +60,7 @@ internal fun NavGraphBuilder.dummyScreenThree() {
     }
 }
 
-
-internal sealed class ExampleDestination: Destination {
+ sealed class ExampleDestination: Destination {
     @Serializable
     data object MainScreen: ExampleDestination()
     @Serializable

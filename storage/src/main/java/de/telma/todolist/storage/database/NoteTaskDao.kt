@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.ABORT
+import androidx.room.Query
 import androidx.room.Update
 import de.telma.todolist.storage.database.entity.NoteTaskEntity
 
@@ -13,8 +14,8 @@ interface NoteTaskDao {
     suspend fun insertTask(entity: NoteTaskEntity): Long
 
     @Update
-    suspend fun updateTask(entity: NoteTaskEntity): Long
+    suspend fun updateTask(entity: NoteTaskEntity): Int
 
-    @Delete
-    suspend fun deleteTask(entity: NoteTaskEntity): Long
+    @Query("DELETE FROM note_tasks WHERE id = :taskId")
+    suspend fun deleteTask(taskId: Long): Int
 }

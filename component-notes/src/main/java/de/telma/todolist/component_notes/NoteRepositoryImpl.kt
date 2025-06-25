@@ -38,18 +38,18 @@ internal class NoteRepositoryImpl(private val database: AppDatabase): NoteReposi
             status = NoteStatus.IN_PROGRESS.toString(), //default status for new notes
             title = title
         )
-        database.noteDao().insertNote(newNote)
-        return@withContext newNote.id
+
+        return@withContext database.noteDao().insertNote(newNote)
     }
 
     override suspend fun updateNote(note: Note): Boolean = withContext(Dispatchers.IO){
         val entity = note.toNoteEntity()
-        return@withContext database.noteDao().updateNote(entity) != -1L
+        return@withContext database.noteDao().updateNote(entity) != -1
     }
 
     override suspend fun deleteNote(note: Note): Boolean = withContext(Dispatchers.IO) {
         val entity = note.toNoteEntity()
-        return@withContext database.noteDao().deleteNote(entity) != -1L
+        return@withContext database.noteDao().deleteNote(entity) != -1
     }
 
 }
