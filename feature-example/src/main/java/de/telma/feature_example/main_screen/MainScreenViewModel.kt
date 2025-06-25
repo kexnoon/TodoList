@@ -8,7 +8,6 @@ import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.component_notes.NoteRepository
 import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.core_ui.base.BaseViewModel
-import de.telma.todolist.core_ui.navigation.Destination
 import de.telma.todolist.core_ui.navigation.NavEvent
 import de.telma.todolist.core_ui.navigation.NavigationCoordinator
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +26,7 @@ internal class MainScreenViewModel(
     init {
         viewModelScope.launch(Dispatchers.Main) {
             showLoading()
-            repository.getNotes().collectLatest {
+            repository.getAllNotes().collectLatest {
                 showResult(it)
             }
         }

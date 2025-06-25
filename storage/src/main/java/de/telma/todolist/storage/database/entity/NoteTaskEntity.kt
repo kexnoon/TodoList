@@ -19,7 +19,7 @@ import androidx.room.PrimaryKey
 )
 
 data class NoteTaskEntity(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     val id: Long,
     val noteId: Long,
     val title: String,

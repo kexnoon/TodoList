@@ -1,22 +1,55 @@
 package de.telma.todolist.component_notes
 
 import de.telma.todolist.component_notes.model.Note
+import de.telma.todolist.component_notes.model.NoteStatus
 import de.telma.todolist.storage.database.AppDatabase
+import de.telma.todolist.storage.database.entity.NoteEntity
 import de.telma.todolist.storage.database.entity.NoteWithTasks
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 internal class NoteRepositoryImpl(private val database: AppDatabase): NoteRepository {
-    override suspend fun getNotes(): Flow<List<Note>> {
-        delay(1000L)
+
+    override suspend fun getAllNotes(): Flow<List<Note>> {
         return database.noteDao()
             .getAllNotesWithTasks()
             .map(List<NoteWithTasks>::toNotesList)
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
     }
+
+    override suspend fun getNoteById(id: Long): Flow<Note> {
+        return database.noteDao()
+            .getNoteWithTasksById(noteId = id)
+            .filterNotNull()
+            .map(NoteWithTasks::toNote)
+            .distinctUntilChanged()
+            .flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun createNewNote(title: String): Long = withContext(Dispatchers.IO) {
+        val newNote = NoteEntity(
+            id = 0,
+            status = NoteStatus.IN_PROGRESS.toString(), //default status for new notes
+            title = title
+        )
+        database.noteDao().insertNote(newNote)
+        return@withContext newNote.id
+    }
+
+    override suspend fun updateNote(note: Note): Boolean = withContext(Dispatchers.IO){
+        val entity = note.toNoteEntity()
+        return@withContext database.noteDao().updateNote(entity) != -1L
+    }
+
+    override suspend fun deleteNote(note: Note): Boolean = withContext(Dispatchers.IO) {
+        val entity = note.toNoteEntity()
+        return@withContext database.noteDao().deleteNote(entity) != -1L
+    }
+
 }

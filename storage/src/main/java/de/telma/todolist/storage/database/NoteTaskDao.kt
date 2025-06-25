@@ -10,11 +10,11 @@ import de.telma.todolist.storage.database.entity.NoteTaskEntity
 @Dao
 interface NoteTaskDao {
     @Insert(onConflict = ABORT)
-    suspend fun insertTask(entity: NoteTaskEntity)
+    suspend fun insertTask(entity: NoteTaskEntity): Long
 
     @Update
-    suspend fun updateTask(entity: NoteTaskEntity)
+    suspend fun updateTask(entity: NoteTaskEntity): Long
 
     @Delete
-    suspend fun deleteTask(entity: NoteTaskEntity)
+    suspend fun deleteTask(entity: NoteTaskEntity): Long
 }
