@@ -61,4 +61,4 @@ At this time, the project is in an early development phase and not open for exte
 
 ## 🙋‍♂️ Author
 
-Developed with ❤️ by Telma Ewelina Popova
+Developed with ❤️ by Telma Evelina Popova
