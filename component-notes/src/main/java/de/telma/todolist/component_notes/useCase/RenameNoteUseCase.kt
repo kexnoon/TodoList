@@ -1,6 +1,7 @@
-package de.telma.todolist.component_notes
+package de.telma.todolist.component_notes.useCase
 
 import de.telma.todolist.component_notes.model.Note
+import de.telma.todolist.component_notes.repository.NoteRepository
 
 class RenameNoteUseCase(private val repository: NoteRepository) {
 

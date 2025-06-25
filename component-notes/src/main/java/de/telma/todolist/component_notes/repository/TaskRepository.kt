@@ -1,4 +1,4 @@
-package de.telma.todolist.component_notes
+package de.telma.todolist.component_notes.repository
 
 import de.telma.todolist.component_notes.model.NoteTask
 

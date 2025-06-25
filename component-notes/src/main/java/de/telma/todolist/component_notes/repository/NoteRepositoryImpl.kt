@@ -1,7 +1,10 @@
-package de.telma.todolist.component_notes
+package de.telma.todolist.component_notes.repository
 
 import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.model.NoteStatus
+import de.telma.todolist.component_notes.toNote
+import de.telma.todolist.component_notes.toNoteEntity
+import de.telma.todolist.component_notes.toNotesList
 import de.telma.todolist.storage.database.AppDatabase
 import de.telma.todolist.storage.database.entity.NoteEntity
 import de.telma.todolist.storage.database.entity.NoteWithTasks
