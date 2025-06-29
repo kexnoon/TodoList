@@ -37,6 +37,8 @@ private class CoreConventionPlugin: Plugin<Project> {
                 add("androidTestImplementation", libs.findLibrary("espresso.core").get())
                 add("testImplementation", libs.findLibrary("mockk.core").get())
                 add("androidTestImplementation", libs.findLibrary("mockk.android").get())
+                add("testImplementation", libs.findLibrary("coroutines.test").get())
+                add("androidTestImplementation", libs.findLibrary("coroutines.test").get())
             }
         }
     }

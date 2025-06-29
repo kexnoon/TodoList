@@ -3,6 +3,7 @@ agp = "8.10.1"
 kotlin = "2.1.21"
 ksp = "2.1.21-2.0.1"
 coreKtx = "1.16.0"
+coroutines-test = "1.10.2"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -29,6 +30,8 @@ espresso-core = { group = "androidx.test.espresso", name = "espresso-core", vers
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 mockk-core = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines-test" }
+
 
 # convention.compose
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
