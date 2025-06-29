@@ -14,6 +14,7 @@ koinCompose = "4.0.0"
 room = "2.7.1"
 composeNavigation = "2.9.0"
 serialization = "1.8.0"
+mockk = "1.14.4"
 
 [libraries]
 # build-logic dependencies
@@ -26,6 +27,8 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 junit-test = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+mockk-core = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
 
 # convention.compose
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
