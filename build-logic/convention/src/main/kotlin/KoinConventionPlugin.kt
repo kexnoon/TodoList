@@ -32,6 +32,9 @@ class KoinComposeConventionPlugin : Plugin<Project> {
                 add("runtimeOnly", libs.findLibrary("koin.compose").get())
                 add("runtimeOnly", libs.findLibrary("koin.androidx.compose").get())
                 add("implementation", libs.findLibrary("koin.androidx.compose.navigation").get())
+
+                add("testImplementation", libs.findLibrary("koin.android.test").get())
+                add("androidTestImplementation", libs.findLibrary("koin.android.test").get())
             }
         }
     }
