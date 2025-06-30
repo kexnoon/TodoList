@@ -32,12 +32,11 @@ class NotesUseCasesTests {
     }
 
     @Test
-    fun RenameNoteUseCaseTests_correctName_returnsTrue() = runTest {
+    fun `renames note if the new title is correct`() = runTest {
         val useCase = RenameNoteUseCase(notesRepository)
 
         val newTitle = "New Title"
         val expectedUpdatedNote = testNote.copy(title = newTitle)
-
         coEvery { notesRepository.updateNote(expectedUpdatedNote) } returns true
 
         val result = useCase(testNote, newTitle)
@@ -47,10 +46,9 @@ class NotesUseCasesTests {
     }
 
     @Test
-    fun RenameNoteUseCaseTests_somethingWrong_returnsFalse() = runTest {
+    fun `rename note returns false if repository method returns false`() = runTest {
         val useCase = RenameNoteUseCase(notesRepository)
         val expectedUpdatedNote = testNote.copy(title = "")
-
         coEvery { notesRepository.updateNote(expectedUpdatedNote) } returns false
 
         val result = useCase(testNote, "")
@@ -60,7 +58,7 @@ class NotesUseCasesTests {
     }
 
     @Test
-    fun UpdateNoteStatusUseCase_correctStatus_returnsTrue() = runTest {
+    fun `updates note status if the new status is correct`() = runTest {
         val useCase = UpdateNoteStatusUseCase(notesRepository)
         val newStatus = NoteStatus.COMPLETE
         val expectedUpdatedNote = testNote.copy(status = newStatus)
@@ -73,7 +71,7 @@ class NotesUseCasesTests {
     }
 
     @Test
-    fun UpdateNoteStatusUseCase_somethingWrong_returnsFalse() = runTest {
+    fun `update note status return false if repository method returns false`() = runTest {
         val useCase = UpdateNoteStatusUseCase(notesRepository)
         val newStatus = NoteStatus.COMPLETE
         val expectedUpdatedNote = testNote.copy(status = newStatus)

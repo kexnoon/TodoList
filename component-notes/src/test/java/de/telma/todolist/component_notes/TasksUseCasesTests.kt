@@ -32,7 +32,7 @@ class TasksUseCasesTests {
     }
 
     @Test
-    fun RenameTaskUseCase_correctName_returnsTrue() = runTest {
+    fun `renames task if the new title is correct`() = runTest {
         val useCase = RenameTaskUseCase(tasksRepository)
         val newTitle = "New Title"
         val expectedUpdatedTask = testTask.copy(title = newTitle)
@@ -45,7 +45,7 @@ class TasksUseCasesTests {
     }
 
     @Test
-    fun RenameTaskUseCase_somethingWrong_returnsFalse() = runTest {
+    fun `rename task returns false if repository method returns false`() = runTest {
         val useCase = RenameTaskUseCase(tasksRepository)
         val newTitle = "New Title"
         val expectedTask = testTask.copy(title = newTitle)
@@ -58,7 +58,7 @@ class TasksUseCasesTests {
     }
 
     @Test
-    fun UpdateTaskStatusUseCase_correctName_returnsTrue() = runTest {
+    fun `updates task status if the new status is correct`() = runTest {
         val useCase = UpdateTaskStatusUseCase(tasksRepository)
         val newStatus = NoteTaskStatus.COMPLETE
         val expectedUpdatedTask = testTask.copy(status = newStatus)
@@ -71,7 +71,7 @@ class TasksUseCasesTests {
     }
 
     @Test
-    fun UpdateTaskStatusUseCasee_somethingWrong_returnsFalse() = runTest {
+    fun `update note status return false if repository method returns false`() = runTest {
         val useCase = UpdateTaskStatusUseCase(tasksRepository)
         val status = NoteTaskStatus.COMPLETE
         val expectedTask = testTask.copy(status = status)
