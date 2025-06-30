@@ -26,11 +26,20 @@ internal fun NoteWithTasks.toNote(): Note {
 }
 
 internal fun String.toNoteStatus(): NoteStatus {
-    return NoteStatus.valueOf(this)
+    return try {
+        NoteStatus.valueOf(this.uppercase())
+    } catch (e: IllegalArgumentException) {
+        throw IllegalArgumentException("Error while converting String to NoteStatus: '$this'", e)
+    }
 }
 
 internal fun String.toNoteTaskStatus(): NoteTaskStatus {
-    return NoteTaskStatus.valueOf(this)
+    return try {
+        NoteTaskStatus.valueOf(this.uppercase())
+    } catch (e: IllegalArgumentException) {
+        throw IllegalArgumentException("Error while converting String to NoteStatus: '$this'", e)
+    }
+
 }
 
 internal fun Note.toNoteEntity(): NoteEntity {
