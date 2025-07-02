@@ -14,8 +14,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import kotlin.test.assertTrue
 
-
-class NotesUseCasesTests {
+class NotesUseCasesTest {
 
     private lateinit var notesRepository: NoteRepository
 

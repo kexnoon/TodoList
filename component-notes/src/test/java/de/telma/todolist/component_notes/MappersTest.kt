@@ -11,7 +11,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class MappersTests {
+class MappersTest {
 
     @Test
     fun `maps NotesWithTasks to Note`() = runTest {

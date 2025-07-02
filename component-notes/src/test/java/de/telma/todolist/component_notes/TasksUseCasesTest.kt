@@ -4,7 +4,6 @@ import de.telma.todolist.component_notes.model.NoteTask
 import de.telma.todolist.component_notes.model.NoteTaskStatus
 import de.telma.todolist.component_notes.repository.TaskRepository
 import de.telma.todolist.component_notes.useCase.RenameTaskUseCase
-import de.telma.todolist.component_notes.useCase.UpdateNoteStatusUseCase
 import de.telma.todolist.component_notes.useCase.UpdateTaskStatusUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -15,7 +14,7 @@ import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class TasksUseCasesTests {
+class TasksUseCasesTest {
 
     private lateinit var tasksRepository: TaskRepository
 
