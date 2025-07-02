@@ -16,103 +16,79 @@ class MappersTests {
     @Test
     fun `maps NotesWithTasks to Note`() = runTest {
 
-        val noteEntity = NoteEntity(
-            id = 0L,
-            title = "Note",
-            status = NoteStatus.IN_PROGRESS.statusValue
-        )
-
         val taskEntities = listOf<NoteTaskEntity>(
-            NoteTaskEntity(
-                id = 1L,
-                noteId = 0L,
-                title = "Task1",
-                status = NoteTaskStatus.IN_PROGRESS.statusValue
-            ),
-            NoteTaskEntity(
-                id = 2L,
-                noteId = 0L,
-                title = "Task2",
-                status = NoteTaskStatus.COMPLETE.statusValue
-            )
+            sampleTaskEntity1.copy(),
+            sampleTaskEntity2.copy()
         )
-
         val testNoteWithTasks = NoteWithTasks(
-            note = noteEntity,
+            note = sampleNoteEntity.copy(),
             tasks = taskEntities
         )
-
-        val expectedNote = Note(
-            id = 0L,
-            title = "Note",
-            status = NoteStatus.IN_PROGRESS,
-            tasksList = listOf (
-                NoteTask(
-                    id = 1L,
-                    title = "Task1",
-                    status = NoteTaskStatus.IN_PROGRESS
-                ),
-                NoteTask(
-                    id = 2L,
-                    title = "Task2",
-                    status = NoteTaskStatus.COMPLETE
-                )
-            )
-        )
+        val expectedNote = sampleNote.copy()
 
         val resultNote = testNoteWithTasks.toNote()
+
         assertEquals(expectedNote, resultNote)
 
     }
 
     @Test
     fun `maps Note to NoteEntity`() = runTest {
-        val testNote = Note(
-            id = 0L,
-            title = "Note",
-            status = NoteStatus.IN_PROGRESS,
-            tasksList = listOf (
-                NoteTask(
-                    id = 1L,
-                    title = "Task1",
-                    status = NoteTaskStatus.IN_PROGRESS
-                ),
-                NoteTask(
-                    id = 2L,
-                    title = "Task2",
-                    status = NoteTaskStatus.COMPLETE
-                )
-            )
-        )
-
-        val expectedNoteEntity = NoteEntity(
-            id = 0L,
-            title = "Note",
-            status = NoteStatus.IN_PROGRESS.statusValue
-        )
+        val testNote = sampleNote.copy()
+        val expectedNoteEntity = sampleNoteEntity.copy()
 
         val result = testNote.toNoteEntity()
+
         assertEquals(expectedNoteEntity, result)
     }
 
     @Test
     fun `maps NoteTask to NoteTaskEntity`() = runTest {
-        val testTask = NoteTask(
-            id = 1L,
-            title = "Task1",
-            status = NoteTaskStatus.IN_PROGRESS
-        )
-
+        val testTask = sampleTask1.copy()
         val testParentId = 0L
-
-        val expectedNoteTaskEntity = NoteTaskEntity(
-            id = 1L,
-            noteId = 0L,
-            title = "Task1",
-            status = NoteTaskStatus.IN_PROGRESS.statusValue
-        )
+        val expectedNoteTaskEntity = sampleTaskEntity1.copy()
 
         val result = testTask.toNoteTaskEntity(testParentId)
+
         assertEquals(expectedNoteTaskEntity, result)
     }
 }
+
+private val sampleTaskEntity1 = NoteTaskEntity(
+    id = 1L,
+    noteId = 0L,
+    title = "Task1",
+    status = NoteTaskStatus.IN_PROGRESS.statusValue
+)
+
+private val sampleTaskEntity2 = NoteTaskEntity(
+    id = 2L,
+    noteId = 0L,
+    title = "Task2",
+    status = NoteTaskStatus.COMPLETE.statusValue
+)
+
+private val sampleNoteEntity = NoteEntity(
+    id = 0L,
+    title = "Note",
+    status = NoteStatus.IN_PROGRESS.statusValue
+)
+
+private val sampleTask1 = NoteTask(
+    id = 1L,
+    title = "Task1",
+    status = NoteTaskStatus.IN_PROGRESS
+)
+
+private val sampleTask2 = NoteTask(
+    id = 2L,
+    title = "Task2",
+    status = NoteTaskStatus.COMPLETE
+)
+
+private val sampleNote = Note(
+    id = 0L,
+    title = "Note",
+    status = NoteStatus.IN_PROGRESS,
+    tasksList = listOf(sampleTask1, sampleTask2)
+)

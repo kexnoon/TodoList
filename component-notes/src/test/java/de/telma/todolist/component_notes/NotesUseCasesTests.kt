@@ -18,23 +18,15 @@ import kotlin.test.assertTrue
 class NotesUseCasesTests {
 
     private lateinit var notesRepository: NoteRepository
-    private lateinit var testNote: Note
 
     @Before
     fun setUp() {
         notesRepository = mockk<NoteRepository>()
-        testNote = Note(
-            id = 1L,
-            title = "Old Title",
-            status = NoteStatus.IN_PROGRESS,
-            tasksList = emptyList()
-        )
     }
 
     @Test
     fun `renames note if the new title is correct`() = runTest {
         val useCase = RenameNoteUseCase(notesRepository)
-
         val newTitle = "New Title"
         val expectedUpdatedNote = testNote.copy(title = newTitle)
         coEvery { notesRepository.updateNote(expectedUpdatedNote) } returns true
@@ -75,11 +67,19 @@ class NotesUseCasesTests {
         val useCase = UpdateNoteStatusUseCase(notesRepository)
         val newStatus = NoteStatus.COMPLETE
         val expectedUpdatedNote = testNote.copy(status = newStatus)
-
         coEvery { notesRepository.updateNote(expectedUpdatedNote) } returns false
+
         val result = useCase(testNote, newStatus)
 
         assertFalse(result)
         coVerify(exactly = 1) { notesRepository.updateNote(expectedUpdatedNote) }
     }
+
+    private val testNote = Note(
+        id = 1L,
+        title = "Old Title",
+        status = NoteStatus.IN_PROGRESS,
+        tasksList = emptyList()
+    )
+
 }

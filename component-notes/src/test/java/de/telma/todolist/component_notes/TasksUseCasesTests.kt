@@ -18,17 +18,10 @@ import kotlin.test.assertTrue
 class TasksUseCasesTests {
 
     private lateinit var tasksRepository: TaskRepository
-    private lateinit var testTask: NoteTask
-    private val testNoteId = 0L
 
     @Before
     fun setUp() {
         tasksRepository = mockk<TaskRepository>()
-        testTask = NoteTask(
-            id = 0L,
-            title = "NoteTask",
-            status = NoteTaskStatus.IN_PROGRESS
-        )
     }
 
     @Test
@@ -80,7 +73,14 @@ class TasksUseCasesTests {
         val result = useCase(noteId = testNoteId, task = expectedTask, newStatus = NoteTaskStatus.COMPLETE)
 
         assertFalse(result)
-        coVerify(exactly = 1) { tasksRepository.updateTask(testNoteId, expectedTask) }    }
+        coVerify(exactly = 1) { tasksRepository.updateTask(testNoteId, expectedTask) }
+    }
 
+    private val testTask = NoteTask(
+        id = 0L,
+        title = "NoteTask",
+        status = NoteTaskStatus.IN_PROGRESS
+    )
 
+    private val testNoteId = 0L
 }
