@@ -40,6 +40,17 @@ android {
         buildConfig = true
         compose = true
     }
+    packaging {
+        resources {
+            pickFirsts += "META-INF/LICENSE.md"
+            pickFirsts += "META-INF/AL2.0"
+            pickFirsts += "META-INF/LGPL2.1"
+            pickFirsts += "META-INF/LICENSE-notice.md"
+            pickFirsts += "META-INF/LICENSE"
+            pickFirsts += "META-INF/LICENSE.txt"
+        }
+    }
+
 }
 
 dependencies {

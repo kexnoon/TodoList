@@ -40,6 +40,7 @@ private class CoreConventionPlugin: Plugin<Project> {
                 add("testImplementation", libs.findLibrary("coroutines.test").get())
                 add("androidTestImplementation", libs.findLibrary("coroutines.test").get())
                 add("testImplementation", libs.findLibrary("turbine").get())
+                add("androidTestImplementation", libs.findLibrary("turbine").get())
             }
         }
     }
