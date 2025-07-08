@@ -1,10 +1,8 @@
-package de.telma.todolist.component_notes
+package de.telma.todolist.component_notes.useCase
 
 import de.telma.todolist.component_notes.model.NoteTask
 import de.telma.todolist.component_notes.model.NoteTaskStatus
 import de.telma.todolist.component_notes.repository.TaskRepository
-import de.telma.todolist.component_notes.useCase.RenameTaskUseCase
-import de.telma.todolist.component_notes.useCase.UpdateTaskStatusUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -37,7 +35,7 @@ class TasksUseCasesTest {
     }
 
     @Test
-    fun `rename task returns false if repository method returns false`() = runTest {
+    fun `RenameTaskUseCase returns false if repository method returns false`() = runTest {
         val useCase = RenameTaskUseCase(tasksRepository)
         val newTitle = "New Title"
         val expectedTask = testTask.copy(title = newTitle)
@@ -63,7 +61,7 @@ class TasksUseCasesTest {
     }
 
     @Test
-    fun `update note status return false if repository method returns false`() = runTest {
+    fun `UpdateTaskStatusUseCase return false if repository method returns false`() = runTest {
         val useCase = UpdateTaskStatusUseCase(tasksRepository)
         val status = NoteTaskStatus.COMPLETE
         val expectedTask = testTask.copy(status = status)

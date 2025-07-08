@@ -29,7 +29,6 @@ internal class NoteRepositoryImpl(private val database: AppDatabase): NoteReposi
     override suspend fun getNoteById(id: Long): Flow<Note> {
         return database.noteDao()
             .getNoteWithTasksById(noteId = id)
-            .filterNotNull()
             .map(NoteWithTasks::toNote)
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
