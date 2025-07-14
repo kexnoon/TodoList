@@ -9,6 +9,9 @@ import de.telma.todolist.storage.database.entity.NoteTaskEntity
 
 @Dao
 interface NoteTaskDao {
+    @Query("SELECT * FROM note_tasks WHERE noteId = :noteId")
+    suspend fun getAllTasksByNoteId(noteId: Long): List<NoteTaskEntity>
+
     @Insert(onConflict = ABORT)
     suspend fun insertTask(entity: NoteTaskEntity): Long
 

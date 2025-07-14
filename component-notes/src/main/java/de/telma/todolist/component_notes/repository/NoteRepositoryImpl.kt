@@ -10,6 +10,7 @@ import de.telma.todolist.storage.database.entity.NoteEntity
 import de.telma.todolist.storage.database.entity.NoteWithTasks
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOn
@@ -26,10 +27,10 @@ internal class NoteRepositoryImpl(private val database: AppDatabase): NoteReposi
             .flowOn(Dispatchers.IO)
     }
 
-    override suspend fun getNoteById(id: Long): Flow<Note> {
+    override suspend fun getNoteById(id: Long): Flow<Note?> {
         return database.noteDao()
             .getNoteWithTasksById(noteId = id)
-            .map(NoteWithTasks::toNote)
+            .map { it?.toNote() }
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
     }
@@ -44,14 +45,14 @@ internal class NoteRepositoryImpl(private val database: AppDatabase): NoteReposi
         return@withContext database.noteDao().insertNote(newNote)
     }
 
-    override suspend fun updateNote(note: Note): Boolean = withContext(Dispatchers.IO){
+    override suspend fun updateNote(note: Note): Boolean = withContext(Dispatchers.IO) {
         val entity = note.toNoteEntity()
-        return@withContext database.noteDao().updateNote(entity) != -1
+        return@withContext database.noteDao().updateNote(entity) == 1
     }
 
     override suspend fun deleteNote(note: Note): Boolean = withContext(Dispatchers.IO) {
         val entity = note.toNoteEntity()
-        return@withContext database.noteDao().deleteNote(entity) != -1
+        return@withContext database.noteDao().deleteNote(entity) == 1
     }
 
 }

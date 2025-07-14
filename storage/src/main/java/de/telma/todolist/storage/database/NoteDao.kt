@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 interface NoteDao {
     @Transaction
     @Query("SELECT * FROM notes WHERE id = :noteId")
-    fun getNoteWithTasksById(noteId: Long): Flow<NoteWithTasks>
+    fun getNoteWithTasksById(noteId: Long): Flow<NoteWithTasks?>
 
     @Transaction
     @Query("SELECT * FROM notes")

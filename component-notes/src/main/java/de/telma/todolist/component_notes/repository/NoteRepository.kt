@@ -12,7 +12,7 @@ interface NoteRepository {
     /**
      * Will be used on NoteOverviewScreen to show the selected not
      */
-    suspend fun getNoteById(id: Long): Flow<Note>
+    suspend fun getNoteById(id: Long): Flow<Note?>
 
     /**
      * Will return Note's ID so we could show it on the next screen
