@@ -1,7 +1,5 @@
 # Navigation
 
-# Navigation Architecture
-
 This document describes the navigation architecture and implementation strategy used in the project. The goal is to provide a scalable, modular, and testable approach to navigation using Jetpack Compose and a Coordinator pattern.
 
 ## Goals and Requirements
