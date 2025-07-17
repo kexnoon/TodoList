@@ -12,6 +12,9 @@ interface NoteTaskDao {
     @Query("SELECT * FROM note_tasks WHERE noteId = :noteId")
     suspend fun getAllTasksByNoteId(noteId: Long): List<NoteTaskEntity>
 
+    @Query("SELECT * FROM note_tasks WHERE id = :taskId")
+    suspend fun getTaskById(taskId: Long): List<NoteTaskEntity>
+
     @Insert(onConflict = ABORT)
     suspend fun insertTask(entity: NoteTaskEntity): Long
 

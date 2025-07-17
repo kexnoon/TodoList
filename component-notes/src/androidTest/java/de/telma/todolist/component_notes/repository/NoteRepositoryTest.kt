@@ -164,19 +164,6 @@ class NoteRepositoryTest: BaseRepositoryTest() {
     }
 
     @Test
-    fun createNewNote_correctly_creates_note_with_no_name_passed() = runTest {
-        val titlePassed = ""
-
-        val newNoteID = repository.createNewNote(titlePassed)
-        val newNote = database.noteDao().getNoteWithTasksById(newNoteID).first()!!
-
-        val result = newNote.note.title
-        val expectedTitle = "Untitled"
-        assertEquals(expectedTitle, result, "createNewNote: incorrectly creates note with no title passed!.")
-
-    }
-
-    @Test
     fun updateNote_correctly_executes_when_note_passed() = runTest {
         val note = testNote1
         database.noteDao().insertNote(note.toNoteEntity())

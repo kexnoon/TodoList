@@ -58,3 +58,11 @@ internal fun NoteTask.toNoteTaskEntity(parentId: Long): NoteTaskEntity {
         status = this.status.statusValue
     )
 }
+
+internal fun NoteTaskEntity.toNoteTask() : NoteTask {
+    return NoteTask(
+        id = this.id,
+        title = this.title,
+        status = this.status.toNoteTaskStatus()
+    )
+}

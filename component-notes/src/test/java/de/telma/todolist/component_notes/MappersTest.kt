@@ -15,7 +15,6 @@ class MappersTest {
 
     @Test
     fun `maps NotesWithTasks to Note`() = runTest {
-
         val taskEntities = listOf<NoteTaskEntity>(
             sampleTaskEntity1.copy(),
             sampleTaskEntity2.copy()
@@ -51,6 +50,16 @@ class MappersTest {
         val result = testTask.toNoteTaskEntity(testParentId)
 
         assertEquals(expectedNoteTaskEntity, result)
+    }
+
+    @Test
+    fun `maps NoteTaskEntity to NoteTask`() = runTest {
+        val taskEntity = sampleTaskEntity1.copy()
+        val expectedNoteTask = sampleTask1.copy()
+
+        val result = taskEntity.toNoteTask()
+
+        assertEquals(result, expectedNoteTask)
     }
 }
 
