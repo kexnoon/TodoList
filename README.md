@@ -15,15 +15,20 @@ This project is a simple note-taking application inspired by the default notes a
 
 ![Modules Diagram](docs/modules_diagram.png)
 
+```
 :app               → Base application module
 :app-example       → Demo app showcasing UI-layer architecture and navigation
 :core-ui           → Shared UI components (navigation, design system, etc.)
 :feature-main      → Main feature module for viewing, creating, and editing notes
 :feature-example   → Sample feature used in :app-example
-[:component-notes](docs/component_notes.md)   → Business logic for notes management
+:component_notes   → Business logic for notes management
 :storage           → Data storage layer (currently using Room)
+```
 
-You can also read more about some aspects of this project here:
+Modules documentation
+- [:component-notes](docs/component_notes.md)
+
+You can read more about some aspects of this app here:
 - [Modularization](docs/modularization.md)
 - [Navigation](docs/navigation.md)
 - [Gradle Convention Plugins](docs/convention_plugins.md)
