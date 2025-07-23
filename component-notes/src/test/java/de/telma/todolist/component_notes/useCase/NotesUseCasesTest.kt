@@ -87,7 +87,10 @@ class NotesUseCasesTest {
 
         val result = useCase(note)
 
-        assertEquals(result, SyncNoteStatusUseCase.SyncStatus.SYNC_SUCCEED, "SyncNoteStatusUseCase status should be SYNC_SUCCEED, but was $result")
+        assertEquals(
+            result, SyncNoteStatusUseCase.SyncStatus.SYNC_SUCCEED,
+            "SyncNoteStatusUseCase status should be SYNC_SUCCEED, but was $result"
+        )
     }
 
     @Test
@@ -102,7 +105,10 @@ class NotesUseCasesTest {
 
         val result = useCase(note)
 
-        assertEquals(result, SyncNoteStatusUseCase.SyncStatus.SYNC_SUCCEED, "SyncNoteStatusUseCase status should be SYNC_SUCCEED, but was $result")
+        assertEquals(
+            result, SyncNoteStatusUseCase.SyncStatus.SYNC_SUCCEED,
+            "SyncNoteStatusUseCase status should be SYNC_SUCCEED, but was $result"
+        )
     }
 
     @Test
@@ -114,7 +120,10 @@ class NotesUseCasesTest {
 
         val result = useCase(note)
 
-        assertEquals(result, SyncNoteStatusUseCase.SyncStatus.UP_TO_DATE, "SyncNoteStatusUseCase status should be UP_TO_DATE, but was $result")
+        assertEquals(
+            result, SyncNoteStatusUseCase.SyncStatus.UP_TO_DATE,
+            "SyncNoteStatusUseCase status should be UP_TO_DATE, but was $result"
+        )
     }
 
     @Test
@@ -129,9 +138,52 @@ class NotesUseCasesTest {
 
         val result = useCase(note)
 
-        assertEquals(result, SyncNoteStatusUseCase.SyncStatus.SYNC_FAILED, "SyncNoteStatusUseCase status should be SYNC_FAILED, but was $result")
+        assertEquals(
+            result, SyncNoteStatusUseCase.SyncStatus.SYNC_FAILED,
+            "SyncNoteStatusUseCase status should be SYNC_FAILED, but was $result"
+        )
     }
 
+    @Test
+    fun `DeleteMultipleNotesUseCase returns true if all notes are deleted`() = runTest {
+        val useCase = DeleteMultipleNotesUseCase(notesRepository)
+        val note1 = testNote.copy(id = 1L)
+        val note2 = testNote.copy(id = 2L)
+        val notesToDelete = listOf(note1, note2)
+
+        coEvery { notesRepository.deleteNote(note1) } returns true
+        coEvery { notesRepository.deleteNote(note2) } returns true
+
+        val result = useCase(notesToDelete)
+
+        assertTrue(
+            result,
+            "DeleteMultipleNotesUseCase should return true if all notes are deleted, but returned false."
+        )
+        coVerify(exactly = 1) { notesRepository.deleteNote(note1) }
+        coVerify(exactly = 1) { notesRepository.deleteNote(note2) }
+    }
+
+    @Test
+    fun `DeleteMultipleNotesUseCase returns false if not all notes are deleted`() = runTest {
+        val useCase = DeleteMultipleNotesUseCase(notesRepository)
+        val note1 = testNote.copy(id = 1L)
+        val note2 = testNote.copy(id = 2L)
+
+        val notesToDelete = listOf(note1, note2)
+
+        coEvery { notesRepository.deleteNote(note1) } returns true
+        coEvery { notesRepository.deleteNote(note2) } returns false
+
+        val result = useCase(notesToDelete)
+
+        assertFalse(
+            "DeleteMultipleNotesUseCase should return false if not all notes are deleted",
+            result
+        )
+        coVerify(exactly = 1) { notesRepository.deleteNote(note1) }
+        coVerify(exactly = 1) { notesRepository.deleteNote(note2) }
+    }
 
     private val testNote = Note(
         id = 1L,
