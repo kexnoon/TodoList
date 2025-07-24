@@ -5,6 +5,7 @@ import de.telma.todolist.component_notes.model.NoteStatus
 import de.telma.todolist.component_notes.model.NoteTask
 import de.telma.todolist.component_notes.model.NoteTaskStatus
 import de.telma.todolist.component_notes.repository.NoteRepository
+import de.telma.todolist.component_notes.utils.timestampFormat
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -12,67 +13,103 @@ import junit.framework.TestCase.assertFalse
 import org.junit.Test
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
+import java.time.Clock
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class NotesUseCasesTest {
 
     private lateinit var notesRepository: NoteRepository
+    private lateinit var baseTestNote: Note
 
     @Before
     fun setUp() {
         notesRepository = mockk<NoteRepository>()
+        baseTestNote = Note(
+            id = 1L,
+            title = "Original Title",
+            status = NoteStatus.IN_PROGRESS,
+            tasksList = emptyList(),
+            lastUpdatedTimestamp = defaultTimestamp
+        )
+    }
+
+
+    @Test
+    fun `renameNoteUseCase - given valid new title - then updates note and returns true`() = runTest {
+        val clock = getClockForTest(updatedTimestamp)
+        val useCase = RenameNoteUseCase(notesRepository, clock)
+        val newTitle = "Successfully Updated Title"
+
+        val expectedNoteAfterUpdate = baseTestNote.copy(
+            title = newTitle,
+            lastUpdatedTimestamp = updatedTimestamp
+        )
+        coEvery { notesRepository.updateNote(expectedNoteAfterUpdate) } returns true
+
+        // Act
+        val result = useCase(baseTestNote, newTitle)
+
+        // Assert
+        assertTrue(result, "Expected use case to return true on successful update")
+        coVerify(exactly = 1) { notesRepository.updateNote(expectedNoteAfterUpdate) }
     }
 
     @Test
-    fun `renames note if the new title is correct`() = runTest {
-        val useCase = RenameNoteUseCase(notesRepository)
-        val newTitle = "New Title"
-        val expectedUpdatedNote = testNote.copy(title = newTitle)
-        coEvery { notesRepository.updateNote(expectedUpdatedNote) } returns true
+    fun `renameNoteUseCase - when repository fails to update - then returns false`() = runTest {
+        val clock = getClockForTest(updatedTimestamp)
+        val useCase = RenameNoteUseCase(notesRepository, clock)
+        val newTitleToAttempt = "Failed Update Title"
 
-        val result = useCase(testNote, newTitle)
+        val noteThatWouldBeSentToRepo = baseTestNote.copy(
+            title = newTitleToAttempt,
+            lastUpdatedTimestamp = updatedTimestamp
+        )
+        coEvery { notesRepository.updateNote(noteThatWouldBeSentToRepo) } returns false
 
-        assertTrue(result)
-        coVerify(exactly = 1) { notesRepository.updateNote(expectedUpdatedNote) }
+        val result = useCase(baseTestNote, newTitleToAttempt)
+
+        assertFalse("Expected use case to return false when repository update fails", result)
+        coVerify(exactly = 1) { notesRepository.updateNote(noteThatWouldBeSentToRepo) }
     }
 
     @Test
-    fun `RenameNoteUseCase returns false if repository method returns false`() = runTest {
-        val useCase = RenameNoteUseCase(notesRepository)
-        val expectedUpdatedNote = testNote.copy(title = "")
-        coEvery { notesRepository.updateNote(expectedUpdatedNote) } returns false
-
-        val result = useCase(testNote, "")
-
-        assertFalse(result)
-        coVerify(exactly = 1) { notesRepository.updateNote(expectedUpdatedNote) }
-    }
-
-    @Test
-    fun `updates note status if the new status is correct`() = runTest {
-        val useCase = UpdateNoteStatusUseCase(notesRepository)
+    fun `updateNoteStatusUseCase - given valid new status - then updates note and returns true`() = runTest {
+        val clock = getClockForTest(updatedTimestamp)
+        val useCase = UpdateNoteStatusUseCase(notesRepository, clock)
         val newStatus = NoteStatus.COMPLETE
-        val expectedUpdatedNote = testNote.copy(status = newStatus)
 
-        coEvery { notesRepository.updateNote(expectedUpdatedNote) } returns true
-        val result = useCase(testNote, newStatus)
+        val expectedNoteAfterUpdate = baseTestNote.copy(
+            status = newStatus,
+            lastUpdatedTimestamp = updatedTimestamp
+        )
+        coEvery { notesRepository.updateNote(expectedNoteAfterUpdate) } returns true
 
-        assertTrue(result)
-        coVerify(exactly = 1) { notesRepository.updateNote(expectedUpdatedNote) }
+        val result = useCase(baseTestNote, newStatus)
+
+        assertTrue(result, "Expected use case to return true on successful status update")
+        coVerify(exactly = 1) { notesRepository.updateNote(expectedNoteAfterUpdate) }
     }
 
     @Test
-    fun `UpdateNoteStatusUseCase return false if repository method returns false`() = runTest {
-        val useCase = UpdateNoteStatusUseCase(notesRepository)
-        val newStatus = NoteStatus.COMPLETE
-        val expectedUpdatedNote = testNote.copy(status = newStatus)
-        coEvery { notesRepository.updateNote(expectedUpdatedNote) } returns false
+    fun `updateNoteStatusUseCase - when repository fails to update - then returns false`() = runTest {
+        val clock = getClockForTest(updatedTimestamp)
+        val useCase = UpdateNoteStatusUseCase(notesRepository, clock)
+        val newStatusToAttempt = NoteStatus.COMPLETE
 
-        val result = useCase(testNote, newStatus)
+        val noteThatWouldBeSentToRepo = baseTestNote.copy(
+            status = newStatusToAttempt,
+            lastUpdatedTimestamp = updatedTimestamp
+        )
+        coEvery { notesRepository.updateNote(noteThatWouldBeSentToRepo) } returns false
 
-        assertFalse(result)
-        coVerify(exactly = 1) { notesRepository.updateNote(expectedUpdatedNote) }
+        val result = useCase(baseTestNote, newStatusToAttempt)
+
+        assertFalse("Expected use case to return false when repository status update fails", result)
+        coVerify(exactly = 1) { notesRepository.updateNote(noteThatWouldBeSentToRepo) }
     }
 
     @Test
@@ -185,11 +222,22 @@ class NotesUseCasesTest {
         coVerify(exactly = 1) { notesRepository.deleteNote(note2) }
     }
 
+    private fun getClockForTest(timestampString: String): Clock {
+        val formatter = DateTimeFormatter.ofPattern(timestampFormat)
+        val localDateTime = LocalDateTime.parse(timestampString, formatter)
+        val instant = localDateTime.toInstant(ZoneOffset.UTC)
+        return Clock.fixed(instant, ZoneOffset.UTC)
+    }
+    private val defaultTimestamp = "2023-01-01 10:00:00"
+    private val updatedTimestamp = "2023-01-01 12:30:00"
+
+
     private val testNote = Note(
         id = 1L,
         title = "Old Title",
         status = NoteStatus.IN_PROGRESS,
-        tasksList = emptyList()
+        tasksList = emptyList(),
+        lastUpdatedTimestamp = defaultTimestamp
     )
 
 }

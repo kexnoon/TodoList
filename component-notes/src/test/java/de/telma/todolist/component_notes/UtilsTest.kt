@@ -4,14 +4,20 @@ import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.model.NoteStatus
 import de.telma.todolist.component_notes.model.NoteTask
 import de.telma.todolist.component_notes.model.NoteTaskStatus
+import de.telma.todolist.component_notes.utils.getTimestamp
+import de.telma.todolist.component_notes.utils.toNote
+import de.telma.todolist.component_notes.utils.toNoteEntity
+import de.telma.todolist.component_notes.utils.toNoteTask
+import de.telma.todolist.component_notes.utils.toNoteTaskEntity
 import de.telma.todolist.storage.database.entity.NoteEntity
 import de.telma.todolist.storage.database.entity.NoteTaskEntity
 import de.telma.todolist.storage.database.entity.NoteWithTasks
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import java.time.LocalDateTime
 import kotlin.test.assertEquals
 
-class MappersTest {
+class UtilsTest {
 
     @Test
     fun `maps NotesWithTasks to Note`() = runTest {
@@ -61,6 +67,15 @@ class MappersTest {
 
         assertEquals(result, expectedNoteTask)
     }
+
+    @Test
+    fun `getTimestamp returns correct timestamp`() = runTest {
+        val currentDateTime = LocalDateTime.of(2022, 12, 13, 14, 15, 16)
+        val expectedTimestamp = "2022-12-13 14:15:16"
+
+        val result = getTimestamp(currentDateTime)
+        assertEquals(expectedTimestamp, result, "getTimestamp() returns incorrect timestamp")
+    }
 }
 
 private val sampleTaskEntity1 = NoteTaskEntity(
@@ -80,7 +95,8 @@ private val sampleTaskEntity2 = NoteTaskEntity(
 private val sampleNoteEntity = NoteEntity(
     id = 0L,
     title = "Note",
-    status = NoteStatus.IN_PROGRESS.statusValue
+    status = NoteStatus.IN_PROGRESS.statusValue,
+    lastUpdatedTimestamp = "2022-12-13 14:15:16"
 )
 
 private val sampleTask1 = NoteTask(
@@ -99,5 +115,6 @@ private val sampleNote = Note(
     id = 0L,
     title = "Note",
     status = NoteStatus.IN_PROGRESS,
-    tasksList = listOf(sampleTask1, sampleTask2)
+    tasksList = listOf(sampleTask1, sampleTask2),
+    lastUpdatedTimestamp = "2022-12-13 14:15:16"
 )

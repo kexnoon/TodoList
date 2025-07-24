@@ -2,7 +2,7 @@ package de.telma.todolist.component_notes.repository
 
 import de.telma.todolist.component_notes.model.NoteTask
 import de.telma.todolist.component_notes.model.NoteTaskStatus
-import de.telma.todolist.component_notes.toNoteTaskEntity
+import de.telma.todolist.component_notes.utils.toNoteTaskEntity
 import de.telma.todolist.storage.database.AppDatabase
 import de.telma.todolist.storage.database.entity.NoteTaskEntity
 import kotlinx.coroutines.Dispatchers

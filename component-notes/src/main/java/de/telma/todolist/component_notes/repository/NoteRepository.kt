@@ -17,7 +17,7 @@ interface NoteRepository {
     /**
      * Will return Note's ID so we could show it on the next screen
      */
-    suspend fun createNewNote(title: String): Long
+    suspend fun createNewNote(title: String, timestamp: String): Long
 
     suspend fun updateNote(note: Note): Boolean
 

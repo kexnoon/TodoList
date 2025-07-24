@@ -1,5 +1,6 @@
 [versions]
 agp = "8.10.1"
+desugar_jdk_libs = "2.1.5"
 kotlin = "2.1.21"
 ksp = "2.1.21-2.0.1"
 coreKtx = "1.16.0"
@@ -21,6 +22,7 @@ turbine = "1.2.1"
 [libraries]
 # build-logic dependencies
 android-tools-build-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+desugar-jdk= { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 
 # convention.core

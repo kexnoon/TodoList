@@ -6,9 +6,9 @@ import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.model.NoteStatus
 import de.telma.todolist.component_notes.model.NoteTask
 import de.telma.todolist.component_notes.model.NoteTaskStatus
-import de.telma.todolist.component_notes.toNote
-import de.telma.todolist.component_notes.toNoteEntity
-import de.telma.todolist.component_notes.toNoteTaskEntity
+import de.telma.todolist.component_notes.utils.toNote
+import de.telma.todolist.component_notes.utils.toNoteEntity
+import de.telma.todolist.component_notes.utils.toNoteTaskEntity
 import de.telma.todolist.storage.database.entity.NoteWithTasks
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -151,27 +151,40 @@ class NoteRepositoryTest: BaseRepositoryTest() {
     @Test
     fun createNewNote_successfully_creates_new_note() = runTest {
         val expectedTitle = "new note"
+        val creationTimestamp = updateTimestamp1
 
-        val newNoteID = repository.createNewNote(expectedTitle)
+        val newNoteID = repository.createNewNote(expectedTitle, creationTimestamp)
         assertTrue(newNoteID == 0L, "createNewNote returned a note with wrong ID! New Note's ID: $newNoteID")
 
         val newNote = database.noteDao().getNoteWithTasksById(newNoteID).first()
         assertNotNull(newNote, "Failed to retrieve a note created via createNewNote!")
 
-        val result = newNote.note.title
-        assertEquals(expectedTitle, result, "createNewNote: incorrectly passed title!. ")
+        val newNoteTitle = newNote.note.title
+        assertEquals(expectedTitle, newNoteTitle, "createNewNote: incorrectly passed title!.")
 
+        val newNoteTimestamp = newNote.note.lastUpdatedTimestamp
+        assertEquals(
+            creationTimestamp, newNoteTimestamp,
+            "createNewNote: can't retrieve creation timestamp!."
+        )
     }
 
     @Test
     fun updateNote_correctly_executes_when_note_passed() = runTest {
-        val note = testNote1
+        val note = testNote1.copy(lastUpdatedTimestamp = updateTimestamp1)
         database.noteDao().insertNote(note.toNoteEntity())
-        val updatedNote = note.copy(title = "updated_note")
+
+        val expectedTimestamp = updateTimestamp2
+        val updatedNote = note.copy(title = "updated_note", lastUpdatedTimestamp = expectedTimestamp)
 
         val result = repository.updateNote(updatedNote)
-
         assertTrue(result, "updateNote returned false or other response with correct note")
+
+        val updatedNoteFromDb = repository.getNoteById(note.id)
+        val actualTimestamp = updatedNoteFromDb.first()?.lastUpdatedTimestamp
+        assertEquals(expectedTimestamp, actualTimestamp,
+            "updateNote: can't retrieve updated timestamp!."
+        )
     }
 
     @Test
@@ -213,6 +226,9 @@ class NoteRepositoryTest: BaseRepositoryTest() {
         super.teardown()
     }
 
+    private val updateTimestamp1 = "2022-12-13 14:15:16"
+    private val updateTimestamp2 = "2023-11-12 13:14:15"
+
     private val testNote1 = Note(
         id = 0L,
         title = "testNote1",
@@ -228,7 +244,8 @@ class NoteRepositoryTest: BaseRepositoryTest() {
                 title = "task2",
                 status = NoteTaskStatus.COMPLETE
             )
-        )
+        ),
+        lastUpdatedTimestamp = "2022-12-13 14:15:16"
     )
 
     private val testNote2 = Note(
@@ -241,14 +258,16 @@ class NoteRepositoryTest: BaseRepositoryTest() {
                 title = "task3",
                 status = NoteTaskStatus.COMPLETE
             )
-        )
+        ),
+        lastUpdatedTimestamp = "2022-12-13 14:15:16"
     )
 
     private val noteWithNoTasks = Note(
         id = 1L,
         title = "testNote2",
         status = NoteStatus.COMPLETE,
-        tasksList = listOf()
+        tasksList = listOf(),
+        lastUpdatedTimestamp = "2022-12-13 14:15:16"
     )
 
 }

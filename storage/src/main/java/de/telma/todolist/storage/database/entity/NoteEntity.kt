@@ -11,5 +11,6 @@ data class NoteEntity(
 
     @ColumnInfo(defaultValue = "Untitled")
     val title: String = "Untitled",
-    val status: String
+    val status: String,
+    val lastUpdatedTimestamp: String
 )

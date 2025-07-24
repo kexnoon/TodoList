@@ -10,7 +10,7 @@ import de.telma.todolist.storage.database.entity.NoteTaskEntity
         NoteEntity::class,
         NoteTaskEntity::class
     ],
-    version = 7
+    version = 8
 )
 
 abstract class AppDatabase : RoomDatabase() {

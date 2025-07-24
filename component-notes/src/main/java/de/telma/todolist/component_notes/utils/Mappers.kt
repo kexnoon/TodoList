@@ -1,4 +1,4 @@
-package de.telma.todolist.component_notes
+package de.telma.todolist.component_notes.utils
 
 import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.model.NoteStatus
@@ -21,7 +21,8 @@ internal fun NoteWithTasks.toNote(): Note {
                 title = task.title,
                 status = task.status.toNoteTaskStatus()
             )
-        }
+        },
+        lastUpdatedTimestamp = this.note.lastUpdatedTimestamp
     )
 }
 
@@ -46,7 +47,8 @@ internal fun Note.toNoteEntity(): NoteEntity {
     return NoteEntity(
         id = this.id,
         title = this.title,
-        status = this.status.statusValue
+        status = this.status.statusValue,
+        lastUpdatedTimestamp = this.lastUpdatedTimestamp
     )
 }
 

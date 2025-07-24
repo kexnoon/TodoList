@@ -4,8 +4,8 @@ import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.model.NoteStatus
 import de.telma.todolist.component_notes.model.NoteTask
 import de.telma.todolist.component_notes.model.NoteTaskStatus
-import de.telma.todolist.component_notes.toNoteEntity
-import de.telma.todolist.component_notes.toNoteTaskEntity
+import de.telma.todolist.component_notes.utils.toNoteEntity
+import de.telma.todolist.component_notes.utils.toNoteTaskEntity
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -116,7 +116,8 @@ private val noteWithNoTasks = Note(
     id = 1L,
     title = "testNote1",
     status = NoteStatus.COMPLETE,
-    tasksList = listOf()
+    tasksList = listOf(),
+    lastUpdatedTimestamp = "2022-12-13 14:15:16"
 )
 
 private val noteWithTask = Note(
@@ -129,5 +130,6 @@ private val noteWithTask = Note(
             title = "task2",
             status = NoteTaskStatus.COMPLETE
         )
-    )
+    ),
+    lastUpdatedTimestamp = "2022-12-13 14:15:16"
 )
