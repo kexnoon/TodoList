@@ -71,7 +71,7 @@ class UtilsTest {
     @Test
     fun `getTimestamp returns correct timestamp`() = runTest {
         val currentDateTime = LocalDateTime.of(2022, 12, 13, 14, 15, 16)
-        val expectedTimestamp = "2022-12-13 14:15:16"
+        val expectedTimestamp = "2022-12-13T14:15:16Z"
 
         val result = getTimestamp(currentDateTime)
         assertEquals(expectedTimestamp, result, "getTimestamp() returns incorrect timestamp")

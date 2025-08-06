@@ -228,8 +228,8 @@ class NotesUseCasesTest {
         val instant = localDateTime.toInstant(ZoneOffset.UTC)
         return Clock.fixed(instant, ZoneOffset.UTC)
     }
-    private val defaultTimestamp = "2023-01-01 10:00:00"
-    private val updatedTimestamp = "2023-01-01 12:30:00"
+    private val defaultTimestamp = "2023-01-01T10:00:00Z"
+    private val updatedTimestamp = "2023-01-01T12:30:00Z"
 
 
     private val testNote = Note(
