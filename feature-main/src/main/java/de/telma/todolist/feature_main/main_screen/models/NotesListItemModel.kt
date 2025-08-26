@@ -1,4 +1,4 @@
-package de.telma.todolist.feature_main.main_screen.model
+package de.telma.todolist.feature_main.main_screen.models
 
 enum class NotesListItemState { IN_PROGRESS, COMPLETE }
 
@@ -7,5 +7,6 @@ data class NotesListItemModel(
     val title: String,
     val status: NotesListItemState,
     val lastUpdatedTimestamp: String,
-    val numberOfTasks: Int
+    val numberOfTasks: Int,
+    var isSelected: Boolean = false
 )

@@ -18,11 +18,12 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import de.telma.todolist.core_ui.composables.TextBodyLarge
 import de.telma.todolist.core_ui.composables.TextBodyMedium
 import de.telma.todolist.core_ui.composables.TextLabelMedium
-import de.telma.todolist.feature_main.main_screen.model.NotesListItemModel
-import de.telma.todolist.feature_main.main_screen.model.NotesListItemState
+import de.telma.todolist.feature_main.main_screen.models.NotesListItemModel
+import de.telma.todolist.feature_main.main_screen.models.NotesListItemState
 import de.telma.todolist.core_ui.getLastUpdatedText
 import de.telma.todolist.core_ui.theme.AppColors
 import de.telma.todolist.core_ui.theme.AppIcons
@@ -36,7 +37,7 @@ fun NotesListItem(
     onLongClick: (Long) -> Unit = {},
     onCheckedChange: (Long, Boolean) -> Unit = { _, _ -> }
 ) {
-    var isChecked by rememberSaveable { mutableStateOf(false) }
+    if (!isSelectionMode && model.isSelected) onCheckedChange(model.id, false)
 
     Surface(
         modifier = modifier
@@ -45,8 +46,7 @@ fun NotesListItem(
             .combinedClickable(
                 onClick = {
                     if (isSelectionMode) {
-                        isChecked = !isChecked
-                        onCheckedChange(model.id, isChecked)
+                        onCheckedChange(model.id, !model.isSelected)
                     } else {
                         onClick(model.id)
                     }
@@ -54,7 +54,7 @@ fun NotesListItem(
                 onLongClick = {
                     if (!isSelectionMode) {
                         onLongClick.invoke(model.id)
-                        isChecked = true
+                        onCheckedChange(model.id, true)
                     }
                 }
             )
@@ -64,10 +64,9 @@ fun NotesListItem(
             if (isSelectionMode) {
                 Checkbox(
                     modifier = Modifier.padding(end = 16.dp),
-                    checked = isChecked,
+                    checked = model.isSelected,
                     onCheckedChange = {
-                        isChecked = !isChecked
-                        onCheckedChange(model.id, isChecked)
+                        onCheckedChange(model.id, !model.isSelected)
                     }
                 )
             }
@@ -121,19 +120,29 @@ fun NotesListItem_Complete_Preview() {
 @Composable
 @Preview
 fun NotesListItem_SelectionMode_Preview() {
-    val model = NotesListItemModel(
-        id = 0L,
-        title = "Test Note",
-        status = NotesListItemState.COMPLETE,
-        numberOfTasks = 7,
-        lastUpdatedTimestamp = "2023-01-01T10:00:00"
-    )
+    var model by remember {
+        mutableStateOf(
+            NotesListItemModel(
+                id = 0L,
+                title = "Test Note",
+                status = NotesListItemState.COMPLETE,
+                numberOfTasks = 7,
+                lastUpdatedTimestamp = "2023-01-01T10:00:00"
+            )
+        )
+    }
+
 
     var isSelectionMode by rememberSaveable { mutableStateOf(false) }
 
     NotesListItem(
         model = model,
         isSelectionMode = isSelectionMode,
-        onLongClick = { if (!isSelectionMode) isSelectionMode = true }
+        onLongClick = { if (!isSelectionMode) isSelectionMode = true },
+        onCheckedChange = { _, isSelected ->
+            model = model.copy(
+                isSelected = isSelected
+            )
+        }
     )
 }
