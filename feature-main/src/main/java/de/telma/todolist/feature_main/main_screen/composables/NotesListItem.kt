@@ -93,7 +93,7 @@ fun NotesListItem(
 
 @Composable
 @Preview
-fun NotesListItem_InProgress_Preview() {
+private fun NotesListItem_InProgress_Preview() {
     val model = NotesListItemModel(
         id = 0L,
         title = "Test Note",
@@ -106,7 +106,7 @@ fun NotesListItem_InProgress_Preview() {
 
 @Composable
 @Preview
-fun NotesListItem_Complete_Preview() {
+private fun NotesListItem_Complete_Preview() {
     val model = NotesListItemModel(
         id = 0L,
         title = "Test Note",
@@ -119,7 +119,7 @@ fun NotesListItem_Complete_Preview() {
 
 @Composable
 @Preview
-fun NotesListItem_SelectionMode_Preview() {
+private fun NotesListItem_SelectionMode_Preview() {
     var model by remember {
         mutableStateOf(
             NotesListItemModel(

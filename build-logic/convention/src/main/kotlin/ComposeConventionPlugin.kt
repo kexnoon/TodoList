@@ -21,6 +21,7 @@ class ComposeConventionPlugin : Plugin<Project> {
                 add("implementation", libs.findLibrary("compose.material3").get())
                 add("implementation", libs.findLibrary("compose.navigation").get())
                 add("implementation", libs.findLibrary("kotlinx.serialization.json").get())
+                add("implementation", libs.findLibrary("compose.material.icons").get())
                 add("androidTestImplementation", platform(libs.findLibrary("compose.bom").get()))
                 add("androidTestImplementation", libs.findLibrary("compose.ui.test.junit4").get())
                 add("debugImplementation", libs.findLibrary("compose.ui.tooling").get())

@@ -48,7 +48,7 @@ fun NotesList(
 
 @Composable
 @Preview(showBackground = true)
-fun NotesList_ShowItems_Preview() {
+private fun NotesList_ShowItems_Preview() {
     TodoListTheme {
         val item = NotesListItemModel(
             id = 0L,

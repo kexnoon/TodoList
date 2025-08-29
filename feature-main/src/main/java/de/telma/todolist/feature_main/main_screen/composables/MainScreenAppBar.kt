@@ -71,7 +71,7 @@ fun MainScreenAppBar(
 
 @Composable
 @Preview(showBackground = true)
-fun MainScreenAppBar_Default_Preview() {
+private fun MainScreenAppBar_Default_Preview() {
     MainScreenAppBar(
         modifier = Modifier,
         isSelectionMode = false
@@ -80,7 +80,7 @@ fun MainScreenAppBar_Default_Preview() {
 
 @Composable
 @Preview(showBackground = true)
-fun MainScreenAppBar_SelectionMode_Preview() {
+private fun MainScreenAppBar_SelectionMode_Preview() {
     MainScreenAppBar(
         modifier = Modifier,
         isSelectionMode = true,
@@ -92,7 +92,7 @@ fun MainScreenAppBar_SelectionMode_Preview() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview(showBackground = true)
-fun MainScreenAppBar_Playground_Preview() {
+private fun MainScreenAppBar_Playground_Preview() {
     var selectionMode by rememberSaveable { mutableStateOf(true) }
     var showAlertDialog by rememberSaveable { mutableStateOf(false) }
 
