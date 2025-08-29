@@ -1,15 +1,16 @@
 package de.telma.todolist.core_ui.composables
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -20,12 +21,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.telma.todolist.core_ui.theme.AppIcons
 import de.telma.todolist.core_ui.theme.TodoListTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.Alignment
 
 @Composable
 fun BasicDialog(
@@ -49,14 +50,15 @@ fun BasicDialog(
             TextButton(onClick = { onDismiss() }) {
                 Text(if (dismissText.isBlank()) "Dismiss" else dismissText)
             }
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.surface
     )
 }
 
 @Composable
 fun InputDialog(
     title: String,
-    placeholder: String,
+    inputLabel: String,
     confirmText: String,
     dismissText: String = "",
     onConfirm: (String) -> Unit = {},
@@ -64,19 +66,24 @@ fun InputDialog(
     validation: (String) -> InputError? = { null }
 ) {
     var input by remember { mutableStateOf("") }
-    val error: InputError? by remember { derivedStateOf { validation.invoke(input) } }
+    val error: InputError? by remember {
+        derivedStateOf {
+            if (input.isNotBlank())
+                validation.invoke(input)
+            else
+                null
+        }
+    }
 
     AlertDialog(
         title = { Text(text = title) },
         text = {
             Surface(modifier = Modifier.wrapContentSize()) {
                 OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(color = Color.Transparent),
+                    modifier = Modifier.fillMaxWidth(),
                     value = input,
                     onValueChange = { input = it },
-                    label = { Text(text = placeholder) },
+                    label = { Text(text = inputLabel) },
                     singleLine = true,
                     isError = error != null,
                     trailingIcon = {
@@ -97,7 +104,10 @@ fun InputDialog(
         },
         onDismissRequest = { onDismiss() },
         confirmButton = {
-            TextButton(onClick = { onConfirm(input) }) {
+            TextButton(
+                enabled = (error == null && input.isNotBlank()),
+                onClick = { onConfirm(input) }
+            ) {
                 Text(text = confirmText)
             }
         },
@@ -105,10 +115,10 @@ fun InputDialog(
             TextButton(onClick = { onDismiss() }) {
                 Text(if (dismissText.isBlank()) "Dismiss" else dismissText)
             }
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.surface
     )
 }
-
 
 @Composable
 @Preview(showBackground = true)
@@ -131,12 +141,13 @@ private fun InputDialog_Preview() {
         Surface(modifier = Modifier.wrapContentSize()) {
             InputDialog(
                 title = "Title",
-                placeholder = "Placeholder",
+                inputLabel = "Placeholder",
                 confirmText = "Confirm"
             )
         }
     }
 }
+
 
 @Composable
 @Preview(showBackground = true)
@@ -148,8 +159,11 @@ private fun DialogsPlayground_Preview() {
             var showInputDialog by remember { mutableStateOf(false) }
 
             Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(onClick = { showBasicDialog = true }) {
                     Text("Show Basic Dialog")
@@ -173,15 +187,14 @@ private fun DialogsPlayground_Preview() {
             if (showInputDialog) {
                 InputDialog(
                     title = "Input Dialog",
-                    placeholder = "Enter input",
+                    inputLabel = "Enter input",
                     confirmText = "Confirm",
                     dismissText = "Cancel",
                     onConfirm = { showInputDialog = false },
                     onDismiss = { showInputDialog = false },
                     validation = { input ->
                         when {
-                            input.isBlank() -> InputError("Input is blank")
-                            input.length < 3 -> InputError("Input is too short")
+                            input.length < 10 -> InputError("Input is too short")
                             else -> null
                         }
                     }
