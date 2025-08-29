@@ -27,6 +27,8 @@ import de.telma.todolist.core_ui.theme.AppIcons
 import de.telma.todolist.core_ui.theme.TodoListTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.stringResource
+import de.telma.todolist.core_ui.R
 
 @Composable
 fun BasicDialog(
@@ -48,7 +50,12 @@ fun BasicDialog(
         },
         dismissButton = {
             TextButton(onClick = { onDismiss() }) {
-                Text(if (dismissText.isBlank()) "Dismiss" else dismissText)
+                Text(
+                    if (dismissText.isBlank())
+                        stringResource(R.string.basic_dialog_dismiss_default)
+                    else
+                        dismissText
+                )
             }
         },
         containerColor = MaterialTheme.colorScheme.surface
@@ -113,7 +120,12 @@ fun InputDialog(
         },
         dismissButton = {
             TextButton(onClick = { onDismiss() }) {
-                Text(if (dismissText.isBlank()) "Dismiss" else dismissText)
+                Text(
+                    if (dismissText.isBlank())
+                        stringResource(R.string.input_dialog_dismiss_default)
+                    else
+                        dismissText
+                )
             }
         },
         containerColor = MaterialTheme.colorScheme.surface

@@ -8,4 +8,9 @@
     <string name="days_ago">%1$d days ago</string>
     <string name="date_format_long">dd MMMM yyyy</string>
 
+    <!-- BasicDialog -->
+    <string name="basic_dialog_dismiss_default">Dismiss</string>
+
+    <!-- InputDialog -->
+    <string name="input_dialog_dismiss_default">Dismiss</string>
 </resources>
