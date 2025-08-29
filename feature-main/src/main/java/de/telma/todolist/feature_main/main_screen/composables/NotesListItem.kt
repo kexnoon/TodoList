@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.res.stringResource
 import de.telma.todolist.core_ui.composables.TextBodyLarge
 import de.telma.todolist.core_ui.composables.TextBodyMedium
 import de.telma.todolist.core_ui.composables.TextLabelMedium
@@ -27,6 +28,7 @@ import de.telma.todolist.feature_main.main_screen.models.NotesListItemState
 import de.telma.todolist.core_ui.getLastUpdatedText
 import de.telma.todolist.core_ui.theme.AppColors
 import de.telma.todolist.core_ui.theme.AppIcons
+import de.telma.todolist.feature_main.R
 
 @Composable
 fun NotesListItem(
@@ -77,12 +79,12 @@ fun NotesListItem(
                 if (model.status == NotesListItemState.IN_PROGRESS)
                     TextBodyMedium(
                         color = AppColors.statusInProgress,
-                        text = "In Progress: ${model.numberOfTasks} Tasks"
+                        text = stringResource(R.string.note_list_item_status_in_progress, model.numberOfTasks)
                     )
                 else
                     TextBodyMedium(
                         color = AppColors.statusComplete,
-                        text = "Completed"
+                        text = stringResource(R.string.note_list_item_status_completed)
                     )
             }
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="welcome_messages">Hello, %1$s! You have %2$d new messages.</string>
+
+    <!-- MainScreenAppBar -->
+    <string name="main_screen_app_bar_title_default">All Notes</string>
+    <string name="main_screen_app_bar_title_selection_mode">Selected: %1$d</string>
+    <string name="main_screen_app_bar_action_delete">Delete</string>
+    <string name="main_screen_app_bar_action_clear_selection">Clear Selection</string>
+
+    <!-- NoteListItem -->
+    <string name="note_list_item_status_in_progress">In Progress: %1$d Tasks</string>
+    <string name="note_list_item_status_completed">Completed</string>
+
+</resources>

@@ -25,8 +25,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.telma.todolist.core_ui.theme.AppIcons
+import de.telma.todolist.feature_main.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,7 +43,11 @@ fun MainScreenAppBar(
     Box(modifier = modifier) {
         TopAppBar(
             title = {
-                var title = if (!isSelectionMode) "All Notes" else "Selected: $selectionCount"
+                var title = if (isSelectionMode) {
+                    stringResource(R.string.main_screen_app_bar_title_selection_mode, selectionCount)
+                } else {
+                    stringResource(R.string.main_screen_app_bar_title_default)
+                }
                 Text(title)
             },
             navigationIcon = {
@@ -49,7 +55,7 @@ fun MainScreenAppBar(
                     IconButton(onClick = onClearSelectionClick) {
                         Icon(
                             imageVector = AppIcons.clear,
-                            contentDescription = "Clear Selection"
+                            contentDescription = stringResource(R.string.main_screen_app_bar_action_clear_selection)
                         )
                     }
                 }
@@ -59,7 +65,7 @@ fun MainScreenAppBar(
                     IconButton(onClick = onDeleteClick) {
                         Icon(
                             imageVector = AppIcons.delete,
-                            contentDescription = "Delete"
+                            contentDescription = stringResource(R.string.main_screen_app_bar_action_delete)
                         )
                     }
                 }
