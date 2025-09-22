@@ -43,7 +43,7 @@ internal fun DummyScreenThree(
                     onErrorClick = { viewModel.onShowErrorPressed() },
                     onPopBackButtonClick = { viewModel.onPopBackToMainScreen() }
                 )
-                is UiState.Error<*> -> {
+                is UiState.Error -> {
                     val throwable = (uiState as UiState.Error).throwable
                     StateError(
                         throwable = throwable,

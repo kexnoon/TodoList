@@ -44,7 +44,9 @@ internal class NoteRepositoryImpl(private val database: AppDatabase): NoteReposi
             lastUpdatedTimestamp = timestamp
         )
 
-        return@withContext database.noteDao().insertNote(newNote)
+        val id = database.noteDao().insertNote(newNote)
+
+        return@withContext id
     }
 
     override suspend fun updateNote(note: Note): Boolean = withContext(Dispatchers.IO) {

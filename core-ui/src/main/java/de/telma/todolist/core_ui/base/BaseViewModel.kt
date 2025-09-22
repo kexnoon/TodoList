@@ -1,13 +1,14 @@
 package de.telma.todolist.core_ui.base
 
 import androidx.lifecycle.ViewModel
+import de.telma.todolist.core_ui.state.BaseUiEvents
 import de.telma.todolist.core_ui.state.EmptyUiEvents
 import de.telma.todolist.core_ui.state.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-abstract class BaseViewModel<T, R: EmptyUiEvents?> : ViewModel() {
+abstract class BaseViewModel<T, R: BaseUiEvents?> : ViewModel() {
 
     val uiState: StateFlow<UiState<T>>
         get() = _uiState.asStateFlow()

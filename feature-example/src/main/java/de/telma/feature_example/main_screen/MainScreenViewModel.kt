@@ -20,15 +20,15 @@ internal class MainScreenViewModel(
     private val coordinator: NavigationCoordinator,
     private val repository: NoteRepository
 ): BaseViewModel<List<Note>, EmptyUiEvents?>() {
-    override var _uiState = MutableStateFlow<UiState<List<Note>>>(UiState.Result(emptyList()))
+    override var _uiState = MutableStateFlow<UiState<List<Note>>>(UiState.Loading())
     override var _uiEvents = MutableStateFlow<EmptyUiEvents?>(null)
 
     init {
         viewModelScope.launch(Dispatchers.Main) {
-            showLoading()
-            repository.getAllNotes().collectLatest {
+            showResult(emptyList())
+            /* repository.getAllNotes().collectLatest {
                 showResult(it)
-            }
+            }*/
         }
     }
 

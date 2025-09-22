@@ -226,8 +226,8 @@ class NoteRepositoryTest: BaseRepositoryTest() {
         super.teardown()
     }
 
-    private val updateTimestamp1 = "2022-12-13 14:15:16"
-    private val updateTimestamp2 = "2023-11-12 13:14:15"
+    private val updateTimestamp1 = "2022-12-13T14:15:16Z"
+    private val updateTimestamp2 = "2023-11-12T13:14:15Z"
 
     private val testNote1 = Note(
         id = 0L,
@@ -245,7 +245,7 @@ class NoteRepositoryTest: BaseRepositoryTest() {
                 status = NoteTaskStatus.COMPLETE
             )
         ),
-        lastUpdatedTimestamp = "2022-12-13 14:15:16"
+        lastUpdatedTimestamp = "2022-12-13T14:15:16Z"
     )
 
     private val testNote2 = Note(
@@ -259,7 +259,7 @@ class NoteRepositoryTest: BaseRepositoryTest() {
                 status = NoteTaskStatus.COMPLETE
             )
         ),
-        lastUpdatedTimestamp = "2022-12-13 14:15:16"
+        lastUpdatedTimestamp = "2022-12-13T14:15:16Z"
     )
 
     private val noteWithNoTasks = Note(
@@ -267,7 +267,7 @@ class NoteRepositoryTest: BaseRepositoryTest() {
         title = "testNote2",
         status = NoteStatus.COMPLETE,
         tasksList = listOf(),
-        lastUpdatedTimestamp = "2022-12-13 14:15:16"
+        lastUpdatedTimestamp = "2022-12-13T14:15:16Z"
     )
 
 }

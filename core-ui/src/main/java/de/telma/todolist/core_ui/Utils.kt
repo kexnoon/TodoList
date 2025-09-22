@@ -4,13 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import java.time.Duration
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.ranges.contains
 
 @Composable
 fun getLastUpdatedText(timestamp: String): String {
     val currentTime = LocalDateTime.now()
-    val lastUpdatedTime = LocalDateTime.parse(timestamp)
+    val lastUpdatedTime = ZonedDateTime.parse(timestamp).toLocalDateTime()
     val difference = Duration.between(lastUpdatedTime, currentTime)
 
     when(difference.toMinutes()) {

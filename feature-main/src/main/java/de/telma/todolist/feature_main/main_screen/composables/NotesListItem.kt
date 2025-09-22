@@ -101,7 +101,7 @@ private fun NotesListItem_InProgress_Preview() {
         title = "Test Note",
         status = NotesListItemState.IN_PROGRESS,
         numberOfTasks = 7,
-        lastUpdatedTimestamp = "2023-01-01T10:00:00"
+        lastUpdatedTimestamp = "2023-01-01T10:00:00Z"
     )
     NotesListItem(model = model, isSelectionMode = false)
 }
@@ -114,7 +114,7 @@ private fun NotesListItem_Complete_Preview() {
         title = "Test Note",
         status = NotesListItemState.COMPLETE,
         numberOfTasks = 7,
-        lastUpdatedTimestamp = "2023-01-01T10:00:00"
+        lastUpdatedTimestamp = "2023-01-01T10:00:00Z"
     )
     NotesListItem(model = model, isSelectionMode = false)
 }
@@ -129,7 +129,7 @@ private fun NotesListItem_SelectionMode_Preview() {
                 title = "Test Note",
                 status = NotesListItemState.COMPLETE,
                 numberOfTasks = 7,
-                lastUpdatedTimestamp = "2023-01-01T10:00:00"
+                lastUpdatedTimestamp = "2023-01-01T10:00:00Z"
             )
         )
     }

@@ -51,10 +51,7 @@ fun BasicDialog(
         dismissButton = {
             TextButton(onClick = { onDismiss() }) {
                 Text(
-                    if (dismissText.isBlank())
-                        stringResource(R.string.basic_dialog_dismiss_default)
-                    else
-                        dismissText
+                    dismissText.ifBlank { stringResource(R.string.basic_dialog_dismiss_default) }
                 )
             }
         },
@@ -121,10 +118,7 @@ fun InputDialog(
         dismissButton = {
             TextButton(onClick = { onDismiss() }) {
                 Text(
-                    if (dismissText.isBlank())
-                        stringResource(R.string.input_dialog_dismiss_default)
-                    else
-                        dismissText
+                    dismissText.ifBlank { stringResource(R.string.input_dialog_dismiss_default) }
                 )
             }
         },
@@ -159,7 +153,6 @@ private fun InputDialog_Preview() {
         }
     }
 }
-
 
 @Composable
 @Preview(showBackground = true)

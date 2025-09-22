@@ -5,6 +5,7 @@ import androidx.navigation.compose.composable
 import de.telma.todolist.core_ui.navigation.Destination
 import de.telma.todolist.feature_main.main_screen.MainScreen
 import kotlinx.serialization.Serializable
+import org.koin.androidx.compose.koinViewModel
 
 fun NavGraphBuilder.featureMain() {
     mainScreen()
@@ -12,7 +13,7 @@ fun NavGraphBuilder.featureMain() {
 
 internal fun NavGraphBuilder.mainScreen() {
     composable<MainDestination.MainScreen> {
-        MainScreen()
+        MainScreen(viewModel = koinViewModel())
     }
 }
 

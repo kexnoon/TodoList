@@ -12,6 +12,7 @@ val storageModule = module {
                 klass = AppDatabase::class.java,
                 name = AppDatabase.DATABASE_NAME
             )
+            .fallbackToDestructiveMigration(true)
             .createFromAsset("${AppDatabase.DATABASE_NAME}.db")
             .build()
     }

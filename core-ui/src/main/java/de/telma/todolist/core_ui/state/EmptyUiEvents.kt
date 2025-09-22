@@ -1,3 +1,4 @@
 package de.telma.todolist.core_ui.state
 
-interface EmptyUiEvents
+interface BaseUiEvents
+interface EmptyUiEvents: BaseUiEvents

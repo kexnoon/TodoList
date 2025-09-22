@@ -39,7 +39,7 @@ internal fun DummyScreenOne(
                 is UiState.Result<*> -> StateResult(
                     onButtonClick = { viewModel.onButtonClick() }
                 )
-                is UiState.Error<*> -> {
+                is UiState.Error -> {
                     val throwable = (uiState as UiState.Error).throwable
                     StateError(throwable)
                 }
