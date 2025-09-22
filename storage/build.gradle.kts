@@ -17,7 +17,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "DB_NAME", "\"todo_list_dev\"")
+            buildConfigField("String", "DB_NAME", "\"todo_list_dev.db\"")
         }
         release {
             isMinifyEnabled = false
@@ -25,12 +25,13 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "DB_NAME", "\"todo_list\"")
+            buildConfigField("String", "DB_NAME", "\"todo_list.db\"")
         }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "11"
@@ -51,4 +52,6 @@ android {
 
 }
 
-dependencies { }
+dependencies {
+    coreLibraryDesugaring(libs.desugar.jdk)
+}

@@ -41,7 +41,7 @@ internal fun DummyScreenTwo(
                     message = message,
                     onButtonClick = { viewModel.onButtonClick() }
                 )
-                is UiState.Error<*> -> {
+                is UiState.Error -> {
                     val throwable = (uiState as UiState.Error).throwable
                     StateError(throwable)
                 }

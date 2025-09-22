@@ -8,7 +8,9 @@ import de.telma.todolist.storage.database.entity.NoteEntity
 import de.telma.todolist.storage.database.entity.NoteTaskEntity
 import de.telma.todolist.storage.database.entity.NoteWithTasks
 
-internal fun List<NoteWithTasks>.toNotesList(): List<Note> = this.map { it.toNote() }
+internal fun List<NoteWithTasks>.toNotesList(): List<Note> = this.map {
+    it.toNote()
+}
 
 internal fun NoteWithTasks.toNote(): Note {
     return Note(
