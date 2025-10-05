@@ -12,4 +12,15 @@
     <string name="note_list_item_status_in_progress">In Progress: %1$d Tasks</string>
     <string name="note_list_item_status_completed">Completed</string>
 
+    <!-- Main Screen -->
+    <string name="main_screen_error_title">Error!</string>
+    <string name="main_screen_error_retry">Retry</string>"
+    <string name="main_screen_create_new_note_dialog_title">Create New Note</string>"
+    <string name="main_screen_create_new_note_dialog_input_label">Enter title</string>"
+    <string name="main_screen_create_new_note_dialog_confirm_text">Create</string>"
+    <string name="main_screen_create_new_note_dialog_dismiss_text">Cancel</string>"
+    <string name="main_screen_delete_dialog_title">Delete Notes</string>"
+    <string name="main_screen_delete_dialog_text">Are you sure you want to delete selected note(s)?</string>"
+    <string name="main_screen_delete_dialog_confirm_text">Delete</string>"
+    <string name="main_screen_delete_dialog_dismiss_text">Cancel</string>"
 </resources>

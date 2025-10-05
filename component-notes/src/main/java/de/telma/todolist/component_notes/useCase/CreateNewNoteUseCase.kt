@@ -9,9 +9,9 @@ class CreateNewNoteUseCase(
     private val noteRepository: NoteRepository,
     private val clock: Clock
 ) {
-    suspend operator fun invoke(title: String): Boolean {
+    suspend operator fun invoke(title: String): Long {
         return noteRepository.createNewNote(
             title, getTimestamp(LocalDateTime.now(clock))
-        ) != 0L
+        )
     }
 }

@@ -117,7 +117,7 @@ private val noteWithNoTasks = Note(
     title = "testNote1",
     status = NoteStatus.COMPLETE,
     tasksList = listOf(),
-    lastUpdatedTimestamp = "2022-12-13 14:15:16"
+    lastUpdatedTimestamp = "2022-12-13T14:15:16Z"
 )
 
 private val noteWithTask = Note(
@@ -131,5 +131,5 @@ private val noteWithTask = Note(
             status = NoteTaskStatus.COMPLETE
         )
     ),
-    lastUpdatedTimestamp = "2022-12-13 14:15:16"
+    lastUpdatedTimestamp = "2022-12-13T14:15:16Z"
 )
