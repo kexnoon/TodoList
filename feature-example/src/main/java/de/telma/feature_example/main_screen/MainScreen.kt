@@ -43,7 +43,7 @@ internal fun MainScreen(
                     onButtonTwoClick = { viewModel.onButtonTwoClick() },
                     onButtonThreeClick = { viewModel.onButtonThreeClick() }
                 )
-                is UiState.Error<*> -> {
+                is UiState.Error -> {
                     val throwable = (uiState as UiState.Error).throwable
                     StateError(throwable)
                 }
