@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.telma.todolist.core_ui.composables.BasicDialog
@@ -31,6 +32,7 @@ import de.telma.todolist.core_ui.composables.TextLabelMedium
 import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.core_ui.theme.AppIcons
 import de.telma.todolist.core_ui.theme.TodoListTheme
+import de.telma.todolist.feature_main.R
 import de.telma.todolist.feature_main.main_screen.composables.MainScreenAppBar
 import de.telma.todolist.feature_main.main_screen.composables.NotesList
 
@@ -62,8 +64,7 @@ internal fun MainScreen(
 
             is UiState.Error -> StateError(
                 modifier = Modifier.fillMaxSize(),
-                errorMessage = (uiState as UiState.Error).throwable.message
-                    ?: "Something went wrong!",
+                errorMessage = (uiState as UiState.Error).throwable.message ?: "Something went wrong!",
                 onRetryPressed = { viewModel.retryOnError() }
             )
         }
@@ -78,10 +79,10 @@ internal fun MainScreen(
 
         if (showDeleteDialog) {
             BasicDialog(
-                title = "Delete Notes",
-                text = "Are you sure you want to delete selected note(s)?",
-                confirmText = "Delete",
-                dismissText = "Cancel",
+                title = stringResource(R.string.main_screen_delete_dialog_title),
+                text = stringResource(R.string.main_screen_delete_dialog_text),
+                confirmText = stringResource(R.string.main_screen_delete_dialog_confirm_text),
+                dismissText = stringResource(R.string.main_screen_delete_dialog_dismiss_text),
                 onConfirm = { viewModel.deleteSelectedNotes() },
                 onDismiss = { viewModel.dismissDeleteDialog() }
             )
@@ -89,10 +90,10 @@ internal fun MainScreen(
 
         if (showNewNoteDialog) {
             InputDialog(
-                title = "Create New Note",
-                inputLabel = "Enter title",
-                confirmText = "Create",
-                dismissText = "Cancel",
+                title = stringResource(R.string.main_screen_create_new_note_dialog_title),
+                inputLabel = stringResource(R.string.main_screen_create_new_note_dialog_input_label),
+                confirmText = stringResource(R.string.main_screen_create_new_note_dialog_confirm_text),
+                dismissText = stringResource(R.string.main_screen_create_new_note_dialog_dismiss_text),
                 onConfirm = { viewModel.createNewNote(it) },
                 onDismiss = { viewModel.dismissNewNoteDialog() }
             )
@@ -171,10 +172,10 @@ private fun StateError(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TextLabelMedium(text = "Error!")
+            TextLabelMedium(text = stringResource(R.string.main_screen_error_title))
             TextBodyMedium(text = errorMessage)
             Button(onClick = onRetryPressed) {
-                TextBodyMedium(text = "Retry")
+                TextBodyMedium(text = stringResource(R.string.main_screen_error_retry))
             }
         }
     }
