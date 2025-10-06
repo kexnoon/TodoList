@@ -23,4 +23,9 @@
     <string name="main_screen_delete_dialog_text">Are you sure you want to delete selected note(s)?</string>"
     <string name="main_screen_delete_dialog_confirm_text">Delete</string>"
     <string name="main_screen_delete_dialog_dismiss_text">Cancel</string>"
+
+    <!-- NoteScreenAppBar -->
+    <string name="note_screen_app_bar_status_in_progress">In Progress</string>
+    <string name="note_screen_app_bar_status_complete">Complete</string>
+
 </resources>
