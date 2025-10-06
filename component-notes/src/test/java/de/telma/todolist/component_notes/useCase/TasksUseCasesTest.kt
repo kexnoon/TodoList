@@ -4,9 +4,7 @@ import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.model.NoteStatus
 import de.telma.todolist.component_notes.model.NoteTask
 import de.telma.todolist.component_notes.model.NoteTaskStatus
-import de.telma.todolist.component_notes.repository.NoteRepository
 import de.telma.todolist.component_notes.repository.NoteRepositoryImpl
-import de.telma.todolist.component_notes.repository.TaskRepository
 import de.telma.todolist.component_notes.repository.TaskRepositoryImpl
 import de.telma.todolist.component_notes.utils.timestampFormat
 import io.mockk.coEvery
