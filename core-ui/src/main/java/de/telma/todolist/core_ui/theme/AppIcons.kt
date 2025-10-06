@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
 
 object AppIcons {
     val rightArrow = Icons.AutoMirrored.Outlined.KeyboardArrowRight
@@ -13,4 +14,5 @@ object AppIcons {
     val delete = Icons.Outlined.Delete
     val cancel = Icons.Outlined.Cancel
     val add = Icons.Outlined.Add
+    val edit = Icons.Outlined.Edit
 }

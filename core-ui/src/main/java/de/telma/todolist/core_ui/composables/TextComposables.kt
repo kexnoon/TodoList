@@ -6,18 +6,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun TextLabelMedium(
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
+    textDecoration: TextDecoration = TextDecoration.None,
     text: String
 ) {
     Text(
         modifier = modifier,
         style = MaterialTheme.typography.labelMedium,
         color = color,
+        textDecoration = textDecoration,
         text = text
     )
 }
@@ -26,12 +29,14 @@ fun TextLabelMedium(
 fun TextBodyLarge(
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
+    textDecoration: TextDecoration = TextDecoration.None,
     text: String
 ) {
     Text(
         modifier = modifier,
         style = MaterialTheme.typography.bodyLarge,
         color = color,
+        textDecoration = textDecoration,
         text = text
     )
 }
@@ -40,12 +45,14 @@ fun TextBodyLarge(
 fun TextBodyMedium(
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
+    textDecoration: TextDecoration = TextDecoration.None,
     text: String
 ) {
     Text(
         modifier = modifier,
         style = MaterialTheme.typography.bodyMedium,
         color = color,
+        textDecoration = textDecoration,
         text = text
     )
 }

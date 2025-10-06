@@ -17,4 +17,7 @@ object LightColorSchemeColors {
 object AppColors {
     val statusInProgress = Color(0xFF658407)
     val statusComplete = Color(0xFF28CE2D)
+
+    val itemTitleCompleted = Color(0xFFB1B1B1)
+    val itemTitleInProgress = Color(0xFF000000)
 }
