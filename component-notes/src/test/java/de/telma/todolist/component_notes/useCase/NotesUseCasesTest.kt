@@ -17,6 +17,7 @@ import java.time.Clock
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import kotlin.test.DefaultAsserter.assertTrue
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -220,6 +221,20 @@ class NotesUseCasesTest {
         )
         coVerify(exactly = 1) { notesRepository.deleteNote(note1) }
         coVerify(exactly = 1) { notesRepository.deleteNote(note2) }
+    }
+
+    @Test
+    fun `DeleteNoteUseCase returns true if note is deleted`() = runTest {
+        val useCase = DeleteNoteUseCase(notesRepository)
+        val noteToDelete = testNote.copy(id = 1L)
+        coEvery { notesRepository.deleteNote(noteToDelete) } returns true
+        val result = useCase(noteToDelete)
+
+        assertTrue(
+            "DeleteNoteUseCase should return true if all notes are deleted, but returned false",
+            result
+        )
+        coVerify(exactly = 1) { notesRepository.deleteNote(noteToDelete) }
     }
 
     private fun getClockForTest(timestampString: String): Clock {

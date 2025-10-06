@@ -172,6 +172,19 @@ class TasksUseCasesTest {
         coVerify(exactly = 1) { taskRepository.updateTask(testNoteId, expectedTask) }
     }
 
+    @Test
+    fun `DeleteTaskUseCase returns true if task is deleted`() = runTest {
+        val useCase = DeleteTaskUseCase(taskRepository)
+        val taskToDelete = testTask.copy(id = 1L)
+        coEvery { taskRepository.deleteTask(taskToDelete) } returns true
+
+        val result = useCase(taskToDelete)
+
+        assertTrue(result, "DeleteTaskUseCase should return true if task is deleted, but returned false")
+        coVerify(exactly = 1) { taskRepository.deleteTask(taskToDelete) }
+    }
+
+
     private fun getClockForTest(timestampString: String): Clock {
         val formatter = DateTimeFormatter.ofPattern(timestampFormat)
         val localDateTime = LocalDateTime.parse(timestampString, formatter)
