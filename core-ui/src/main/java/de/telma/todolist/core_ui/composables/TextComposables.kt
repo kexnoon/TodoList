@@ -10,6 +10,38 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
+fun TextHeadlineMedium(
+    modifier: Modifier = Modifier,
+    color: Color = Color.Unspecified,
+    textDecoration: TextDecoration = TextDecoration.None,
+    text: String
+) {
+    Text(
+        modifier = modifier,
+        style = MaterialTheme.typography.headlineMedium,
+        color = color,
+        textDecoration = textDecoration,
+        text = text
+    )
+}
+
+@Composable
+fun TextLabelLarge(
+    modifier: Modifier = Modifier,
+    color: Color = Color.Unspecified,
+    textDecoration: TextDecoration = TextDecoration.None,
+    text: String
+){
+    Text(
+        modifier = modifier,
+        style = MaterialTheme.typography.labelLarge,
+        color = color,
+        textDecoration = textDecoration,
+        text = text
+    )
+}
+
+@Composable
 fun TextLabelMedium(
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
@@ -61,8 +93,10 @@ fun TextBodyMedium(
 @Preview(showBackground = true)
 private fun TextComposables_Preview() {
     Column {
+        TextHeadlineMedium(text ="TextHeadlineMediumEmphasized")
         TextBodyLarge(text = "TextBodyLarge")
         TextBodyMedium(text = "TextBodyMedium")
+        TextLabelLarge(text = "TextLabelLarge")
         TextLabelMedium(text = "TextLabelMedium")
     }
 }
