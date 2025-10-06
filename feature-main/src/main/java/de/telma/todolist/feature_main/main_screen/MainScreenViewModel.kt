@@ -6,9 +6,11 @@ import de.telma.todolist.component_notes.repository.NoteRepository
 import de.telma.todolist.component_notes.useCase.CreateNewNoteUseCase
 import de.telma.todolist.component_notes.useCase.DeleteMultipleNotesUseCase
 import de.telma.todolist.core_ui.base.BaseViewModel
+import de.telma.todolist.core_ui.navigation.NavEvent
 import de.telma.todolist.core_ui.navigation.NavigationCoordinator
 import de.telma.todolist.core_ui.state.BaseUiEvents
 import de.telma.todolist.core_ui.state.UiState
+import de.telma.todolist.feature_main.MainDestination
 import de.telma.todolist.feature_main.main_screen.models.NotesListItemModel
 import de.telma.todolist.feature_main.main_screen.models.toNotesListItemModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -90,12 +92,18 @@ class MainScreenViewModel(
         viewModelScope.launch {
             dismissNewNoteDialog()
             val newNoteId = createNewNoteUseCase(title)
-            //todo: переход на Note Screen
+            coordinator.execute(
+                NavEvent.ToComposeScreen(MainDestination.NoteScreen(newNoteId))
+            )
         }
     }
 
     fun toDetailsScreen(noteId: Long) {
-        //todo: переход на Note Screen
+        viewModelScope.launch {
+            coordinator.execute(
+                NavEvent.ToComposeScreen(MainDestination.NoteScreen(noteId))
+            )
+        }
     }
 
     fun onNewNoteClicked() {
