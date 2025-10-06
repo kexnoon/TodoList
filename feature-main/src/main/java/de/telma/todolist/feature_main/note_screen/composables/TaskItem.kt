@@ -23,49 +23,49 @@ import de.telma.todolist.core_ui.composables.TextBodyLarge
 import de.telma.todolist.core_ui.theme.AppColors
 import de.telma.todolist.core_ui.theme.AppIcons
 import de.telma.todolist.core_ui.theme.TodoListTheme
+import de.telma.todolist.feature_main.note_screen.models.TaskItemModel
 
 @Composable
 fun TaskItem(
     modifier: Modifier = Modifier,
-    title: String,
-    isCompleted: Boolean,
-    onRenamePressed: () -> Unit = {},
-    onDeletePressed: () -> Unit = {},
-    onItemClicked: () -> Unit = {}
+    model: TaskItemModel,
+    onRenamePressed: (taskId: Long) -> Unit = {},
+    onDeletePressed: (taskId: Long) -> Unit = {},
+    onItemClicked: (taskId: Long) -> Unit = {}
 ) {
     Row(modifier = modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
             .wrapContentHeight()
-            .clickable(onClick = onItemClicked),
+            .clickable(onClick = { onItemClicked(model.id) }),
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
     ) {
-        Checkbox(checked = isCompleted, onCheckedChange = { onItemClicked() })
-        if (isCompleted)
+        Checkbox(checked = model.isCompleted, onCheckedChange = { onItemClicked(model.id) })
+        if (model.isCompleted)
             TextBodyLarge(
                 modifier = Modifier.weight(1f),
                 color =  AppColors.itemTitleCompleted,
                 textDecoration = TextDecoration.LineThrough,
-                text = title
+                text = model.title
             )
         else
             TextBodyLarge(
                 modifier = Modifier.weight(1f),
                 color =  AppColors.itemTitleInProgress,
                 textDecoration = TextDecoration.None,
-                text = title
+                text = model.title
             )
         Row(
             modifier = Modifier.wrapContentSize(),
             horizontalArrangement = Arrangement.spacedBy((-10).dp)
         ) {
-            IconButton(onClick = onRenamePressed) {
+            IconButton(onClick = { onRenamePressed(model.id) }) {
                 Icon(
                     imageVector = AppIcons.edit,
                     contentDescription = "Rename task"
                 )
             }
-            IconButton(onClick = onDeletePressed) {
+            IconButton(onClick = { onDeletePressed(model.id) }) {
                 Icon(
                     imageVector = AppIcons.delete,
                     contentDescription = "Delete task"
@@ -80,11 +80,14 @@ fun TaskItem(
 @Preview(showBackground = true)
 fun TaskItem_Preview_InProgress() {
     TodoListTheme {
-        val title = "Item in progress"
+        val model = TaskItemModel(
+            id = 0,
+            title = "Item in progress",
+            isCompleted = false
+        )
         TaskItem(
             modifier = Modifier.fillMaxWidth().wrapContentHeight(),
-            title = title,
-            isCompleted = false
+            model = model
         )
     }
 }
@@ -93,11 +96,14 @@ fun TaskItem_Preview_InProgress() {
 @Preview(showBackground = true)
 fun TaskItem_Preview_Completed() {
     TodoListTheme {
-        val title = "Completed item"
+        val model = TaskItemModel(
+            id = 0,
+            title = "Item completed",
+            isCompleted = true
+        )
         TaskItem(
             modifier = Modifier.fillMaxWidth().wrapContentHeight(),
-            title = title,
-            isCompleted = true
+            model = model
         )
     }
 }
@@ -106,14 +112,19 @@ fun TaskItem_Preview_Completed() {
 @Preview(showBackground = true)
 fun TaskItem_Preview_Playground() {
     TodoListTheme {
-
-        val title = "Playground item"
-        var isCompleted by remember { mutableStateOf(false) }
+        var model by remember {
+            mutableStateOf(
+                TaskItemModel(
+                    id = 0,
+                    title = "Playground item",
+                    isCompleted = false
+                )
+            )
+        }
         TaskItem(
             modifier = Modifier.fillMaxWidth().wrapContentHeight(),
-            title = title,
-            isCompleted = isCompleted,
-            onItemClicked = { isCompleted = !isCompleted }
+            model = model,
+            onItemClicked = { model = model.copy(isCompleted = !model.isCompleted) }
         )
     }
 }
