@@ -19,8 +19,8 @@ class TaskRepositoryImpl(private val database: AppDatabase): TaskRepository {
             status = NoteTaskStatus.IN_PROGRESS.statusValue
         )
         try {
-            val result = database.noteTaskDao().insertTask(newTask)
-            return@withContext result == 1L
+            database.noteTaskDao().insertTask(newTask)
+            return@withContext true
         } catch (e: SQLiteConstraintException) {
             e.printStackTrace()
             return@withContext false

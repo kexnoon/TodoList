@@ -1,6 +1,7 @@
 package de.telma.todolist.feature_main.note_screen.composables
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
@@ -21,7 +22,7 @@ fun TasksList(
     onDeleteTaskPressed: (taskId: Long) -> Unit = {},
     onItemClicked: (taskId: Long) -> Unit = {}
 ) {
-    LazyColumn(modifier = modifier) {
+    LazyColumn(modifier = modifier.fillMaxWidth().wrapContentHeight()) {
         items(tasks.size) {
             TaskItem(
                 model = tasks[it],

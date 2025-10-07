@@ -4,20 +4,24 @@ import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.model.NoteStatus
 import de.telma.todolist.component_notes.model.NoteTaskStatus
 import de.telma.todolist.component_notes.repository.NoteRepository
+import kotlinx.coroutines.flow.first
 
 class SyncNoteStatusUseCase(private val repository: NoteRepository) {
 
-    suspend operator fun invoke(note: Note): SyncStatus {
-        val tasks = note.tasksList
-        val allTasksComplete = tasks.all { it.status == NoteTaskStatus.COMPLETE }
+    suspend operator fun invoke(noteId: Long): SyncStatus {
+        repository.getNoteById(noteId).first()?.let {
+            val tasks = it.tasksList
+            val allTasksComplete = tasks.all { it.status == NoteTaskStatus.COMPLETE }
 
-        return if (allTasksComplete && note.status != NoteStatus.COMPLETE) {
-            updateNoteStatus(note, NoteStatus.COMPLETE)
-        } else if (!allTasksComplete && note.status != NoteStatus.IN_PROGRESS) {
-            updateNoteStatus(note, NoteStatus.IN_PROGRESS)
-        } else {
-            SyncStatus.UP_TO_DATE
+            return if (allTasksComplete && it.status != NoteStatus.COMPLETE) {
+                updateNoteStatus(it, NoteStatus.COMPLETE)
+            } else if (!allTasksComplete && it.status != NoteStatus.IN_PROGRESS) {
+                updateNoteStatus(it, NoteStatus.IN_PROGRESS)
+            } else {
+                SyncStatus.UP_TO_DATE
+            }
         }
+        return SyncStatus.SYNC_FAILED
     }
 
     private suspend fun updateNoteStatus(note: Note, newStatus: NoteStatus): SyncStatus {

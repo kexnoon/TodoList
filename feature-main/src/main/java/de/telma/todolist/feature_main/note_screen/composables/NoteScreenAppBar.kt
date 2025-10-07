@@ -30,9 +30,9 @@ fun NoteScreenAppBar(
     onDeletePressed: (noteId: Long) -> Unit = {}
 ) {
     val statusString = if (model.isComplete)
-        stringResource(R.string.note_screen_app_bar_status_in_progress)
-    else
         stringResource(R.string.note_screen_app_bar_status_complete)
+    else
+        stringResource(R.string.note_screen_app_bar_status_in_progress)
 
     val statusColor = if (model.isComplete) AppColors.statusComplete else AppColors.statusInProgress
 

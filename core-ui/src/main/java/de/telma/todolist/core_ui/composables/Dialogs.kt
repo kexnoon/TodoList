@@ -63,13 +63,14 @@ fun BasicDialog(
 fun InputDialog(
     title: String,
     inputLabel: String,
+    input: String  = "",
     confirmText: String,
     dismissText: String = "",
     onConfirm: (String) -> Unit = {},
     onDismiss: () -> Unit = {},
     validation: (String) -> InputError? = { null }
 ) {
-    var input by remember { mutableStateOf("") }
+    var input by remember { mutableStateOf(input) }
     val error: InputError? by remember {
         derivedStateOf {
             if (input.isNotBlank())

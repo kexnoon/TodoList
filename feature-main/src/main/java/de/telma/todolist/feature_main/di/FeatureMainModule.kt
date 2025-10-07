@@ -16,7 +16,16 @@ val featureMainModule = module {
 
     viewModel {
         NoteScreenViewModel(
-            noteId = it.get<Long>()
+            noteId = it.get<Long>(),
+            coordinator = get(),
+            noteRepository = get(),
+            deleteTaskUseCase = get(),
+            renameNoteUseCase = get(),
+            renameTaskUseCase = get(),
+            updateTaskStatusUseCase = get(),
+            syncNoteStatusUseCase = get(),
+            createNewTaskUseCase = get(),
+            deleteNoteUseCase = get()
         )
     }
 }
