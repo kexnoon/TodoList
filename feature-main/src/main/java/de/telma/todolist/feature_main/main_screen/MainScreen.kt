@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import de.telma.todolist.core_ui.composables.BasicDialog
 import de.telma.todolist.core_ui.composables.InputDialog
 import de.telma.todolist.core_ui.composables.TextBodyMedium
-import de.telma.todolist.core_ui.composables.TextLabelMedium
 import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.core_ui.theme.AppIcons
 import de.telma.todolist.core_ui.theme.TodoListTheme
