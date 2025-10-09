@@ -22,6 +22,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,6 +32,7 @@ import de.telma.todolist.core_ui.composables.TextBodyMedium
 import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.core_ui.theme.AppIcons
 import de.telma.todolist.core_ui.theme.TodoListTheme
+import de.telma.todolist.feature_main.R
 import de.telma.todolist.feature_main.note_screen.composables.NoteScreenAppBar
 import de.telma.todolist.feature_main.note_screen.composables.TasksList
 import de.telma.todolist.feature_main.note_screen.models.NoteScreenAppBarModel
@@ -148,7 +150,7 @@ private fun StateResult(
                     TextBodyMedium(
                         modifier = Modifier.padding(all = 16.dp),
                         textAlign = TextAlign.Center,
-                        text = "Tasks list is empty! \n\n Add new task by pressing '+' in the bottom right corner."
+                        text = stringResource(R.string.note_screen_placeholder)
                     )
                 }
             } else {
@@ -189,8 +191,9 @@ private fun StateError(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TextBodyMedium(text = "Error! $errorMessage")
-        Button(onClick = onRetryPressed) { Text("Retry") }
+        TextBodyMedium(text = stringResource(R.string.note_screen_error_title))
+        TextBodyMedium(text = errorMessage)
+        Button(onClick = onRetryPressed) { Text(stringResource(R.string.note_screen_error_retry)) }
     }
 }
 
@@ -202,13 +205,13 @@ private fun TaskRenameDialog(
     onDismiss: () -> Unit
 ) {
     InputDialog(
-        title = "Rename task",
+        title = stringResource(R.string.note_screen_task_rename_title),
         input = currentTitle,
         onConfirm = { newTitle -> onConfirm(taskId, newTitle) },
         onDismiss = onDismiss,
-        confirmText = "Rename",
-        dismissText = "Cancel",
-        inputLabel = "New title"
+        confirmText = stringResource(R.string.note_screen_task_rename_confirm),
+        dismissText = stringResource(R.string.note_screen_task_rename_dismiss),
+        inputLabel = stringResource(R.string.note_screen_task_rename_input_label)
     )
 }
 
@@ -218,12 +221,12 @@ private fun AddTaskDialog(
     onDismiss: () -> Unit
 ) {
     InputDialog(
-        title = "Add task",
+        title = stringResource(R.string.note_screen_add_task_title),
         onConfirm = { newTitle -> onConfirm(newTitle) },
         onDismiss = onDismiss,
-        confirmText = "Add",
-        dismissText = "Cancel",
-        inputLabel = "New title"
+        confirmText = stringResource(R.string.note_screen_add_task_confirm),
+        dismissText = stringResource(R.string.note_screen_add_task_dismiss),
+        inputLabel = stringResource(R.string.note_screen_add_task_input_label)
     )
 }
 
@@ -233,10 +236,10 @@ private fun DeleteNoteDialog(
     onDismiss: () -> Unit
 ) {
     BasicDialog(
-        title = "Delete note",
-        text = "Are you sure you want to delete this note?",
-        confirmText = "Delete",
-        dismissText = "Cancel",
+        title = stringResource(R.string.note_screen_delete_note_title),
+        text = stringResource(R.string.note_screen_delete_note_text),
+        confirmText = stringResource(R.string.note_screen_delete_note_confirm),
+        dismissText = stringResource(R.string.note_screen_delete_note_dismiss),
         onConfirm = onConfirm,
         onDismiss = onDismiss
     )
@@ -249,13 +252,13 @@ private fun NoteRenameDialog(
     onDismiss: () -> Unit
 ) {
     InputDialog(
-        title = "Rename note",
+        title = stringResource(R.string.note_screen_rename_note_title),
         input = currentTitle,
         onConfirm = onConfirm,
         onDismiss = onDismiss,
-        confirmText = "Rename",
-        dismissText = "Cancel",
-        inputLabel = "New title"
+        confirmText = stringResource(R.string.note_screen_rename_note_confirm),
+        dismissText = stringResource(R.string.note_screen_rename_note_dismiss),
+        inputLabel = stringResource(R.string.note_screen_rename_note_input_label)
     )
 }
 

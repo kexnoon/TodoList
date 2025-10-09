@@ -152,7 +152,7 @@ private fun StateResult(
                     TextBodyMedium(
                         modifier = Modifier.padding(all = 16.dp),
                         textAlign = TextAlign.Center,
-                        text = "No notes found! \n\n Add new note by pressing '+' in the bottom right corner."
+                        text = stringResource(R.string.main_screen_placeholder)
                     )
                 }
             }
@@ -184,10 +184,10 @@ private fun StateError(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TextLabelMedium(text = stringResource(R.string.main_screen_error_title))
+            TextBodyMedium(text = stringResource(R.string.note_screen_error_title))
             TextBodyMedium(text = errorMessage)
             Button(onClick = onRetryPressed) {
-                TextBodyMedium(text = stringResource(R.string.main_screen_error_retry))
+                TextBodyMedium(text = stringResource(R.string.note_screen_error_retry))
             }
         }
     }
