@@ -40,16 +40,15 @@ fun MainScreenAppBar(
     onDeleteClick: () -> Unit = {},
     onClearSelectionClick: () -> Unit = {}
 ) {
+    val title = if (isSelectionMode) {
+        stringResource(R.string.main_screen_app_bar_title_selection_mode, selectionCount)
+    } else {
+        stringResource(R.string.main_screen_app_bar_title_default)
+    }
+
     Box(modifier = modifier) {
         TopAppBar(
-            title = {
-                var title = if (isSelectionMode) {
-                    stringResource(R.string.main_screen_app_bar_title_selection_mode, selectionCount)
-                } else {
-                    stringResource(R.string.main_screen_app_bar_title_default)
-                }
-                Text(title)
-            },
+            title = { Text(title) },
             navigationIcon = {
                 if (isSelectionMode) {
                     IconButton(onClick = onClearSelectionClick) {
@@ -113,7 +112,7 @@ private fun MainScreenAppBar_Playground_Preview() {
                 modifier = Modifier.fillMaxWidth(),
                 isSelectionMode = selectionMode,
                 selectionCount = 3,
-                onClearSelectionClick = {  selectionMode = false },
+                onClearSelectionClick = { selectionMode = false },
                 onDeleteClick = { showAlertDialog = true }
             )
             if (!selectionMode) {

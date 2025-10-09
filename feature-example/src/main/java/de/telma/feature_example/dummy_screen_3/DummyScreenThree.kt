@@ -44,9 +44,9 @@ internal fun DummyScreenThree(
                     onPopBackButtonClick = { viewModel.onPopBackToMainScreen() }
                 )
                 is UiState.Error -> {
-                    val throwable = (uiState as UiState.Error).throwable
+                    val errorMessage = (uiState as UiState.Error).errorMessage
                     StateError(
-                        throwable = throwable,
+                        message = errorMessage,
                         onBackPressed = { viewModel.onBackToMainScreenPressed() }
                     )
                 }
@@ -66,14 +66,14 @@ private fun StateLoading(modifier: Modifier = Modifier) {
 
 @Composable
 private fun StateError(
-    throwable: Throwable,
+    message: String,
     onBackPressed: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text("Error! ${throwable.message}")
+        Text("Error! $message")
         Button(modifier = Modifier.wrapContentSize(), onClick = onBackPressed) {
             Text("Back")
         }
@@ -129,6 +129,6 @@ private fun StateResult_Preview() {
 @Composable
 private fun StateError_Preview() {
     TodoListTheme {
-        StateError(Throwable("Throwable"))
+        StateError("Error message!")
     }
 }

@@ -79,7 +79,10 @@ fun NotesListItem(
                 if (model.status == NotesListItemState.IN_PROGRESS)
                     TextBodyMedium(
                         color = AppColors.statusInProgress,
-                        text = stringResource(R.string.note_list_item_status_in_progress, model.numberOfTasks)
+                        text = stringResource(
+                            R.string.note_list_item_status_in_progress,
+                            model.numberOfTasks
+                        )
                     )
                 else
                     TextBodyMedium(

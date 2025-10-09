@@ -26,8 +26,8 @@ abstract class BaseViewModel<T, R: BaseUiEvents?> : ViewModel() {
         _uiState.value = UiState.Result(value)
     }
 
-    fun showError(throwable: Throwable) {
-        _uiState.value = UiState.Error(throwable)
+    fun showError(message: String) {
+        _uiState.value = UiState.Error(message)
     }
 
     fun showUiEvent(uiEvent: R) {

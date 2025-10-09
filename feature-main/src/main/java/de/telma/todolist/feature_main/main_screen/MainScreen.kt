@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.telma.todolist.core_ui.composables.BasicDialog
@@ -35,6 +36,8 @@ import de.telma.todolist.core_ui.theme.TodoListTheme
 import de.telma.todolist.feature_main.R
 import de.telma.todolist.feature_main.main_screen.composables.MainScreenAppBar
 import de.telma.todolist.feature_main.main_screen.composables.NotesList
+import de.telma.todolist.feature_main.main_screen.models.NotesListItemModel
+import de.telma.todolist.feature_main.main_screen.models.NotesListItemState
 
 @Composable
 internal fun MainScreen(
@@ -64,12 +67,12 @@ internal fun MainScreen(
 
             is UiState.Error -> StateError(
                 modifier = Modifier.fillMaxSize(),
-                errorMessage = (uiState as UiState.Error).throwable.message ?: "Something went wrong!",
+                errorMessage = (uiState as UiState.Error).errorMessage,
                 onRetryPressed = { viewModel.retryOnError() }
             )
         }
 
-        when(uiEvents) {
+        when (uiEvents) {
             is MainScreenUiEvents.ShowDeleteDialog -> showDeleteDialog = true
             is MainScreenUiEvents.ShowCreateNewNoteDialog -> showNewNoteDialog = true
             is MainScreenUiEvents.DismissDeleteDialog -> showDeleteDialog = false
@@ -140,10 +143,19 @@ private fun StateResult(
                 modifier = Modifier.padding(bottom = 12.dp, end = 12.dp),
                 onClick = { onNewNoteClick.invoke() }
             ) {
-                Icon(AppIcons.add, "")
+                Icon(AppIcons.add, "Add new Note")
             }
         },
         content = { paddingValues ->
+            if (result.notes.isEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    TextBodyMedium(
+                        modifier = Modifier.padding(all = 16.dp),
+                        textAlign = TextAlign.Center,
+                        text = "No notes found! \n\n Add new note by pressing '+' in the bottom right corner."
+                    )
+                }
+            }
             NotesList(
                 modifier = Modifier
                     .fillMaxSize()
@@ -191,9 +203,29 @@ private fun StateLoading_Preview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun StateResult_Preview() {
+private fun StateResult_Default_Preview() {
     TodoListTheme {
-        val screenState = MainScreenState()
+        val note = NotesListItemModel(
+            id = 0L,
+            title = "Test Note",
+            status = NotesListItemState.IN_PROGRESS,
+            lastUpdatedTimestamp = "12.01.2023",
+            numberOfTasks = 3
+        )
+
+        val notes = List(10) { note.copy(id = it.toLong(), title = "Test Note $it") }
+        val screenState by remember { mutableStateOf(MainScreenState(notes = notes)) }
+
+        StateResult(modifier = Modifier.fillMaxSize(), result = screenState)
+    }
+
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun StateResult_EmptyNotes_Preview() {
+    TodoListTheme {
+        val screenState by remember { mutableStateOf(MainScreenState(notes = listOf())) }
         StateResult(modifier = Modifier.fillMaxSize(), result = screenState)
     }
 }

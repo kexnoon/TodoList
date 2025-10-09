@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -28,19 +27,19 @@ fun NotesList(
     isSelectionMode: Boolean,
     onClick: (Long) -> Unit = {},
     onLongClick: (Long) -> Unit = {},
-    onItemSelected: (Long, Boolean) -> Unit= { _, _ -> }
+    onItemSelected: (Long, Boolean) -> Unit = { _, _ -> }
 ) {
-    Surface(modifier = modifier) {
-        LazyColumn {
-            items(items.size) { index ->
-                NotesListItem(
-                    model = items[index],
-                    isSelectionMode = isSelectionMode,
-                    onClick = onClick,
-                    onLongClick = onLongClick,
-                    onCheckedChange = { id, isSelected -> onItemSelected(id, isSelected) }
-                )
-                if (index < items.size - 1) { HorizontalDivider() }
+    LazyColumn(modifier = modifier) {
+        items(items.size) { index ->
+            NotesListItem(
+                model = items[index],
+                isSelectionMode = isSelectionMode,
+                onClick = onClick,
+                onLongClick = onLongClick,
+                onCheckedChange = { id, isSelected -> onItemSelected(id, isSelected) }
+            )
+            if (index < items.size - 1) {
+                HorizontalDivider()
             }
         }
     }
@@ -55,7 +54,7 @@ private fun NotesList_ShowItems_Preview() {
             title = "Test Note",
             status = NotesListItemState.IN_PROGRESS,
             numberOfTasks = 7,
-            lastUpdatedTimestamp = "2023-01-01T10:00:00"
+            lastUpdatedTimestamp = "2023-01-01T10:00:00Z"
         )
 
         var list by rememberSaveable { mutableStateOf(List(10) { index -> item.copy(id = index.toLong()) }) }

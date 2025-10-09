@@ -11,7 +11,8 @@ val featureMainModule = module {
             coordinator = get(),
             repository = get(),
             createNewNoteUseCase = get(),
-            deleteNotesUseCase = get())
+            deleteNotesUseCase = get()
+        )
     }
 
     viewModel {

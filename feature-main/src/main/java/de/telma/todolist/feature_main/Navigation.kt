@@ -32,10 +32,10 @@ internal fun NavGraphBuilder.noteScreen() {
     }
 }
 
-sealed class MainDestination: Destination {
+sealed class MainDestination : Destination {
     @Serializable
-    data object MainScreen: MainDestination()
+    data object MainScreen : MainDestination()
 
     @Serializable
-    data class NoteScreen(val noteId: Long): MainDestination()
+    data class NoteScreen(val noteId: Long) : MainDestination()
 }

@@ -10,6 +10,8 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import junit.framework.TestCase.assertFalse
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import org.junit.Test
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -119,11 +121,12 @@ class NotesUseCasesTest {
         val task1 = NoteTask(id = 2L, title = "Task1", status = NoteTaskStatus.COMPLETE)
         val task2 = NoteTask(id = 3L, title = "Task2", status = NoteTaskStatus.COMPLETE)
         val note = testNote.copy(tasksList = listOf(task1, task2))
+        coEvery { notesRepository.getNoteById(note.id) } returns flowOf(note)
 
         val updatedNote = note.copy(status = NoteStatus.COMPLETE)
         coEvery { notesRepository.updateNote(updatedNote) } returns true
 
-        val result = useCase(note)
+        val result = useCase(note.id)
 
         assertEquals(
             result, SyncNoteStatusUseCase.SyncStatus.SYNC_SUCCEED,
@@ -134,14 +137,17 @@ class NotesUseCasesTest {
     @Test
     fun `SyncNoteStatusUseCase sets note status to IN_PROGRESS when not all tasks are complete`() = runTest {
         val useCase = SyncNoteStatusUseCase(notesRepository)
+
         val task1 = NoteTask(id = 2L, title = "Task1", status = NoteTaskStatus.IN_PROGRESS)
         val task2 = NoteTask(id = 3L, title = "Task2", status = NoteTaskStatus.COMPLETE)
-        val note = testNote.copy(status = NoteStatus.COMPLETE, tasksList = listOf(task1, task2))
 
+        val note = testNote.copy(status = NoteStatus.COMPLETE, tasksList = listOf(task1, task2))
+        coEvery { notesRepository.getNoteById(note.id) } returns flowOf(note)
         val updatedNote = note.copy(status = NoteStatus.IN_PROGRESS)
+
         coEvery { notesRepository.updateNote(updatedNote) } returns true
 
-        val result = useCase(note)
+        val result = useCase(note.id)
 
         assertEquals(
             result, SyncNoteStatusUseCase.SyncStatus.SYNC_SUCCEED,
@@ -152,14 +158,17 @@ class NotesUseCasesTest {
     @Test
     fun `SyncNoteStatusUseCase returns UP_TO_DATE if note status is already synced`() = runTest {
         val useCase = SyncNoteStatusUseCase(notesRepository)
+
         val task1 = NoteTask(id = 2L, title = "Task1", status = NoteTaskStatus.IN_PROGRESS)
         val task2 = NoteTask(id = 3L, title = "Task2", status = NoteTaskStatus.COMPLETE)
-        val note = testNote.copy(tasksList = listOf(task1, task2))
 
-        val result = useCase(note)
+        val note = testNote.copy(tasksList = listOf(task1, task2))
+        coEvery { notesRepository.getNoteById(note.id) } returns flowOf(note)
+
+        val result = useCase(note.id)
 
         assertEquals(
-            result, SyncNoteStatusUseCase.SyncStatus.UP_TO_DATE,
+            expected = result, actual = SyncNoteStatusUseCase.SyncStatus.UP_TO_DATE,
             "SyncNoteStatusUseCase status should be UP_TO_DATE, but was $result"
         )
     }
@@ -167,17 +176,20 @@ class NotesUseCasesTest {
     @Test
     fun `SyncNoteStatusUseCase returns SYNC_FAILED if note status update failed`() = runTest {
         val useCase = SyncNoteStatusUseCase(notesRepository)
+
         val task1 = NoteTask(id = 2L, title = "Task1", status = NoteTaskStatus.COMPLETE)
         val task2 = NoteTask(id = 3L, title = "Task2", status = NoteTaskStatus.COMPLETE)
-        val note = testNote.copy(tasksList = listOf(task1, task2))
 
+        val note = testNote.copy(tasksList = listOf(task1, task2))
+        coEvery { notesRepository.getNoteById(note.id) } returns flowOf(note)
         val updatedNote = note.copy(status = NoteStatus.COMPLETE)
+
         coEvery { notesRepository.updateNote(updatedNote) } returns false
 
-        val result = useCase(note)
+        val result = useCase(note.id)
 
         assertEquals(
-            result, SyncNoteStatusUseCase.SyncStatus.SYNC_FAILED,
+            expected = result, actual = SyncNoteStatusUseCase.SyncStatus.SYNC_FAILED,
             "SyncNoteStatusUseCase status should be SYNC_FAILED, but was $result"
         )
     }
@@ -195,7 +207,7 @@ class NotesUseCasesTest {
         val result = useCase(notesToDelete)
 
         assertTrue(
-            result,
+            actual = result,
             "DeleteMultipleNotesUseCase should return true if all notes are deleted, but returned false."
         )
         coVerify(exactly = 1) { notesRepository.deleteNote(note1) }

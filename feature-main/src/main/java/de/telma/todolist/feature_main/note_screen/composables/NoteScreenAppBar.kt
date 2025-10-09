@@ -45,7 +45,8 @@ fun NoteScreenAppBar(
                     color = statusColor,
                     text = "Status: $statusString"
                 )
-            } },
+            }
+        },
         navigationIcon = {
             IconButton(onClick = onBackPressed) {
                 Icon(
@@ -75,14 +76,18 @@ fun NoteScreenAppBar(
 @Preview(showBackground = true)
 fun NoteScreenAppBar_InProgress_Preview() {
     TodoListTheme {
-        Box(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()) {
             val model = NoteScreenAppBarModel(
                 noteId = 0L,
                 title = "Note in progress",
                 isComplete = false
             )
             NoteScreenAppBar(
-                modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
                 model = model
             )
         }
@@ -93,14 +98,18 @@ fun NoteScreenAppBar_InProgress_Preview() {
 @Preview(showBackground = true)
 fun NoteScreenAppBar_Complete_Preview() {
     TodoListTheme {
-        Box(modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()) {
             val model = NoteScreenAppBarModel(
                 noteId = 0L,
                 title = "Completed note",
                 isComplete = true
             )
             NoteScreenAppBar(
-                modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
                 model = model
             )
         }

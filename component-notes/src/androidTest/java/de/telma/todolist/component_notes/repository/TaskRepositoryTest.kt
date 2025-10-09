@@ -47,6 +47,7 @@ class TaskRepositoryTest: BaseRepositoryTest() {
         val incorrectNoteId = 99999L
 
         val result = repository.createNewTask(incorrectNoteId, task.title)
+
         assertFalse(result, "createNewTask returned true when noteId is incorrect")
     }
 

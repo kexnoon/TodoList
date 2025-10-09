@@ -22,7 +22,9 @@ fun TasksList(
     onDeleteTaskPressed: (taskId: Long) -> Unit = {},
     onItemClicked: (taskId: Long) -> Unit = {}
 ) {
-    LazyColumn(modifier = modifier.fillMaxWidth().wrapContentHeight()) {
+    LazyColumn(modifier = modifier
+        .fillMaxWidth()
+        .wrapContentHeight()) {
         items(tasks.size) {
             TaskItem(
                 model = tasks[it],
@@ -44,13 +46,19 @@ fun TasksList_Preview() {
             isCompleted = false
         )
 
-        var tasksList by rememberSaveable { mutableStateOf(List(10) { index ->
-            task.copy(id = index.toLong(),
-                title = "Item $index") })
+        var tasksList by rememberSaveable {
+            mutableStateOf(List(10) { index ->
+                task.copy(
+                    id = index.toLong(),
+                    title = "Item $index"
+                )
+            })
         }
 
         TasksList(
-            modifier = Modifier.fillMaxWidth().wrapContentSize(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentSize(),
             tasks = tasksList,
             onItemClicked = { id ->
                 tasksList = tasksList.map {

@@ -33,7 +33,8 @@ fun TaskItem(
     onDeletePressed: (taskId: Long) -> Unit = {},
     onItemClicked: (taskId: Long) -> Unit = {}
 ) {
-    Row(modifier = modifier
+    Row(
+        modifier = modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
             .wrapContentHeight()
@@ -44,14 +45,14 @@ fun TaskItem(
         if (model.isCompleted)
             TextBodyLarge(
                 modifier = Modifier.weight(1f),
-                color =  AppColors.itemTitleCompleted,
+                color = AppColors.itemTitleCompleted,
                 textDecoration = TextDecoration.LineThrough,
                 text = model.title
             )
         else
             TextBodyLarge(
                 modifier = Modifier.weight(1f),
-                color =  AppColors.itemTitleInProgress,
+                color = AppColors.itemTitleInProgress,
                 textDecoration = TextDecoration.None,
                 text = model.title
             )
@@ -86,7 +87,9 @@ fun TaskItem_Preview_InProgress() {
             isCompleted = false
         )
         TaskItem(
-            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
             model = model
         )
     }
@@ -102,7 +105,9 @@ fun TaskItem_Preview_Completed() {
             isCompleted = true
         )
         TaskItem(
-            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
             model = model
         )
     }
@@ -122,7 +127,9 @@ fun TaskItem_Preview_Playground() {
             )
         }
         TaskItem(
-            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
             model = model,
             onItemClicked = { model = model.copy(isCompleted = !model.isCompleted) }
         )

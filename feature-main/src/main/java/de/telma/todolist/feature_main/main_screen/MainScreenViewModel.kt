@@ -25,7 +25,6 @@ class MainScreenViewModel(
     override var _uiState: MutableStateFlow<UiState<MainScreenState>> = MutableStateFlow(UiState.Loading())
     override var _uiEvents: MutableStateFlow<MainScreenUiEvents?> = MutableStateFlow(null)
 
-    //ЕБУЧИЙ КОСТЫЛЬ
     private var notes: List<Note> = listOf()
 
     init {
@@ -107,25 +106,19 @@ class MainScreenViewModel(
     }
 
     fun onNewNoteClicked() {
-        _uiEvents.value = MainScreenUiEvents.ShowCreateNewNoteDialog
+        showUiEvent(MainScreenUiEvents.ShowCreateNewNoteDialog)
     }
 
     fun onDeleteClicked() {
-        _uiEvents.value = MainScreenUiEvents.ShowDeleteDialog
+        showUiEvent(MainScreenUiEvents.ShowDeleteDialog)
     }
 
     fun dismissDeleteDialog() {
-        _uiEvents.value = MainScreenUiEvents.DismissDeleteDialog
+        showUiEvent(MainScreenUiEvents.DismissDeleteDialog)
     }
 
     fun dismissNewNoteDialog() {
-        _uiEvents.value = MainScreenUiEvents.DismissCreateNewNoteDialog
-    }
-
-    private fun updateResultState(screenState: MainScreenState) {
-        val uiState = (_uiState.value as UiState.Result<MainScreenState>)
-        val newUiState = uiState.copy(data = screenState)
-        _uiState.value = newUiState
+        showUiEvent(MainScreenUiEvents.DismissCreateNewNoteDialog)
     }
 }
 

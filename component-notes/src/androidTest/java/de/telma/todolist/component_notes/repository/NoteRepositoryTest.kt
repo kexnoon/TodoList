@@ -154,7 +154,7 @@ class NoteRepositoryTest: BaseRepositoryTest() {
         val creationTimestamp = updateTimestamp1
 
         val newNoteID = repository.createNewNote(expectedTitle, creationTimestamp)
-        assertTrue(newNoteID == 0L, "createNewNote returned a note with wrong ID! New Note's ID: $newNoteID")
+        assertTrue(newNoteID == 1L, "createNewNote returned a note with wrong ID! New Note's ID: $newNoteID")
 
         val newNote = database.noteDao().getNoteWithTasksById(newNoteID).first()
         assertNotNull(newNote, "Failed to retrieve a note created via createNewNote!")
@@ -230,7 +230,7 @@ class NoteRepositoryTest: BaseRepositoryTest() {
     private val updateTimestamp2 = "2023-11-12T13:14:15Z"
 
     private val testNote1 = Note(
-        id = 0L,
+        id = 999L,
         title = "testNote1",
         status = NoteStatus.IN_PROGRESS,
         tasksList = listOf(
@@ -249,7 +249,7 @@ class NoteRepositoryTest: BaseRepositoryTest() {
     )
 
     private val testNote2 = Note(
-        id = 1L,
+        id = 99L,
         title = "testNote2",
         status = NoteStatus.COMPLETE,
         tasksList = listOf(
@@ -263,7 +263,7 @@ class NoteRepositoryTest: BaseRepositoryTest() {
     )
 
     private val noteWithNoTasks = Note(
-        id = 1L,
+        id = 99L,
         title = "testNote2",
         status = NoteStatus.COMPLETE,
         tasksList = listOf(),

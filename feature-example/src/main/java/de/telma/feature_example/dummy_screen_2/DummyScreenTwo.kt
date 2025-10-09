@@ -42,8 +42,8 @@ internal fun DummyScreenTwo(
                     onButtonClick = { viewModel.onButtonClick() }
                 )
                 is UiState.Error -> {
-                    val throwable = (uiState as UiState.Error).throwable
-                    StateError(throwable)
+                    val message = (uiState as UiState.Error).errorMessage
+                    StateError(message)
                 }
             }
         }
@@ -78,12 +78,12 @@ private fun StateResult(
 }
 
 @Composable
-private fun StateError(throwable: Throwable) {
+private fun StateError(message: String) {
     Column(
         modifier = Modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text("Error! ${throwable.message}")
+        Text("Error! $message")
     }
 
 }
@@ -109,6 +109,6 @@ private fun StateResult_Preview() {
 @Composable
 private fun StateError_Preview() {
     TodoListTheme {
-        StateError(Throwable("Throwable"))
+        StateError("Error message")
     }
 }
