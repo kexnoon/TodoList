@@ -5,7 +5,6 @@ import de.telma.feature_example.ExampleDestination
 import de.telma.todolist.core_ui.state.EmptyUiEvents
 import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.core_ui.base.BaseViewModel
-import de.telma.todolist.core_ui.navigation.Destination
 import de.telma.todolist.core_ui.navigation.NavEvent
 import de.telma.todolist.core_ui.navigation.NavEvent.Toast.*
 import de.telma.todolist.core_ui.navigation.NavigationCoordinator
@@ -41,7 +40,7 @@ internal class DummyScreenThreeViewModel(
 
     fun onShowErrorPressed() {
         viewModelScope.launch {
-            showError(Throwable("Generic Error!"))
+            showError("Generic Error!")
         }
     }
 
