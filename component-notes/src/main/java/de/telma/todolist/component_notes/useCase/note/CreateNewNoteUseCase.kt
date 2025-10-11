@@ -1,4 +1,4 @@
-package de.telma.todolist.component_notes.useCase
+package de.telma.todolist.component_notes.useCase.note
 
 import de.telma.todolist.component_notes.repository.NoteRepository
 import de.telma.todolist.component_notes.utils.getTimestamp

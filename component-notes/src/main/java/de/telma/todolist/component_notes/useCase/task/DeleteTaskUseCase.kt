@@ -1,4 +1,4 @@
-package de.telma.todolist.component_notes.useCase
+package de.telma.todolist.component_notes.useCase.task
 
 import de.telma.todolist.component_notes.model.NoteTask
 import de.telma.todolist.component_notes.repository.TaskRepository

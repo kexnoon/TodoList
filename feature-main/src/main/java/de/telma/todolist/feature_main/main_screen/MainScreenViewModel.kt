@@ -3,8 +3,8 @@ package de.telma.todolist.feature_main.main_screen
 import androidx.lifecycle.viewModelScope
 import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.repository.NoteRepository
-import de.telma.todolist.component_notes.useCase.CreateNewNoteUseCase
-import de.telma.todolist.component_notes.useCase.DeleteMultipleNotesUseCase
+import de.telma.todolist.component_notes.useCase.note.CreateNewNoteUseCase
+import de.telma.todolist.component_notes.useCase.note.DeleteMultipleNotesUseCase
 import de.telma.todolist.core_ui.base.BaseViewModel
 import de.telma.todolist.core_ui.navigation.NavEvent
 import de.telma.todolist.core_ui.navigation.NavigationCoordinator

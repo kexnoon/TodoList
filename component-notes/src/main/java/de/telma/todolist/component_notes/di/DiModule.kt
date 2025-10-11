@@ -2,18 +2,18 @@ package de.telma.todolist.component_notes.di
 
 import de.telma.todolist.component_notes.repository.NoteRepository
 import de.telma.todolist.component_notes.repository.NoteRepositoryImpl
-import de.telma.todolist.component_notes.useCase.RenameNoteUseCase
+import de.telma.todolist.component_notes.useCase.note.RenameNoteUseCase
 import de.telma.todolist.component_notes.repository.TaskRepository
 import de.telma.todolist.component_notes.repository.TaskRepositoryImpl
-import de.telma.todolist.component_notes.useCase.CreateNewNoteUseCase
-import de.telma.todolist.component_notes.useCase.CreateNewTaskUseCase
-import de.telma.todolist.component_notes.useCase.DeleteMultipleNotesUseCase
-import de.telma.todolist.component_notes.useCase.DeleteNoteUseCase
-import de.telma.todolist.component_notes.useCase.DeleteTaskUseCase
-import de.telma.todolist.component_notes.useCase.RenameTaskUseCase
-import de.telma.todolist.component_notes.useCase.SyncNoteStatusUseCase
-import de.telma.todolist.component_notes.useCase.UpdateNoteStatusUseCase
-import de.telma.todolist.component_notes.useCase.UpdateTaskStatusUseCase
+import de.telma.todolist.component_notes.useCase.note.CreateNewNoteUseCase
+import de.telma.todolist.component_notes.useCase.task.CreateNewTaskUseCase
+import de.telma.todolist.component_notes.useCase.note.DeleteMultipleNotesUseCase
+import de.telma.todolist.component_notes.useCase.note.DeleteNoteUseCase
+import de.telma.todolist.component_notes.useCase.task.DeleteTaskUseCase
+import de.telma.todolist.component_notes.useCase.task.RenameTaskUseCase
+import de.telma.todolist.component_notes.useCase.note.SyncNoteStatusUseCase
+import de.telma.todolist.component_notes.useCase.note.UpdateNoteStatusUseCase
+import de.telma.todolist.component_notes.useCase.task.UpdateTaskStatusUseCase
 import org.koin.dsl.module
 import java.time.Clock
 
