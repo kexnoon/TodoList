@@ -13,6 +13,7 @@ sealed interface ActivityNavEvent {
 }
 
 sealed class NavEvent {
+    @ConsistentCopyVisibility
     data class ToComposeScreen private constructor(
         val destination: Destination? = null,
         val deeplink: Uri? = null

@@ -2,14 +2,15 @@ plugins {
     id("convention.core.library")
     id("convention.koin.core")
     id("convention.room")
+    alias(libs.plugins.room.plugin)
 }
 
 android {
     namespace = "de.telma.todolist.storage"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 26
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -29,12 +30,9 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
         isCoreLibraryDesugaringEnabled = true
-    }
-    kotlinOptions {
-        jvmTarget = "11"
     }
     buildFeatures {
         buildConfig = true
@@ -48,6 +46,9 @@ android {
             pickFirsts += "META-INF/LICENSE"
             pickFirsts += "META-INF/LICENSE.txt"
         }
+    }
+    room {
+        schemaDirectory("$projectDir/schemas")
     }
 
 }
