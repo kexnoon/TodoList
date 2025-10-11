@@ -96,7 +96,7 @@ private val sampleNoteEntity = NoteEntity(
     id = 0L,
     title = "Note",
     status = NoteStatus.IN_PROGRESS.statusValue,
-    lastUpdatedTimestamp = "2022-12-13 14:15:16"
+    lastUpdatedTimestamp = "2022-12-13T14:15:16Z"
 )
 
 private val sampleTask1 = NoteTask(
@@ -116,5 +116,5 @@ private val sampleNote = Note(
     title = "Note",
     status = NoteStatus.IN_PROGRESS,
     tasksList = listOf(sampleTask1, sampleTask2),
-    lastUpdatedTimestamp = "2022-12-13 14:15:16"
+    lastUpdatedTimestamp = "2022-12-13T14:15:16Z"
 )

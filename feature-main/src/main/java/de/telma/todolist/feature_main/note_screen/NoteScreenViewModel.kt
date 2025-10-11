@@ -4,13 +4,13 @@ import androidx.lifecycle.viewModelScope
 import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.model.NoteStatus
 import de.telma.todolist.component_notes.repository.NoteRepository
-import de.telma.todolist.component_notes.useCase.CreateNewTaskUseCase
-import de.telma.todolist.component_notes.useCase.DeleteNoteUseCase
-import de.telma.todolist.component_notes.useCase.DeleteTaskUseCase
-import de.telma.todolist.component_notes.useCase.RenameNoteUseCase
-import de.telma.todolist.component_notes.useCase.RenameTaskUseCase
-import de.telma.todolist.component_notes.useCase.SyncNoteStatusUseCase
-import de.telma.todolist.component_notes.useCase.UpdateTaskStatusUseCase
+import de.telma.todolist.component_notes.useCase.task.CreateNewTaskUseCase
+import de.telma.todolist.component_notes.useCase.note.DeleteNoteUseCase
+import de.telma.todolist.component_notes.useCase.task.DeleteTaskUseCase
+import de.telma.todolist.component_notes.useCase.note.RenameNoteUseCase
+import de.telma.todolist.component_notes.useCase.task.RenameTaskUseCase
+import de.telma.todolist.component_notes.useCase.note.SyncNoteStatusUseCase
+import de.telma.todolist.component_notes.useCase.task.UpdateTaskStatusUseCase
 import de.telma.todolist.core_ui.base.BaseViewModel
 import de.telma.todolist.core_ui.navigation.NavEvent
 import de.telma.todolist.core_ui.navigation.NavigationCoordinator
@@ -118,10 +118,10 @@ class NoteScreenViewModel(
             showUiEvent(NoteScreenUiEvents.DismissDialog)
 
             val result = renameNoteUseCase(currentNote, newTitle)
-            if (!result) {
-                showError("Failed to rename note! (id = $noteId)")
-            } else {
+            if (result == RenameNoteUseCase.Result.SUCCESS) {
                 sync(viewModelScope)
+            } else {
+                showError("Failed to rename note! (id = $noteId)")
             }
 
         }
@@ -215,11 +215,11 @@ class NoteScreenViewModel(
     private suspend fun sync(scope: CoroutineScope) {
         val result = scope.async { syncNoteStatusUseCase(currentNote.id) }.await()
         when (result) {
-            SyncNoteStatusUseCase.SyncStatus.SYNC_SUCCEED -> {
+            SyncNoteStatusUseCase.Result.SyncSucceed -> {
                 getNoteById()
             }
 
-            SyncNoteStatusUseCase.SyncStatus.SYNC_FAILED -> {
+            SyncNoteStatusUseCase.Result.SyncFailed -> {
                 showError("Failed to sync note status! (id = $noteId)")
             }
 

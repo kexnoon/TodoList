@@ -1,4 +1,4 @@
-package de.telma.todolist.component_notes.useCase
+package de.telma.todolist.component_notes.useCase.note
 
 import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.repository.NoteRepository
@@ -12,10 +12,20 @@ class RenameNoteUseCase(
     private val clock: Clock
 ) {
 
-    suspend operator fun invoke(note: Note, newTitle: String): Boolean {
+    sealed interface Result {
+        object SUCCESS: Result
+        object FAILURE: Result
+    }
+
+    suspend operator fun invoke(note: Note, newTitle: String): Result {
         val timestamp = getTimestamp(LocalDateTime.now(clock))
         val updatedNote = note.copy(title = newTitle, lastUpdatedTimestamp = timestamp)
-        return repository.updateNote(updatedNote)
+
+        return if (repository.updateNote(updatedNote)) {
+            Result.SUCCESS
+        } else {
+            Result.FAILURE
+        }
     }
 
 }

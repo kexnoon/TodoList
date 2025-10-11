@@ -1,4 +1,4 @@
-package de.telma.todolist.component_notes.useCase
+package de.telma.todolist.component_notes.useCase.task
 
 import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.model.NoteStatus
@@ -22,83 +22,33 @@ import java.time.format.DateTimeFormatter
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class TasksUseCasesTest {
-
+class UpdateTaskUseCaseTest {
     private lateinit var taskRepository: TaskRepositoryImpl
     private lateinit var noteRepository: NoteRepositoryImpl
-
-    private lateinit var fixedClock: Clock
-
-    private val testNoteId = 1L
     private val initialNoteTimestamp = "2023-01-01T10:00:00Z" // Example initial timestamp
     private val expectedUpdatedTimestamp = "2023-01-01T12:00:00Z" // Timestamp from our fixed clock
-
-    private lateinit var testTask: NoteTask
-    private lateinit var testNote: Note
+    private val testTask: NoteTask = NoteTask(id = 101L, title = "Initial Task", status = NoteTaskStatus.IN_PROGRESS)
+    private val testNoteId = 1L
+    private val testNote: Note = Note(
+        id = testNoteId,
+        title = "Base Note",
+        status = NoteStatus.IN_PROGRESS,
+        tasksList = listOf(testTask),
+        lastUpdatedTimestamp = initialNoteTimestamp
+    )
+    private val fixedClock: Clock = getClockForTest(expectedUpdatedTimestamp)
 
     @Before
     fun setUp() {
         noteRepository = mockk<NoteRepositoryImpl>()
         taskRepository = mockk<TaskRepositoryImpl>()
-
-        fixedClock = getClockForTest(expectedUpdatedTimestamp)
-
-        testTask = NoteTask(id = 101L, title = "Initial Task", status = NoteTaskStatus.IN_PROGRESS)
-        testNote = Note(
-            id = testNoteId,
-            title = "Base Note",
-            status = NoteStatus.IN_PROGRESS,
-            tasksList = listOf(testTask),
-            lastUpdatedTimestamp = initialNoteTimestamp
-        )
     }
 
-    @Test
-    fun `RenameTaskUseCase executes correctly if the new title is correct`() = runTest {
-        // Arrange
-        val useCase = RenameTaskUseCase(taskRepository, noteRepository, fixedClock)
-
-        val newValidTitle = "Updated Task Title Successfully"
-        val taskToSendForUpdate = testTask.copy(title = newValidTitle)
-        val noteReturnedByRepo = testNote // The note that getNoteById will return
-        val noteExpectedForFinalUpdate = noteReturnedByRepo.copy(lastUpdatedTimestamp = expectedUpdatedTimestamp)
-
-        coEvery { taskRepository.updateTask(testNoteId, taskToSendForUpdate) } returns true
-        coEvery { noteRepository.getNoteById(testNoteId) } returns flowOf(noteReturnedByRepo)
-        coEvery { noteRepository.updateNote(noteExpectedForFinalUpdate) } returns true
-
-        // Act
-        val result = useCase(testNoteId, testTask, newValidTitle)
-
-        // Assert
-        assertTrue(result, "UseCase should return true on full success")
-        coVerifyOrder {
-            taskRepository.updateTask(testNoteId, taskToSendForUpdate)
-            noteRepository.getNoteById(testNoteId)
-            noteRepository.updateNote(noteExpectedForFinalUpdate)
-        }
-    }
-
-    @Test
-    fun `RenameTaskUseCase returns false if task update fails`() = runTest {
-        // Arrange
-        val useCase = RenameTaskUseCase(taskRepository, noteRepository, fixedClock)
-
-        val newTitle = "Attempted Title Update"
-        val taskToSendForUpdate = testTask.copy(title = newTitle)
-
-        // Simulate the primary task update failing
-        coEvery { taskRepository.updateTask(testNoteId, taskToSendForUpdate) } returns false
-
-        // Act
-        val result = useCase(testNoteId, testTask, newTitle)
-
-        // Assert
-        assertFalse(result, "UseCase should return false if task update fails")
-        // Verify only the first repository call was made
-        coVerify(exactly = 1) { taskRepository.updateTask(testNoteId, taskToSendForUpdate) }
-        coVerify(exactly = 0) { noteRepository.getNoteById(any()) }
-        coVerify(exactly = 0) { noteRepository.updateNote(any()) }
+    private fun getClockForTest(timestampString: String): Clock {
+        val formatter = DateTimeFormatter.ofPattern(timestampFormat)
+        val localDateTime = LocalDateTime.parse(timestampString, formatter)
+        val instant = localDateTime.toInstant(ZoneOffset.UTC)
+        return Clock.fixed(instant, ZoneOffset.UTC)
     }
 
     @Test
@@ -126,7 +76,7 @@ class TasksUseCasesTest {
         // Verify that all repository methods were called in the correct order with the correct arguments
         coVerifyOrder {
             taskRepository.updateTask(testNoteId, taskToSendForUpdate)
-            noteRepository.getNoteById(testNoteId) // Must yield a non-null Note for 'let'
+            noteRepository.getNoteById(testNoteId)
             noteRepository.updateNote(noteExpectedForFinalUpdate)
         }
     }
@@ -159,7 +109,7 @@ class TasksUseCasesTest {
 
     @Test
     fun `UpdateTaskStatusUseCase return false if repository method returns false`() = runTest {
-        val useCase = UpdateTaskStatusUseCase(taskRepository, noteRepository, fixedClock )
+        val useCase = UpdateTaskStatusUseCase(taskRepository, noteRepository, fixedClock)
         val status = NoteTaskStatus.COMPLETE
         val expectedTask = testTask.copy(status = status)
         coEvery { taskRepository.updateTask(testNoteId, expectedTask) } returns false
@@ -168,26 +118,6 @@ class TasksUseCasesTest {
 
         assertFalse(result)
         coVerify(exactly = 1) { taskRepository.updateTask(testNoteId, expectedTask) }
-    }
-
-    @Test
-    fun `DeleteTaskUseCase returns true if task is deleted`() = runTest {
-        val useCase = DeleteTaskUseCase(taskRepository)
-        val taskToDelete = testTask.copy(id = 1L)
-        coEvery { taskRepository.deleteTask(taskToDelete) } returns true
-
-        val result = useCase(taskToDelete)
-
-        assertTrue(result, "DeleteTaskUseCase should return true if task is deleted, but returned false")
-        coVerify(exactly = 1) { taskRepository.deleteTask(taskToDelete) }
-    }
-
-
-    private fun getClockForTest(timestampString: String): Clock {
-        val formatter = DateTimeFormatter.ofPattern(timestampFormat)
-        val localDateTime = LocalDateTime.parse(timestampString, formatter)
-        val instant = localDateTime.toInstant(ZoneOffset.UTC)
-        return Clock.fixed(instant, ZoneOffset.UTC)
     }
 
 }

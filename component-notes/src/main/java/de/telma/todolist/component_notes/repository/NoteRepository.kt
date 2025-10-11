@@ -5,17 +5,17 @@ import kotlinx.coroutines.flow.Flow
 
 interface NoteRepository {
     /**
-     * Will be used on MainScreen to show the list of all notes
+     * Used on MainScreen to show the list of all notes
      */
     suspend fun getAllNotes(): Flow<List<Note>>
 
     /**
-     * Will be used on NoteOverviewScreen to show the selected not
+     * Used on NoteScreen to show the selected not
      */
     suspend fun getNoteById(id: Long): Flow<Note?>
 
     /**
-     * Will return Note's ID so we could show it on the next screen
+     * Returns Note's ID so we could show it on the next screen
      */
     suspend fun createNewNote(title: String, timestamp: String): Long
 
