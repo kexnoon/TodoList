@@ -90,7 +90,7 @@ class NoteScreenViewModel(
                     updateTaskStatusUseCase(noteId, currentTask, currentTask.getOppositeStatus())
                 }.await()
 
-                if (!result) {
+                if (result == UpdateTaskStatusUseCase.Result.FAILURE) {
                     showError("Failed to update task status! (id = $taskId)")
                 } else {
                     sync(viewModelScope)
@@ -132,7 +132,7 @@ class NoteScreenViewModel(
             showUiEvent(NoteScreenUiEvents.DismissDialog)
 
             val addTaskResult = async { createNewTaskUseCase(currentNote, title) }.await()
-            if (!addTaskResult) {
+            if (addTaskResult == CreateNewTaskUseCase.Result.FAILURE) {
                 showError("Failed to create new task!")
             } else {
                 sync(viewModelScope)
@@ -151,7 +151,7 @@ class NoteScreenViewModel(
             }
 
             val result = async { renameTaskUseCase(noteId, currentTask, newTitle) }.await()
-            if (!result) {
+            if (result == RenameTaskUseCase.Result.FAILURE) {
                 showError("Failed to rename task! (id = $taskId)")
             } else {
                 sync(viewModelScope)
@@ -168,7 +168,7 @@ class NoteScreenViewModel(
             }
 
             val result = async { deleteTaskUseCase(currentTask) }.await()
-            if (!result)
+            if (result == DeleteTaskUseCase.Result.FAILURE)
                 showError("Failed to delete task! (id = $taskId)")
             else
                 sync(viewModelScope)
