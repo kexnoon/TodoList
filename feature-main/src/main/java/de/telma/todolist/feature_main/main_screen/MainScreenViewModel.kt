@@ -76,6 +76,7 @@ class MainScreenViewModel(
         showResult(newState)
     }
 
+    // TODO: учитывать резлуьтат deleteNotesUseCase
     fun deleteSelectedNotes() {
         viewModelScope.launch {
             dismissDeleteDialog()
@@ -90,10 +91,17 @@ class MainScreenViewModel(
     fun createNewNote(title: String) {
         viewModelScope.launch {
             dismissNewNoteDialog()
-            val newNoteId = createNewNoteUseCase(title)
-            coordinator.execute(
-                NavEvent.ToComposeScreen(MainDestination.NoteScreen(newNoteId))
-            )
+            val createNewNoteResult = createNewNoteUseCase(title)
+            when (createNewNoteResult) {
+                is CreateNewNoteUseCase.Result.SUCCESS -> {
+                    coordinator.execute(
+                        NavEvent.ToComposeScreen(MainDestination.NoteScreen(createNewNoteResult.newNoteId))
+                    )
+                }
+                is CreateNewNoteUseCase.Result.FAILURE -> {
+                    showError("Failed to create new note!")
+                }
+            }
         }
     }
 

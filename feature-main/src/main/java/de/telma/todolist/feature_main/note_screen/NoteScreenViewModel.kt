@@ -90,7 +90,7 @@ class NoteScreenViewModel(
                     updateTaskStatusUseCase(noteId, currentTask, currentTask.getOppositeStatus())
                 }.await()
 
-                if (!result) {
+                if (result == UpdateTaskStatusUseCase.Result.FAILURE) {
                     showError("Failed to update task status! (id = $taskId)")
                 } else {
                     sync(viewModelScope)
@@ -118,10 +118,10 @@ class NoteScreenViewModel(
             showUiEvent(NoteScreenUiEvents.DismissDialog)
 
             val result = renameNoteUseCase(currentNote, newTitle)
-            if (!result) {
-                showError("Failed to rename note! (id = $noteId)")
-            } else {
+            if (result == RenameNoteUseCase.Result.SUCCESS) {
                 sync(viewModelScope)
+            } else {
+                showError("Failed to rename note! (id = $noteId)")
             }
 
         }
@@ -132,7 +132,7 @@ class NoteScreenViewModel(
             showUiEvent(NoteScreenUiEvents.DismissDialog)
 
             val addTaskResult = async { createNewTaskUseCase(currentNote, title) }.await()
-            if (!addTaskResult) {
+            if (addTaskResult == CreateNewTaskUseCase.Result.FAILURE) {
                 showError("Failed to create new task!")
             } else {
                 sync(viewModelScope)
@@ -151,7 +151,7 @@ class NoteScreenViewModel(
             }
 
             val result = async { renameTaskUseCase(noteId, currentTask, newTitle) }.await()
-            if (!result) {
+            if (result == RenameTaskUseCase.Result.FAILURE) {
                 showError("Failed to rename task! (id = $taskId)")
             } else {
                 sync(viewModelScope)
@@ -168,7 +168,7 @@ class NoteScreenViewModel(
             }
 
             val result = async { deleteTaskUseCase(currentTask) }.await()
-            if (!result)
+            if (result == DeleteTaskUseCase.Result.FAILURE)
                 showError("Failed to delete task! (id = $taskId)")
             else
                 sync(viewModelScope)
@@ -215,11 +215,11 @@ class NoteScreenViewModel(
     private suspend fun sync(scope: CoroutineScope) {
         val result = scope.async { syncNoteStatusUseCase(currentNote.id) }.await()
         when (result) {
-            SyncNoteStatusUseCase.SyncStatus.SYNC_SUCCEED -> {
+            SyncNoteStatusUseCase.Result.SyncSucceed -> {
                 getNoteById()
             }
 
-            SyncNoteStatusUseCase.SyncStatus.SYNC_FAILED -> {
+            SyncNoteStatusUseCase.Result.SyncFailed -> {
                 showError("Failed to sync note status! (id = $noteId)")
             }
 

@@ -11,11 +11,18 @@ class UpdateNoteStatusUseCase(
     private val repository: NoteRepository,
     private val clock: Clock
 ) {
-
-    suspend operator fun invoke(note: Note, newStatus: NoteStatus): Boolean {
-        val timestamp = getTimestamp(LocalDateTime.now(clock))
-        val updatedNote = note.copy(status = newStatus, lastUpdatedTimestamp = timestamp)
-        return repository.updateNote(updatedNote)
+    sealed interface Result {
+        object Success : Result
+        object Failure : Result
     }
 
+    suspend operator fun invoke(note: Note, newStatus: NoteStatus): Result {
+        val timestamp = getTimestamp(LocalDateTime.now(clock))
+        val updatedNote = note.copy(status = newStatus, lastUpdatedTimestamp = timestamp)
+        return if (repository.updateNote(updatedNote)) {
+            Result.Success
+        } else {
+            Result.Failure
+        }
+    }
 }

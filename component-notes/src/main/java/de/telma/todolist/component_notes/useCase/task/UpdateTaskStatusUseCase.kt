@@ -14,15 +14,20 @@ class UpdateTaskStatusUseCase(
     private val noteRepository: NoteRepository,
     private val clock: Clock
 ) {
+    sealed interface Result {
+        object SUCCESS : Result
+        object FAILURE : Result
+    }
 
-    suspend operator fun invoke(noteId: Long, task: NoteTask, newStatus: NoteTaskStatus): Boolean {
-        var result = false
+    suspend operator fun invoke(noteId: Long, task: NoteTask, newStatus: NoteTaskStatus): Result {
+        var result: Result = Result.FAILURE
 
         val updatedTask = task.copy(status = newStatus)
         if (taskRepository.updateTask(noteId, updatedTask)) {
             noteRepository.getNoteById(noteId).first()?.let {
                 val timestamp = getTimestamp(LocalDateTime.now(clock))
-                result = noteRepository.updateNote(it.copy(lastUpdatedTimestamp = timestamp))
+                val isTimestampSet = noteRepository.updateNote(it.copy(lastUpdatedTimestamp = timestamp))
+                if (isTimestampSet) result = Result.SUCCESS
             }
         }
 

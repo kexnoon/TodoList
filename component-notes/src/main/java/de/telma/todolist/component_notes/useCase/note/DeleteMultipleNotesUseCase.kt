@@ -5,12 +5,17 @@ import de.telma.todolist.component_notes.repository.NoteRepository
 
 class DeleteMultipleNotesUseCase(private val repository: NoteRepository) {
 
-    suspend operator fun invoke(notesToDelete: List<Note>): Boolean {
+    sealed interface Result {
+        object SUCCESS : Result
+        object FAILURE : Result
+    }
+
+    suspend operator fun invoke(notesToDelete: List<Note>): Result {
         notesToDelete.forEach {
             if (!repository.deleteNote(it))
-                return false
+                return Result.FAILURE
         }
-        return true
+        return Result.SUCCESS
     }
 
 }
