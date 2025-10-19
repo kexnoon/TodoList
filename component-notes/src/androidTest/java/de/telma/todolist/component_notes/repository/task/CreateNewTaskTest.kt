@@ -26,7 +26,7 @@ class CreateNewTaskTest : BaseRepositoryTest() {
     }
 
     @Test
-    fun `should_return_true_when_task_is_created_successfully`() = runTest {
+    fun should_return_true_when_task_is_created_successfully() = runTest {
         val note = getNote()
         val task = getTask().copy()
         database.noteDao().insertNote(note.toNoteEntity())
@@ -41,7 +41,7 @@ class CreateNewTaskTest : BaseRepositoryTest() {
     }
 
     @Test
-    fun `should_return_false_when_note_id_is_incorrect`() = runTest {
+    fun should_return_false_when_note_id_is_incorrect() = runTest {
         val note = getNote()
         val task = getTask()
         database.noteDao().insertNote(note.toNoteEntity())

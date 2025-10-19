@@ -25,7 +25,7 @@ class DeleteNoteTest: BaseRepositoryTest() {
     }
 
     @Test
-    fun `should_return_true_when_note_is_deleted_successfully`() = runTest {
+    fun should_return_true_when_note_is_deleted_successfully() = runTest {
         val tasks = listOf(getTask(), getTask())
         val note = getNote(id = 1L, tasksList = tasks)
 
@@ -41,7 +41,7 @@ class DeleteNoteTest: BaseRepositoryTest() {
     }
 
     @Test
-    fun `should_return_false_when_note_to_be_deleted_does_not_exist`() = runTest {
+    fun should_return_false_when_note_to_be_deleted_does_not_exist() = runTest {
         val tasks = listOf(getTask(), getTask())
         val note = getNote(id = 1L, tasksList = tasks)
         val result = repository.deleteNote(note)

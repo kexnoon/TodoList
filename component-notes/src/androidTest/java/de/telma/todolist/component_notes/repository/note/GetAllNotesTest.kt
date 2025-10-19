@@ -29,7 +29,7 @@ class GetAllNotesTest : BaseRepositoryTest() {
     }
 
     @Test
-    fun `should_return_all_notes_when_notes_exist_in_db`() = runTest {
+    fun should_return_all_notes_when_notes_exist_in_db() = runTest {
         val tasks = listOf(getTask(), getTask())
         val note1 = getNote(tasksList = tasks)
         val note2 = getNote(id = 2L)
@@ -53,7 +53,7 @@ class GetAllNotesTest : BaseRepositoryTest() {
     }
 
     @Test
-    fun `should_return_notes_with_no_tasks_when_such_notes_exist_in_db`() = runTest {
+    fun should_return_notes_with_no_tasks_when_such_notes_exist_in_db() = runTest {
         val note = getNote()
 
         database.noteDao().insertNote(note.toNoteEntity())
@@ -69,7 +69,7 @@ class GetAllNotesTest : BaseRepositoryTest() {
     }
 
     @Test
-    fun `should_return_empty_list_when_no_notes_in_db`() = runTest {
+    fun should_return_empty_list_when_no_notes_in_db() = runTest {
         val notesFromRepository = repository.getAllNotes().first()
         assertNotNull(
             notesFromRepository,

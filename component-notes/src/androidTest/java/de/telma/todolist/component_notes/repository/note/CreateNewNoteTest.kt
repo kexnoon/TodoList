@@ -25,7 +25,7 @@ class CreateNewNoteTest: BaseRepositoryTest() {
     }
 
     @Test
-    fun `should_return_new_note_id_when_note_is_created_successfully`() = runTest {
+    fun should_return_new_note_id_when_note_is_created_successfully() = runTest {
         val expectedTitle = "new note"
         val creationTimestamp = getDefaultTimestamp()
 

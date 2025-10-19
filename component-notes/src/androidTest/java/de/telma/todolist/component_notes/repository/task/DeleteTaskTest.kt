@@ -25,7 +25,7 @@ class DeleteTaskTest : BaseRepositoryTest() {
     }
 
     @Test
-    fun `should_return_true_when_task_is_deleted_successfully`() = runTest {
+    fun should_return_true_when_task_is_deleted_successfully() = runTest {
         val note = getNote(tasksList = listOf(getTask(), getTask()))
         val task = getTask()
         database.noteDao().insertNote(note.toNoteEntity())
@@ -37,7 +37,7 @@ class DeleteTaskTest : BaseRepositoryTest() {
     }
 
     @Test
-    fun `should_return_false_when_task_to_be_deleted_does_not_exist`() = runTest {
+    fun should_return_false_when_task_to_be_deleted_does_not_exist() = runTest {
         val note = getNote(tasksList = listOf(getTask(), getTask()))
         val task = getTask()
         database.noteDao().insertNote(note.toNoteEntity())

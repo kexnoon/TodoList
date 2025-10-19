@@ -25,7 +25,7 @@ class UpdateTaskTest : BaseRepositoryTest() {
     }
 
     @Test
-    fun `should_return_true_when_task_is_updated_successfully`() = runTest {
+    fun should_return_true_when_task_is_updated_successfully() = runTest {
         val note = getNote(tasksList = listOf(getTask(), getTask()))
         val task = getTask()
         database.noteDao().insertNote(note.toNoteEntity())
@@ -38,7 +38,7 @@ class UpdateTaskTest : BaseRepositoryTest() {
     }
 
     @Test
-    fun `should_return_false_when_note_id_is_incorrect`() = runTest {
+    fun should_return_false_when_note_id_is_incorrect() = runTest {
         val note = getNote(tasksList = listOf(getTask(), getTask()))
         val task = getTask()
         database.noteDao().insertNote(note.toNoteEntity())

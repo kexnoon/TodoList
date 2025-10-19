@@ -26,7 +26,7 @@ class UpdateNoteTest: BaseRepositoryTest() {
     }
 
     @Test
-    fun `should_return_true_when_note_is_updated_successfully`() = runTest {
+    fun should_return_true_when_note_is_updated_successfully() = runTest {
         val note = getNote(lastUpdatedTimestamp = getDefaultTimestamp())
         database.noteDao().insertNote(note.toNoteEntity())
 
@@ -44,7 +44,7 @@ class UpdateNoteTest: BaseRepositoryTest() {
     }
 
     @Test
-    fun `should_return_false_when_note_to_be_updated_does_not_exist`() = runTest {
+    fun should_return_false_when_note_to_be_updated_does_not_exist() = runTest {
         val note = getNote()
 
         val result = repository.updateNote(note)

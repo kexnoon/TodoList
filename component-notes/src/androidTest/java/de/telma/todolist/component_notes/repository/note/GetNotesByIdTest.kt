@@ -28,7 +28,7 @@ class GetNotesByIdTest: BaseRepositoryTest() {
     }
 
     @Test
-    fun `should_return_correct_note_when_id_is_correct`() = runTest {
+    fun should_return_correct_note_when_id_is_correct() = runTest {
         val note = getNote()
 
         database.noteDao().insertNote(note.toNoteEntity())
@@ -39,7 +39,7 @@ class GetNotesByIdTest: BaseRepositoryTest() {
     }
 
     @Test
-    fun `should_return_same_note_as_from_db_when_id_is_correct`() = runTest {
+    fun should_return_same_note_as_from_db_when_id_is_correct() = runTest {
         val note = getNote(tasksList = listOf(getTask(), getTask()))
 
         database.noteDao().insertNote(note.toNoteEntity())
@@ -56,7 +56,7 @@ class GetNotesByIdTest: BaseRepositoryTest() {
     }
 
     @Test
-    fun `should_return_null_when_id_is_incorrect`() = runTest {
+    fun should_return_null_when_id_is_incorrect() = runTest {
         val note = getNote(tasksList = listOf(getTask(), getTask()))
 
         database.noteDao().insertNote(note.toNoteEntity())
@@ -73,7 +73,7 @@ class GetNotesByIdTest: BaseRepositoryTest() {
     }
 
     @Test
-    fun `should_return_note_when_it_has_no_tasks`() = runTest {
+    fun should_return_note_when_it_has_no_tasks() = runTest {
         val note = getNote(tasksList = listOf())
 
         database.noteDao().insertNote(note.toNoteEntity())
