@@ -12,45 +12,43 @@ import java.time.format.DateTimeFormatter
 
 open class BaseNoteComponentUnitTest {
 
-    fun getTaskComplete(): NoteTask {
-        val id = (0L..10000L).random()
-        return NoteTask(
-            id = id,
-            title = "Task $id",
-            status = NoteTaskStatus.COMPLETE
-        )
-    }
+    fun getTaskComplete(
+        id: Long = (0L..10000L).random(),
+        title: String? = null
+    ) = NoteTask(
+        id = id,
+        title = title ?: "Task $id",
+        status = NoteTaskStatus.COMPLETE
+    )
 
-    fun getTaskInProgress(): NoteTask {
-        val id = (0L..10000L).random()
-        return NoteTask(
-            id = id,
-            title = "Task $id",
-            status = NoteTaskStatus.IN_PROGRESS
-        )
-    }
+    fun getTaskInProgress(
+        id: Long = (0L..10000L).random(),
+        title: String? = null
+    ) = NoteTask(
+        id = id,
+        title = title ?: "Task $id",
+        status = NoteTaskStatus.IN_PROGRESS
+    )
 
     fun getNote(
+        id: Long = (0L..10000L).random(),
         title: String? = null,
         status: NoteStatus = NoteStatus.IN_PROGRESS,
         timestamp: String = getDefaultTimestamp(),
         tasks: List<NoteTask> = listOf()
-    ): Note {
-        val id = (0L..10000L).random()
-        return Note(
-            id = id,
-            title = title ?: "Note $id",
-            status = status,
-            tasksList = tasks,
-            lastUpdatedTimestamp = timestamp
-        )
-    }
+    ) = Note(
+        id = id,
+        title = title ?: "Note $id",
+        status = status,
+        tasksList = tasks,
+        lastUpdatedTimestamp = timestamp
+    )
 
     fun getDefaultTimestamp(): String = "2023-01-01T10:00:00Z"
 
     fun getUpdatedTimestamp(): String = "2023-01-01T12:30:00Z"
 
-    fun getClockForTest(timestampString: String): Clock {
+    fun getClockForTest(timestampString: String = getDefaultTimestamp()): Clock {
         val formatter = DateTimeFormatter.ofPattern(timestampFormat)
         val localDateTime = LocalDateTime.parse(timestampString, formatter)
         val instant = localDateTime.toInstant(ZoneOffset.UTC)

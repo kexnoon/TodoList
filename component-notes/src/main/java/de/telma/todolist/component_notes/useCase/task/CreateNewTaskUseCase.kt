@@ -12,14 +12,19 @@ class CreateNewTaskUseCase(
     private val noteRepository: NoteRepository,
     private val clock: Clock
 ) {
+    sealed interface Result {
+        data class SUCCESS(val newNoteId: Long): Result
+        data object FAILURE: Result
+    }
 
-    suspend operator fun invoke(note: Note, title: String): Boolean {
-        var result = false
+    suspend operator fun invoke(note: Note, title: String): Result {
+        var result: Result = Result.FAILURE
 
         if(taskRepository.createNewTask(note.id, title)) {
-            result = noteRepository.updateNote(
+            val isNoteUpdated = noteRepository.updateNote(
                 note.copy(lastUpdatedTimestamp = getTimestamp(LocalDateTime.now(clock)))
             )
+            result = if (isNoteUpdated) Result.SUCCESS(note.id) else Result.FAILURE
         }
 
         return result
