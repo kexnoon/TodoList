@@ -14,6 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -52,11 +53,11 @@ internal fun MainScreen(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        when (uiState) {
+        when (val result = uiState) {
             is UiState.Loading -> StateLoading(modifier = Modifier.fillMaxSize())
             is UiState.Result<MainScreenState> -> StateResult(
                 modifier = Modifier.fillMaxSize(),
-                result = (uiState as UiState.Result<MainScreenState>).data,
+                result = result.data,
                 onDeleteClick = { viewModel.onDeleteClicked() },
                 onClearSelectionClick = { viewModel.onClearSelectionClicked() },
                 onNewNoteClick = { viewModel.onNewNoteClicked() },
@@ -66,7 +67,7 @@ internal fun MainScreen(
 
             is UiState.Error -> StateError(
                 modifier = Modifier.fillMaxSize(),
-                errorMessage = (uiState as UiState.Error).errorMessage,
+                error = (uiState as UiState.Error<MainScreenUiErrors>).uiError,
                 onRetryPressed = { viewModel.retryOnError() }
             )
         }
@@ -172,7 +173,7 @@ private fun StateResult(
 @Composable
 private fun StateError(
     modifier: Modifier = Modifier,
-    errorMessage: String,
+    error: MainScreenUiErrors,
     onRetryPressed: () -> Unit = {}
 ) {
     TodoListTheme {
@@ -183,12 +184,23 @@ private fun StateError(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TextBodyMedium(text = stringResource(R.string.note_screen_error_title))
-            TextBodyMedium(text = errorMessage)
+            TextBodyMedium(text = stringResource(R.string.main_screen_error_title))
+            TextBodyMedium(text = ErrorHandler(error = error))
             Button(onClick = onRetryPressed) {
-                TextBodyMedium(text = stringResource(R.string.note_screen_error_retry))
+                Text(stringResource(R.string.main_screen_error_retry))
             }
         }
+    }
+}
+
+
+@Composable
+private fun ErrorHandler(error: MainScreenUiErrors): String {
+    return when (error) {
+        is MainScreenUiErrors.FailedToCreateNewNote ->
+            stringResource(R.string.main_screen_error_failed_to_create_new_note)
+        is MainScreenUiErrors.FailedToDeleteNotes ->
+            stringResource(R.string.main_screen_error_failed_to_delete_notes)
     }
 }
 
@@ -233,7 +245,9 @@ private fun StateResult_EmptyNotes_Preview() {
 @Composable
 private fun StateError_Preview() {
     TodoListTheme {
-        val errorMessage = "Something went wrong!"
-        StateError(modifier = Modifier.fillMaxSize(), errorMessage = errorMessage)
+        StateError(
+            modifier = Modifier.fillMaxSize(),
+            error = MainScreenUiErrors.FailedToCreateNewNote
+        )
     }
 }

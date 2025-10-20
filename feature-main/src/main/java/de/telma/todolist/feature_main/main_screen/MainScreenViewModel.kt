@@ -9,6 +9,7 @@ import de.telma.todolist.core_ui.base.BaseViewModel
 import de.telma.todolist.core_ui.navigation.NavEvent
 import de.telma.todolist.core_ui.navigation.NavigationCoordinator
 import de.telma.todolist.core_ui.state.BaseUiEvents
+import de.telma.todolist.core_ui.state.BaseUiError
 import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.feature_main.MainDestination
 import de.telma.todolist.feature_main.main_screen.models.NotesListItemModel
@@ -21,8 +22,8 @@ class MainScreenViewModel(
     private val repository: NoteRepository,
     private val createNewNoteUseCase: CreateNewNoteUseCase,
     private val deleteNotesUseCase: DeleteNoteUseCase
-): BaseViewModel<MainScreenState, MainScreenUiEvents?>() {
-    override var _uiState: MutableStateFlow<UiState<MainScreenState>> = MutableStateFlow(UiState.Loading())
+): BaseViewModel<MainScreenState, MainScreenUiEvents?, MainScreenUiErrors>() {
+    override var _uiState: MutableStateFlow<UiState<MainScreenState, MainScreenUiErrors>> = MutableStateFlow(UiState.Loading())
     override var _uiEvents: MutableStateFlow<MainScreenUiEvents?> = MutableStateFlow(null)
 
     private var notes: List<Note> = listOf()
@@ -76,15 +77,18 @@ class MainScreenViewModel(
         showResult(newState)
     }
 
-    // TODO: учитывать резлуьтат deleteNotesUseCase
     fun deleteSelectedNotes() {
         viewModelScope.launch {
             dismissDeleteDialog()
             val currentState = (_uiState.value as UiState.Result<MainScreenState>).data
             val selectedNotesIds = currentState.notes.filter { it.isSelected }.map { it.id }
             val selectedNotes = notes.filter { selectedNotesIds.contains(it.id) }
-            deleteNotesUseCase(selectedNotes)
-            onClearSelectionClicked()
+            val result = deleteNotesUseCase(selectedNotes)
+            if(result == DeleteNoteUseCase.Result.SUCCESS){
+                onClearSelectionClicked()
+            } else {
+                showError(MainScreenUiErrors.FailedToDeleteNotes)
+            }
         }
     }
 
@@ -99,7 +103,7 @@ class MainScreenViewModel(
                     )
                 }
                 is CreateNewNoteUseCase.Result.FAILURE -> {
-                    showError("Failed to create new note!")
+                    showError(MainScreenUiErrors.FailedToCreateNewNote)
                 }
             }
         }
@@ -135,6 +139,11 @@ sealed interface MainScreenUiEvents: BaseUiEvents {
     data object ShowCreateNewNoteDialog: MainScreenUiEvents
     data object DismissDeleteDialog: MainScreenUiEvents
     data object DismissCreateNewNoteDialog: MainScreenUiEvents
+}
+
+sealed interface MainScreenUiErrors: BaseUiError {
+    data object FailedToCreateNewNote: MainScreenUiErrors
+    data object FailedToDeleteNotes: MainScreenUiErrors
 }
 
 data class MainScreenState(

@@ -70,20 +70,17 @@ fun NoteScreen(
                 itemActions = itemActions
             )
 
-            is UiState.Error -> StateError(
-                errorMessage = screenState.errorMessage,
+            is UiState.Error<NoteScreenUiErrors> -> StateError(
+                error = screenState.uiError,
                 onRetryPressed = { viewModel.retryOnError() }
             )
         }
     }
 
-    when (events) {
+    when (val event = events) {
         is NoteScreenUiEvents.ShowTaskRenameDialog -> {
-            val taskId = (events as NoteScreenUiEvents.ShowTaskRenameDialog).id
-            val currentTitle = (events as NoteScreenUiEvents.ShowTaskRenameDialog).currentTitle
-
             TaskRenameDialog(
-                taskId, currentTitle,
+                event.id, event.currentTitle,
                 onConfirm = { taskId, newTitle -> viewModel.renameTask(taskId, newTitle) },
                 onDismiss = { viewModel.dismissDialog() }
             )
@@ -104,10 +101,8 @@ fun NoteScreen(
         }
 
         is NoteScreenUiEvents.ShowNoteRenameDialog -> {
-            val currentTitle = (events as NoteScreenUiEvents.ShowNoteRenameDialog).currentTitle
-
             NoteRenameDialog(
-                currentTitle,
+                event.currentTitle,
                 onConfirm = { newTitle -> viewModel.renameNote(newTitle) },
                 onDismiss = { viewModel.dismissDialog() })
         }
@@ -183,7 +178,7 @@ private fun StateLoading(modifier: Modifier = Modifier) {
 @Composable
 private fun StateError(
     modifier: Modifier = Modifier,
-    errorMessage: String,
+    error: NoteScreenUiErrors,
     onRetryPressed: () -> Unit
 ) {
     Column(
@@ -192,8 +187,33 @@ private fun StateError(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TextBodyMedium(text = stringResource(R.string.note_screen_error_title))
-        TextBodyMedium(text = errorMessage)
+        TextBodyMedium(text = errorHandler(error = error))
         Button(onClick = onRetryPressed) { Text(stringResource(R.string.note_screen_error_retry)) }
+    }
+}
+
+
+@Composable
+private fun errorHandler(error: NoteScreenUiErrors): String {
+    return when (error) {
+        is NoteScreenUiErrors.NoteNotFound ->
+            stringResource(R.string.note_screen_error_note_not_found, error.noteId)
+        is NoteScreenUiErrors.TaskNotFound ->
+            stringResource(R.string.note_screen_error_task_not_found, error.taskId)
+        is NoteScreenUiErrors.FailedToUpdateTaskStatus ->
+            stringResource(R.string.note_screen_error_failed_to_update_task_status, error.taskId)
+        is NoteScreenUiErrors.FailedToDeleteNote ->
+            stringResource(R.string.note_screen_error_failed_to_delete_note, error.noteId)
+        is NoteScreenUiErrors.FailedToRenameNote ->
+            stringResource(R.string.note_screen_error_failed_to_rename_note, error.noteId)
+        is NoteScreenUiErrors.FailedToCreateNewTask ->
+            stringResource(R.string.note_screen_error_failed_to_create_new_task)
+        is NoteScreenUiErrors.FailedToRenameTask ->
+            stringResource(R.string.note_screen_error_failed_to_rename_task, error.taskId)
+        is NoteScreenUiErrors.FailedToDeleteTask ->
+            stringResource(R.string.note_screen_error_failed_to_delete_task, error.taskId)
+        is NoteScreenUiErrors.FailedToSyncNoteStatus ->
+            stringResource(R.string.note_screen_error_failed_to_sync_note_status, error.noteId)
     }
 }
 
@@ -345,7 +365,7 @@ private fun StateLoading_Preview() {
 @Preview(showBackground = true)
 private fun StateError_Preview() {
     TodoListTheme {
-        StateError(errorMessage = "Something went wrong!", onRetryPressed = {})
+        StateError(error = NoteScreenUiErrors.FailedToCreateNewTask, onRetryPressed = {})
     }
 }
 

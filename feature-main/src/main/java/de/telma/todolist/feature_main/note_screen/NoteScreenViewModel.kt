@@ -15,6 +15,7 @@ import de.telma.todolist.core_ui.base.BaseViewModel
 import de.telma.todolist.core_ui.navigation.NavEvent
 import de.telma.todolist.core_ui.navigation.NavigationCoordinator
 import de.telma.todolist.core_ui.state.BaseUiEvents
+import de.telma.todolist.core_ui.state.BaseUiError
 import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.feature_main.note_screen.models.NoteScreenAppBarModel
 import de.telma.todolist.feature_main.note_screen.models.TaskItemModel
@@ -39,8 +40,8 @@ class NoteScreenViewModel(
 
     private val syncNoteStatusUseCase: SyncNoteStatusUseCase
 
-) : BaseViewModel<NoteScreenState, NoteScreenUiEvents?>() {
-    override var _uiState: MutableStateFlow<UiState<NoteScreenState>> =
+) : BaseViewModel<NoteScreenState, NoteScreenUiEvents?, NoteScreenUiErrors>() {
+    override var _uiState: MutableStateFlow<UiState<NoteScreenState, NoteScreenUiErrors>> =
         MutableStateFlow(UiState.Loading())
     override var _uiEvents: MutableStateFlow<NoteScreenUiEvents?> = MutableStateFlow(null)
 
@@ -54,7 +55,7 @@ class NoteScreenViewModel(
         viewModelScope.launch {
             noteRepository.getNoteById(noteId).collect { note ->
                 if (note == null) {
-                    showError("Note not found! (id = $noteId)")
+                    showError(NoteScreenUiErrors.NoteNotFound(noteId))
                 } else {
                     currentNote = note
 
@@ -82,7 +83,7 @@ class NoteScreenViewModel(
         viewModelScope.launch {
             val currentTask = currentNote.tasksList.find { it.id == taskId }
             if (currentTask == null) {
-                showError("Task not found! (id = $taskId)")
+                showError(NoteScreenUiErrors.TaskNotFound(taskId))
                 return@launch
             } else {
                 val result = async {
@@ -90,7 +91,7 @@ class NoteScreenViewModel(
                 }.await()
 
                 if (result == UpdateTaskStatusUseCase.Result.FAILURE) {
-                    showError("Failed to update task status! (id = $taskId)")
+                    showError(NoteScreenUiErrors.FailedToUpdateTaskStatus(taskId))
                 } else {
                     sync(viewModelScope)
                 }
@@ -106,7 +107,7 @@ class NoteScreenViewModel(
             if (result) {
                 coordinator.execute(NavEvent.PopBack)
             } else {
-                showError("Failed to delete note! (id = $noteId)")
+                showError(NoteScreenUiErrors.FailedToDeleteNote(noteId))
             }
         }
     }
@@ -120,7 +121,7 @@ class NoteScreenViewModel(
             if (result == RenameNoteUseCase.Result.SUCCESS) {
                 sync(viewModelScope)
             } else {
-                showError("Failed to rename note! (id = $noteId)")
+                showError(NoteScreenUiErrors.FailedToRenameNote(noteId))
             }
 
         }
@@ -132,7 +133,7 @@ class NoteScreenViewModel(
 
             val addTaskResult = async { createNewTaskUseCase(currentNote, title) }.await()
             if (addTaskResult == CreateNewTaskUseCase.Result.FAILURE) {
-                showError("Failed to create new task!")
+                showError(NoteScreenUiErrors.FailedToCreateNewTask)
             } else {
                 sync(viewModelScope)
             }
@@ -145,13 +146,13 @@ class NoteScreenViewModel(
 
             val currentTask = currentNote.tasksList.find { it.id == taskId }
             if (currentTask == null) {
-                showError("Task not found! (id = $taskId)")
+                showError(NoteScreenUiErrors.TaskNotFound(taskId))
                 return@launch
             }
 
             val result = async { renameTaskUseCase(noteId, currentTask, newTitle) }.await()
             if (result == RenameTaskUseCase.Result.FAILURE) {
-                showError("Failed to rename task! (id = $taskId)")
+                showError(NoteScreenUiErrors.FailedToRenameTask(taskId))
             } else {
                 sync(viewModelScope)
             }
@@ -162,13 +163,13 @@ class NoteScreenViewModel(
         viewModelScope.launch {
             val currentTask = currentNote.tasksList.find { it.id == taskId }
             if (currentTask == null) {
-                showError("Task not found! (id = $taskId)")
+                showError(NoteScreenUiErrors.TaskNotFound(taskId))
                 return@launch
             }
 
             val result = async { deleteTaskUseCase(currentTask) }.await()
             if (result == DeleteTaskUseCase.Result.FAILURE)
-                showError("Failed to delete task! (id = $taskId)")
+                showError(NoteScreenUiErrors.FailedToDeleteTask(taskId))
             else
                 sync(viewModelScope)
         }
@@ -189,7 +190,7 @@ class NoteScreenViewModel(
     fun onTaskRenamePressed(taskId: Long) {
         val currentTask = currentNote.tasksList.find { it.id == taskId }
         if (currentTask == null) {
-            showError("Task not found! (id = $taskId)")
+            showError(NoteScreenUiErrors.TaskNotFound(taskId))
             return
         } else {
             showUiEvent(NoteScreenUiEvents.ShowTaskRenameDialog(taskId, currentTask.title))
@@ -219,7 +220,7 @@ class NoteScreenViewModel(
             }
 
             SyncNoteStatusUseCase.Result.SyncFailed -> {
-                showError("Failed to sync note status! (id = $noteId)")
+                showError(NoteScreenUiErrors.FailedToSyncNoteStatus(noteId))
             }
 
             else -> {}
@@ -233,6 +234,18 @@ sealed interface NoteScreenUiEvents : BaseUiEvents {
     data object ShowDeleteNoteDialog : NoteScreenUiEvents
     data class ShowNoteRenameDialog(val currentTitle: String) : NoteScreenUiEvents
     data object DismissDialog : NoteScreenUiEvents
+}
+
+sealed interface NoteScreenUiErrors : BaseUiError {
+    data class NoteNotFound(val noteId: Long) : NoteScreenUiErrors
+    data class TaskNotFound(val taskId: Long) : NoteScreenUiErrors
+    data class FailedToUpdateTaskStatus(val taskId: Long) : NoteScreenUiErrors
+    data class FailedToDeleteNote(val noteId: Long) : NoteScreenUiErrors
+    data class FailedToRenameNote(val noteId: Long) : NoteScreenUiErrors
+    data object FailedToCreateNewTask : NoteScreenUiErrors
+    data class FailedToRenameTask(val taskId: Long) : NoteScreenUiErrors
+    data class FailedToDeleteTask(val taskId: Long) : NoteScreenUiErrors
+    data class FailedToSyncNoteStatus(val noteId: Long) : NoteScreenUiErrors
 }
 
 data class NoteScreenState(

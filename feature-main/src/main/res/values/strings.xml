@@ -26,6 +26,8 @@
     <string name="main_screen_placeholder">No notes found!
 
         Add new note by pressing + in the bottom right corner.</string>
+    <string name="main_screen_error_failed_to_create_new_note">Failed to create new note</string>
+    <string name="main_screen_error_failed_to_delete_notes">Failed to delete selected notes</string>
 
     <!-- NoteScreenAppBar -->
     <string name="note_screen_app_bar_status_in_progress">In Progress</string>
@@ -37,6 +39,16 @@
         Add new task by pressing + in the bottom right corner.</string>
     <string name="note_screen_error_title">Error!</string>
     <string name="note_screen_error_retry">Retry</string>
+    
+    <string name="note_screen_error_note_not_found">Note not found (id = %1$d)</string>
+    <string name="note_screen_error_task_not_found">Task not found (id = %1$d)</string>
+    <string name="note_screen_error_failed_to_update_task_status">Failed to update task status (id = %1$d)</string>
+    <string name="note_screen_error_failed_to_delete_note">Failed to delete note (id = %1$d)</string>
+    <string name="note_screen_error_failed_to_rename_note">Failed to rename note (id = %1$d)</string>
+    <string name="note_screen_error_failed_to_create_new_task">Failed to create new task</string>
+    <string name="note_screen_error_failed_to_rename_task">Failed to rename task (id = %1$d)</string>
+    <string name="note_screen_error_failed_to_delete_task">Failed to delete task (id = %1$d)</string>
+    <string name="note_screen_error_failed_to_sync_note_status">Failed to sync note status (id = %1$d)</string>
 
     <string name="note_screen_task_rename_title">Rename task</string>
     <string name="note_screen_task_rename_confirm">Rename</string>
