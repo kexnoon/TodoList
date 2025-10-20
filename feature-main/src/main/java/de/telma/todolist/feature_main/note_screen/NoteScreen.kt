@@ -115,8 +115,8 @@ fun NoteScreen(
 private fun StateResult(
     modifier: Modifier = Modifier,
     screenState: NoteScreenState,
-    scaffoldActions: ScaffoldActions,
-    itemActions: ItemActions
+    scaffoldActions: ScaffoldActions = ScaffoldActions(),
+    itemActions: ItemActions = ItemActions()
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -179,7 +179,7 @@ private fun StateLoading(modifier: Modifier = Modifier) {
 private fun StateError(
     modifier: Modifier = Modifier,
     error: NoteScreenUiErrors,
-    onRetryPressed: () -> Unit
+    onRetryPressed: () -> Unit = { }
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -221,8 +221,8 @@ private fun errorHandler(error: NoteScreenUiErrors): String {
 private fun TaskRenameDialog(
     taskId: Long,
     currentTitle: String,
-    onConfirm: (Long, String) -> Unit,
-    onDismiss: () -> Unit
+    onConfirm: (Long, String) -> Unit = { _, _ -> },
+    onDismiss: () -> Unit = { }
 ) {
     InputDialog(
         title = stringResource(R.string.note_screen_task_rename_title),
@@ -237,8 +237,8 @@ private fun TaskRenameDialog(
 
 @Composable
 private fun AddTaskDialog(
-    onConfirm: (String) -> Unit,
-    onDismiss: () -> Unit
+    onConfirm: (String) -> Unit = { _ -> },
+    onDismiss: () -> Unit = { }
 ) {
     InputDialog(
         title = stringResource(R.string.note_screen_add_task_title),
@@ -252,8 +252,8 @@ private fun AddTaskDialog(
 
 @Composable
 private fun DeleteNoteDialog(
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit
+    onConfirm: () -> Unit = { },
+    onDismiss: () -> Unit = { }
 ) {
     BasicDialog(
         title = stringResource(R.string.note_screen_delete_note_title),
@@ -268,8 +268,8 @@ private fun DeleteNoteDialog(
 @Composable
 private fun NoteRenameDialog(
     currentTitle: String,
-    onConfirm: (String) -> Unit,
-    onDismiss: () -> Unit
+    onConfirm: (String) -> Unit = { _ -> },
+    onDismiss: () -> Unit = { }
 ) {
     InputDialog(
         title = stringResource(R.string.note_screen_rename_note_title),
@@ -287,9 +287,16 @@ private fun NoteRenameDialog(
 private fun StateResult_Default_Preview() {
     TodoListTheme {
         val noteId = 0L
-        val appBarState =
-            NoteScreenAppBarModel(noteId = noteId, title = "Test Note", isComplete = false)
-        val task = TaskItemModel(id = 0, title = "Item", isCompleted = false)
+        val appBarState = NoteScreenAppBarModel(
+            noteId = noteId,
+            title = "Test Note",
+            isComplete = false
+        )
+        val task = TaskItemModel(
+            id = 0,
+            title = "Item",
+            isCompleted = false
+        )
 
         var tasksList by rememberSaveable {
             mutableStateOf(List(10) { index ->
@@ -308,15 +315,10 @@ private fun StateResult_Default_Preview() {
             )
         }
 
-        val scaffoldActions = ScaffoldActions()
-        val itemActions = ItemActions()
-
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             StateResult(
                 modifier = Modifier.fillMaxSize(),
-                screenState = state,
-                scaffoldActions,
-                itemActions
+                screenState = state
             )
         }
     }
@@ -327,26 +329,23 @@ private fun StateResult_Default_Preview() {
 private fun StateResult_NoTasks_Preview() {
     TodoListTheme {
         val noteId = 0L
-        val appBarState =
-            NoteScreenAppBarModel(noteId = noteId, title = "Empty note", isComplete = false)
+        val appBarState = NoteScreenAppBarModel(
+                noteId = noteId, title = "Empty note", isComplete = false
+        )
 
         val state by rememberSaveable {
             mutableStateOf(
-                NoteScreenState(
-                    noteId, appBarState, listOf()
-                )
+                NoteScreenState(noteId, appBarState, listOf())
             )
         }
 
-        val scaffoldActions = ScaffoldActions()
-        val itemActions = ItemActions()
-
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
             StateResult(
                 modifier = Modifier.fillMaxSize(),
-                screenState = state,
-                scaffoldActions,
-                itemActions
+                screenState = state
             )
         }
     }
@@ -365,19 +364,21 @@ private fun StateLoading_Preview() {
 @Preview(showBackground = true)
 private fun StateError_Preview() {
     TodoListTheme {
-        StateError(error = NoteScreenUiErrors.FailedToCreateNewTask, onRetryPressed = {})
+        StateError(
+            error = NoteScreenUiErrors.FailedToCreateNewTask
+        )
     }
 }
 
 private data class ScaffoldActions(
-    val onRenamePressed: () -> Unit = {},
-    val onDeletePressed: () -> Unit = {},
-    val onBackPressed: () -> Unit = {},
-    val onAddTaskPressed: () -> Unit = {}
+    val onRenamePressed: () -> Unit = { },
+    val onDeletePressed: () -> Unit = { },
+    val onBackPressed: () -> Unit = { },
+    val onAddTaskPressed: () -> Unit = { }
 )
 
 private data class ItemActions(
-    val onItemClicked: (taskId: Long) -> Unit = {},
-    val onRenamePressed: (taskId: Long) -> Unit = {},
-    val onDeletePressed: (taskId: Long) -> Unit = {}
+    val onItemClicked: (taskId: Long) -> Unit = { },
+    val onRenamePressed: (taskId: Long) -> Unit = { },
+    val onDeletePressed: (taskId: Long) -> Unit = { }
 )

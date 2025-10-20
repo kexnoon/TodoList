@@ -185,7 +185,7 @@ private fun StateError(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TextBodyMedium(text = stringResource(R.string.main_screen_error_title))
-            TextBodyMedium(text = ErrorHandler(error = error))
+            TextBodyMedium(text = errorHandler(error))
             Button(onClick = onRetryPressed) {
                 Text(stringResource(R.string.main_screen_error_retry))
             }
@@ -195,7 +195,7 @@ private fun StateError(
 
 
 @Composable
-private fun ErrorHandler(error: MainScreenUiErrors): String {
+private fun errorHandler(error: MainScreenUiErrors): String {
     return when (error) {
         is MainScreenUiErrors.FailedToCreateNewNote ->
             stringResource(R.string.main_screen_error_failed_to_create_new_note)
