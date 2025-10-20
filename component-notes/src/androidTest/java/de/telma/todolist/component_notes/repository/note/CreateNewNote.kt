@@ -18,8 +18,6 @@ import kotlin.test.assertTrue
 class CreateNewNote: BaseRepositoryTest() {
     lateinit var repository: NoteRepository
 
-    private val updateTimestamp1 = "2022-12-13T14:15:16Z"
-
     @Before
     override fun setUp() {
         super.setUp()
@@ -29,7 +27,7 @@ class CreateNewNote: BaseRepositoryTest() {
     @Test
     fun createNewNote_successfully_creates_new_note() = runTest {
         val expectedTitle = "new note"
-        val creationTimestamp = updateTimestamp1
+        val creationTimestamp = getUpdatedTimestamp()
 
         val newNoteID = repository.createNewNote(expectedTitle, creationTimestamp)
         assertTrue(newNoteID == 1L, "createNewNote returned a note with wrong ID! New Note's ID: $newNoteID")
