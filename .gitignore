@@ -71,3 +71,6 @@ crashlytics.properties
 # Others
 .DS_Store
 /.idea/kotlinc.xml
+/storage/schemas/de.telma.todolist.storage.database.AppDatabase/8.json
+/.idea/androidTestResultsUserPreferences.xml
+/.idea/deviceManager.xml
