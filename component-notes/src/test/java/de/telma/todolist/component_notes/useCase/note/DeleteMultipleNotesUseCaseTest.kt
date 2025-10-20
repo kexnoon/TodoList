@@ -12,12 +12,12 @@ import kotlin.test.assertEquals
 
 class DeleteMultipleNotesUseCaseTest: BaseNoteComponentUnitTest() {
     private lateinit var notesRepository: NoteRepository
-    private lateinit var useCase: DeleteMultipleNotesUseCase
+    private lateinit var useCase: DeleteNoteUseCase
 
     @Before
     fun setUp() {
         notesRepository = mockk<NoteRepository>()
-        useCase = DeleteMultipleNotesUseCase(notesRepository)
+        useCase = DeleteNoteUseCase(notesRepository)
     }
 
     @Test
@@ -36,7 +36,7 @@ class DeleteMultipleNotesUseCaseTest: BaseNoteComponentUnitTest() {
 
         // ASSERT
         assertEquals(
-            expected = DeleteMultipleNotesUseCase.Result.SUCCESS,
+            expected = DeleteNoteUseCase.Result.SUCCESS,
             actual = result
         )
         coVerify(exactly = 1) { notesRepository.deleteNote(note1) }
@@ -46,7 +46,7 @@ class DeleteMultipleNotesUseCaseTest: BaseNoteComponentUnitTest() {
     @Test
     fun `should fail if not all notes are deleted`() = runTest {
         // SETUP
-        val useCase = DeleteMultipleNotesUseCase(notesRepository)
+        val useCase = DeleteNoteUseCase(notesRepository)
         val note1 = getNote()
         val note2 = getNote()
 
@@ -60,7 +60,7 @@ class DeleteMultipleNotesUseCaseTest: BaseNoteComponentUnitTest() {
 
         // ASSERT
         assertEquals(
-            expected = DeleteMultipleNotesUseCase.Result.FAILURE,
+            expected = DeleteNoteUseCase.Result.FAILURE,
             actual = result
         )
         coVerify(exactly = 1) { notesRepository.deleteNote(note1) }

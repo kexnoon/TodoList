@@ -4,8 +4,8 @@ import androidx.lifecycle.viewModelScope
 import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.model.NoteStatus
 import de.telma.todolist.component_notes.repository.NoteRepository
-import de.telma.todolist.component_notes.useCase.task.CreateNewTaskUseCase
 import de.telma.todolist.component_notes.useCase.note.DeleteNoteUseCase
+import de.telma.todolist.component_notes.useCase.task.CreateNewTaskUseCase
 import de.telma.todolist.component_notes.useCase.task.DeleteTaskUseCase
 import de.telma.todolist.component_notes.useCase.note.RenameNoteUseCase
 import de.telma.todolist.component_notes.useCase.task.RenameTaskUseCase
@@ -29,7 +29,6 @@ class NoteScreenViewModel(
     private val coordinator: NavigationCoordinator,
 
     private val noteRepository: NoteRepository,
-
     private val renameNoteUseCase: RenameNoteUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase,
 
