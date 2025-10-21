@@ -1,8 +1,8 @@
-# Notes App – Showcase Project
+# TodoList – Showcase Project
 
 ## 📘 Overview
 
-This project was initially planned to be a simple note-taking application inspired by the default notes app found on most smartphones (hence the name TodoApp). However, after sending a lot of time on robust and scalable architecture, I've decided to turn this project into a full-scale task-managing application. Additionally I'm planning to transition this app to KMP and Compose Multiplatform so it could be released both on Android and iOs.
+This project was initially planned to be a simple note-taking application inspired by the default notes app found on most smartphones (hence the name TodoList). However, after spending a lot of time on robust and scalable architecture, I've decided to turn this project into a full-scale task-managing application. Additionally I'm planning to add budgeting module for personal finances managment and transition this app to KMP and Compose Multiplatform so it could be released both on Android and iOs.
 
 While its features are (so far) minimal by design, the architecture is deliberately more complex to showcase my skills as a developer. This includes practices and design patterns that would typically be considered over-engineering for an app of this size but serve to highlight capabilities in modular architecture, clean code, and modern Android development.
 
