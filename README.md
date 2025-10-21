@@ -2,7 +2,10 @@
 
 ## 📘 Overview
 
-This project is a simple note-taking application inspired by the default notes app found on most smartphones. While its features are minimal by design, the architecture is deliberately more complex to showcase my skills as a developer. This includes practices and design patterns that would typically be considered over-engineering for an app of this size but serve to highlight capabilities in modular architecture, clean code, and modern Android development.
+This project was initially planned to be a simple note-taking application inspired by the default notes app found on most smartphones (hence the name TodoApp). However, after sending a lot of time on robust and scalable architecture, I've decided to turn this project into a full-scale task-managing application. Additionally I'm planning to transition this app to KMP and Compose Multiplatform so it could be released both on Android and iOs.
+
+While its features are (so far) minimal by design, the architecture is deliberately more complex to showcase my skills as a developer. This includes practices and design patterns that would typically be considered over-engineering for an app of this size but serve to highlight capabilities in modular architecture, clean code, and modern Android development.
+
 
 ## 🛠 Tech Stack
 
@@ -11,13 +14,13 @@ This project is a simple note-taking application inspired by the default notes a
 - **Koin**
 - **Room**
 
-## 🧭 Project Structure
+## 📚 Project Structure
 
 ![Modules Diagram](docs/modules_diagram.png)
 
 ```
 :app               → Base application module
-:app-example       → Demo app showcasing UI-layer architecture and navigation
+:app-example       → Demo app showcasing a simplified version of architecture and navigation
 :core-ui           → Shared UI components (navigation, design system, etc.)
 :feature-main      → Main feature module for viewing, creating, and editing notes
 :feature-example   → Sample feature used in :app-example
@@ -28,28 +31,27 @@ This project is a simple note-taking application inspired by the default notes a
 Modules documentation
 - [:component-notes](docs/component_notes.md)
 
-You can read more about some aspects of this app here:
+Here you can read more about some technical aspects of this app:
 - [Modularization](docs/modularization.md)
 - [Navigation](docs/navigation.md)
 - [Gradle Convention Plugins](docs/convention_plugins.md)
 
-## 🎯 Current Goal
-
-The primary focus is building a minimum viable version of the application that supports:
-
-- Displaying a list of notes (currently as simple TODO items)
-- Full CRUD operations (Create, Read, Update, Delete)
-
-## 🧩 Upcoming Features
+## 🎯 Current Goals (2 weeks)
 
 - 🔍 **Search** – Quickly find notes by keywords
 - 🗂 **Folders** – Organize notes into custom categories
 
-## 🌟 Potential Enhancements
+## 🧩 Upcoming Features (2 months)
 
-- 🔐 **Authentication & Sync** – Firebase integration for login and cloud storage
+- 🧩 **Transition to KMP and Compose Multiplatform**
 - 🖼 **Rich Notes** – Support for text, images, media files, etc.
 - ⏰ **Reminders** – Add alarms or time-based notifications
+
+## 🌟 Potential Enhancements
+
+- 📒 **Projects** - Uniting Notes into Projects with goals, milestones and deadlines
+- 🔐 **Authentication & Sync** – Firebase integration for login and cloud storage
+- 💵 **Budgeting module** – Potential module for personal expenses assessment
 - 🧠 **More Tools** – Calendar, prioritization, and more
 
 ---

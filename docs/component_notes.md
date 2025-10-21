@@ -42,24 +42,13 @@ The `:component-notes` module implements all core business logic for `Note` and 
 
 ## Known issues
 
-- `update`/`delete` methods in repositories are not TDD-friendly and are tricky to mock or isolate from storage.
-- Returning `Boolean` instead of rich error results is a compromise for MVP speed; future refactoring may use `Result`/sealed classes.
-- Redundant use of `noteId` in `TaskRepository` methods should be eliminated during refactoring.
 - Current integration tests for repositories cover both repository and database/DAO logic; with more unit tests for DAOs in `:storage`, some of these may be redundant.
-- The public interface of repositories is broader than strictly needed (some should be internal/glue-only).
-
 ---
 
 ## Possible improvements
 
-- Expand the use-case layer for better separation and easier testing.
-- Replace `Boolean` return types in repositories with sealed error/result types for clarity.
-- Move to TDD when adding new features or refactoring.
-- Eliminate unnecessary propagation of `noteId` in task-related methods.
-- Add full error handling at the business logic layer.
 - Write unit tests for DAOs in `:storage` and migrate some repository integration tests to unit tests.
 - Add end-to-end and UI tests for feature completeness.
-- Refactor repository interfaces to minimize public API surface.
 
 ## Conclusion
 
