@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import de.telma.feature_example.ExampleModuleErrors
 import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.core_ui.theme.TodoListTheme
 
@@ -40,7 +41,7 @@ internal fun DummyScreenOne(
                     onButtonClick = { viewModel.onButtonClick() }
                 )
                 is UiState.Error -> {
-                    val errorMessage = (uiState as UiState.Error).errorMessage
+                    val errorMessage = (uiState as UiState.Error).uiError
                     StateError(errorMessage)
                 }
             }
@@ -74,12 +75,16 @@ private fun StateResult(
 }
 
 @Composable
-private fun StateError(message: String) {
+private fun StateError(error: ExampleModuleErrors) {
     Column(
         modifier = Modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text("Error! $message")
+        when (error) {
+            ExampleModuleErrors.GenericError -> {
+                Text("Error! Something went wrong!")
+            }
+        }
     }
 
 }
@@ -104,6 +109,6 @@ private fun StateResult_Preview() {
 @Composable
 private fun StateError_Preview() {
     TodoListTheme {
-        StateError("Error message")
+        StateError(ExampleModuleErrors.GenericError)
     }
 }

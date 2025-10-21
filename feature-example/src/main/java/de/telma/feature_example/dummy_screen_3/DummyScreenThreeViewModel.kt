@@ -2,6 +2,7 @@ package de.telma.feature_example.dummy_screen_3
 
 import androidx.lifecycle.viewModelScope
 import de.telma.feature_example.ExampleDestination
+import de.telma.feature_example.ExampleModuleErrors
 import de.telma.todolist.core_ui.state.EmptyUiEvents
 import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.core_ui.base.BaseViewModel
@@ -14,8 +15,8 @@ import kotlinx.coroutines.launch
 
 internal class DummyScreenThreeViewModel(
     private val coordinator: NavigationCoordinator
-): BaseViewModel<Unit, EmptyUiEvents?>() {
-    override var _uiState = MutableStateFlow<UiState<Unit>>(UiState.Result(Unit))
+): BaseViewModel<Unit, EmptyUiEvents?, ExampleModuleErrors>() {
+    override var _uiState = MutableStateFlow<UiState<Unit, ExampleModuleErrors>>(UiState.Result(Unit))
     override var _uiEvents = MutableStateFlow<EmptyUiEvents?>(null)
 
     init {
@@ -40,7 +41,7 @@ internal class DummyScreenThreeViewModel(
 
     fun onShowErrorPressed() {
         viewModelScope.launch {
-            showError("Generic Error!")
+            showError(ExampleModuleErrors.GenericError)
         }
     }
 

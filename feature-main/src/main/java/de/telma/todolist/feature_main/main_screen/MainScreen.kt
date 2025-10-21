@@ -197,10 +197,8 @@ private fun StateError(
 @Composable
 private fun errorHandler(error: MainScreenUiErrors): String {
     return when (error) {
-        is MainScreenUiErrors.FailedToCreateNewNote ->
-            stringResource(R.string.main_screen_error_failed_to_create_new_note)
-        is MainScreenUiErrors.FailedToDeleteNotes ->
-            stringResource(R.string.main_screen_error_failed_to_delete_notes)
+        is MainScreenUiErrors.FailedToCreateNewNote -> stringResource(R.string.main_screen_error_failed_to_create_new_note)
+        is MainScreenUiErrors.FailedToDeleteNotes -> stringResource(R.string.main_screen_error_failed_to_delete_notes)
     }
 }
 

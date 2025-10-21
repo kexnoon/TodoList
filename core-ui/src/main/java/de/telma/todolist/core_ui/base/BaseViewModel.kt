@@ -37,5 +37,4 @@ abstract class BaseViewModel<T, R: BaseUiEvents?, E: BaseUiError?> : ViewModel()
             _uiEvents.value = it
         }
     }
-
 }

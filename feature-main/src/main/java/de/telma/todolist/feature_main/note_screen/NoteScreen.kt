@@ -196,24 +196,15 @@ private fun StateError(
 @Composable
 private fun errorHandler(error: NoteScreenUiErrors): String {
     return when (error) {
-        is NoteScreenUiErrors.NoteNotFound ->
-            stringResource(R.string.note_screen_error_note_not_found, error.noteId)
-        is NoteScreenUiErrors.TaskNotFound ->
-            stringResource(R.string.note_screen_error_task_not_found, error.taskId)
-        is NoteScreenUiErrors.FailedToUpdateTaskStatus ->
-            stringResource(R.string.note_screen_error_failed_to_update_task_status, error.taskId)
-        is NoteScreenUiErrors.FailedToDeleteNote ->
-            stringResource(R.string.note_screen_error_failed_to_delete_note, error.noteId)
-        is NoteScreenUiErrors.FailedToRenameNote ->
-            stringResource(R.string.note_screen_error_failed_to_rename_note, error.noteId)
-        is NoteScreenUiErrors.FailedToCreateNewTask ->
-            stringResource(R.string.note_screen_error_failed_to_create_new_task)
-        is NoteScreenUiErrors.FailedToRenameTask ->
-            stringResource(R.string.note_screen_error_failed_to_rename_task, error.taskId)
-        is NoteScreenUiErrors.FailedToDeleteTask ->
-            stringResource(R.string.note_screen_error_failed_to_delete_task, error.taskId)
-        is NoteScreenUiErrors.FailedToSyncNoteStatus ->
-            stringResource(R.string.note_screen_error_failed_to_sync_note_status, error.noteId)
+        is NoteScreenUiErrors.NoteNotFound -> stringResource(R.string.note_screen_error_note_not_found, error.noteId)
+        is NoteScreenUiErrors.TaskNotFound -> stringResource(R.string.note_screen_error_task_not_found, error.taskId)
+        is NoteScreenUiErrors.FailedToUpdateTaskStatus -> stringResource(R.string.note_screen_error_failed_to_update_task_status, error.taskId)
+        is NoteScreenUiErrors.FailedToDeleteNote -> stringResource(R.string.note_screen_error_failed_to_delete_note, error.noteId)
+        is NoteScreenUiErrors.FailedToRenameNote -> stringResource(R.string.note_screen_error_failed_to_rename_note, error.noteId)
+        is NoteScreenUiErrors.FailedToCreateNewTask -> stringResource(R.string.note_screen_error_failed_to_create_new_task)
+        is NoteScreenUiErrors.FailedToRenameTask -> stringResource(R.string.note_screen_error_failed_to_rename_task, error.taskId)
+        is NoteScreenUiErrors.FailedToDeleteTask -> stringResource(R.string.note_screen_error_failed_to_delete_task, error.taskId)
+        is NoteScreenUiErrors.FailedToSyncNoteStatus -> stringResource(R.string.note_screen_error_failed_to_sync_note_status, error.noteId)
     }
 }
 
