@@ -2,6 +2,7 @@ package de.telma.todolist.feature_main.main_screen
 
 import androidx.lifecycle.viewModelScope
 import de.telma.todolist.component_notes.model.Note
+import de.telma.todolist.component_notes.model.SearchModel
 import de.telma.todolist.component_notes.repository.NoteRepository
 import de.telma.todolist.component_notes.useCase.note.CreateNewNoteUseCase
 import de.telma.todolist.component_notes.useCase.note.DeleteNoteUseCase
@@ -27,13 +28,15 @@ class MainScreenViewModel(
     override var _uiEvents: MutableStateFlow<MainScreenUiEvents?> = MutableStateFlow(null)
 
     private var notes: List<Note> = listOf()
+    private var search: SearchModel = SearchModel()
+
 
     init {
         getAllNotes()
     }
     fun getAllNotes() {
         viewModelScope.launch {
-            repository.getAllNotes().collect { collectedNotes ->
+            repository.getNotes(search = search).collect { collectedNotes ->
                 notes = collectedNotes
                 showResult(
                     MainScreenState(notes = collectedNotes.map { it.toNotesListItemModel() })
