@@ -24,7 +24,8 @@ internal fun NoteWithTasks.toNote(): Note {
                 status = task.status.toNoteTaskStatus()
             )
         },
-        lastUpdatedTimestamp = this.note.lastUpdatedTimestamp
+        createdTimestamp = this.note.createdTimestamp,
+        lastUpdatedTimestamp = this.note.lastUpdatedTimestamp,
     )
 }
 
@@ -50,6 +51,7 @@ internal fun Note.toNoteEntity(): NoteEntity {
         id = this.id,
         title = this.title,
         status = this.status.statusValue,
+        createdTimestamp = this.createdTimestamp,
         lastUpdatedTimestamp = this.lastUpdatedTimestamp
     )
 }

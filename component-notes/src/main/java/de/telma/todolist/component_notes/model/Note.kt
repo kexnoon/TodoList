@@ -5,6 +5,7 @@ data class Note(
     val title: String = "Untitled",
     val status: NoteStatus,
     val tasksList: List<NoteTask>,
+    val createdTimestamp: String,
     val lastUpdatedTimestamp: String
 )
 

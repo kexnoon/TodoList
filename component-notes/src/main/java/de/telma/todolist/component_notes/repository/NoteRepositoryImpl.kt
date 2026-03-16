@@ -1,7 +1,10 @@
 package de.telma.todolist.component_notes.repository
 
+import androidx.sqlite.db.SimpleSQLiteQuery
 import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.model.NoteStatus
+import de.telma.todolist.component_notes.model.SearchModel
+import de.telma.todolist.component_notes.utils.SqlHelper
 import de.telma.todolist.component_notes.utils.toNote
 import de.telma.todolist.component_notes.utils.toNoteEntity
 import de.telma.todolist.component_notes.utils.toNotesList
@@ -17,9 +20,12 @@ import kotlinx.coroutines.withContext
 
 internal class NoteRepositoryImpl(private val database: AppDatabase): NoteRepository {
 
-    override suspend fun getAllNotes(): Flow<List<Note>> {
+    override suspend fun getNotes(search: SearchModel?): Flow<List<Note>> {
+        val queryModel = SqlHelper().getNotesQueryModel(search ?: SearchModel())
+        val query = SimpleSQLiteQuery(queryModel.query, queryModel.args.toTypedArray())
+
         return database.noteDao()
-            .getAllNotesWithTasks()
+            .getNotesWithTasks(query)
             .map(List<NoteWithTasks>::toNotesList)
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)

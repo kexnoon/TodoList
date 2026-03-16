@@ -6,8 +6,10 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.ABORT
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
+import androidx.room.RawQuery
 import androidx.room.Transaction
 import androidx.room.Update
+import androidx.sqlite.db.SupportSQLiteQuery
 import de.telma.todolist.storage.database.entity.NoteEntity
 import de.telma.todolist.storage.database.entity.NoteWithTasks
 import kotlinx.coroutines.flow.Flow
@@ -18,9 +20,8 @@ interface NoteDao {
     @Query("SELECT * FROM notes WHERE id = :noteId")
     fun getNoteWithTasksById(noteId: Long): Flow<NoteWithTasks?>
 
-    @Transaction
-    @Query("SELECT * FROM notes")
-    fun getAllNotesWithTasks(): Flow<List<NoteWithTasks>>
+    @RawQuery(observedEntities = [NoteEntity::class])
+    fun getNotesWithTasks(query: SupportSQLiteQuery): Flow<List<NoteWithTasks>>
 
     @Insert(onConflict = ABORT)
     suspend fun insertNote(entity: NoteEntity): Long

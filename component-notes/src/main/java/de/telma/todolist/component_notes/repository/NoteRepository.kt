@@ -1,13 +1,11 @@
 package de.telma.todolist.component_notes.repository
 
 import de.telma.todolist.component_notes.model.Note
+import de.telma.todolist.component_notes.model.SearchModel
 import kotlinx.coroutines.flow.Flow
 
 interface NoteRepository {
-    /**
-     * Used on MainScreen to show the list of all notes
-     */
-    suspend fun getAllNotes(): Flow<List<Note>>
+    suspend fun getNotes(search: SearchModel? = null): Flow<List<Note>>
 
     /**
      * Used on NoteScreen to show the selected not
