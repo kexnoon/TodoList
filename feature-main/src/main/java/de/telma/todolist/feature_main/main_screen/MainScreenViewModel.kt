@@ -3,7 +3,6 @@ package de.telma.todolist.feature_main.main_screen
 import androidx.lifecycle.viewModelScope
 import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.model.SearchModel
-import de.telma.todolist.component_notes.repository.NoteRepository
 import de.telma.todolist.component_notes.useCase.note.CreateNewNoteUseCase
 import de.telma.todolist.component_notes.useCase.note.DeleteNoteUseCase
 import de.telma.todolist.component_notes.useCase.note.GetNotesUseCase
