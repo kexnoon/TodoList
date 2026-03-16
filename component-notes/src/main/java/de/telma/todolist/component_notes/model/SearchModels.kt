@@ -9,4 +9,12 @@ data class Filters(
 data class SearchModel(
     val query: String = "",
     val filters: Filters = Filters()
-)
+) {
+    fun normalized() = copy(
+        query = query.trim().takeIf { it.isNotEmpty() } ?: "",
+        filters = filters.copy(
+            timestampFrom = filters.timestampFrom?.trim()?.takeIf { it.isNotEmpty() },
+            timestampTo = filters.timestampTo?.trim()?.takeIf { it.isNotEmpty() }
+        )
+    )
+}
