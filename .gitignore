@@ -77,3 +77,5 @@ crashlytics.properties
 /storage/schemas/de.telma.todolist.storage.database.AppDatabase/8.json
 /.idea/androidTestResultsUserPreferences.xml
 /.idea/deviceManager.xml
+/app/src/main/assets/todo_list_dev.db-shm
+/app/src/main/assets/todo_list_dev.db-wal

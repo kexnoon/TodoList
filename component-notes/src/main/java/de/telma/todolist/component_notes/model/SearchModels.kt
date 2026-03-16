@@ -4,8 +4,10 @@ enum class SortBy { TITLE, STATUS, CREATED_AT, UPDATED_AT }
 enum class SortOrder { ASC, DESC }
 
 data class Filters(
-    val timestampFrom: String? = null,
-    val timestampTo: String? = null,
+    val createdFrom: String? = null,
+    val createdTo: String? = null,
+    val updatedFrom: String? = null,
+    val updatedTo: String? = null,
     val status: NoteStatus? = null
 )
 
@@ -18,8 +20,10 @@ data class SearchModel(
     fun normalized() = copy(
         query = query?.trim()?.takeIf { it.isNotEmpty() },
         filters = filters.copy(
-            timestampFrom = filters.timestampFrom?.trim()?.takeIf { it.isNotEmpty() },
-            timestampTo = filters.timestampTo?.trim()?.takeIf { it.isNotEmpty() }
+            createdFrom = filters.createdFrom?.trim()?.takeIf { it.isNotEmpty() },
+            createdTo = filters.createdTo?.trim()?.takeIf { it.isNotEmpty() },
+            updatedFrom = filters.updatedFrom?.trim()?.takeIf { it.isNotEmpty() },
+            updatedTo = filters.updatedTo?.trim()?.takeIf { it.isNotEmpty() },
         )
     )
 }
