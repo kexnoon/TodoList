@@ -34,14 +34,16 @@ open class BaseNoteComponentUnitTest {
         id: Long = (0L..10000L).random(),
         title: String? = null,
         status: NoteStatus = NoteStatus.IN_PROGRESS,
-        timestamp: String = getDefaultTimestamp(),
+        createdTimestamp: String = getDefaultTimestamp(),
+        lastUpdatedTimestamp: String = getDefaultTimestamp(),
         tasks: List<NoteTask> = listOf()
     ) = Note(
         id = id,
         title = title ?: "Note $id",
         status = status,
         tasksList = tasks,
-        lastUpdatedTimestamp = timestamp
+        createdTimestamp = createdTimestamp,
+        lastUpdatedTimestamp = lastUpdatedTimestamp
     )
 
     fun getDefaultTimestamp(): String = "2023-01-01T10:00:00Z"

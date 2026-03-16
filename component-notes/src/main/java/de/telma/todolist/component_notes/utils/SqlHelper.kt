@@ -18,17 +18,15 @@ internal class SqlHelper() {
         if (filters.status != null) {
             addClause("status = ?", filters.status.statusValue)
         }
-        if (filters.createdFrom != null) {
-            addClause("createdTimestamp >= ?", filters.createdFrom)
-        }
-        if (filters.createdTo   != null) {
-            addClause("createdTimestamp <= ?", filters.createdTo)
-        }
-        if (filters.updatedFrom != null) {
-            addClause("lastUpdatedTimestamp >= ?", filters.updatedFrom)
-        }
-        if (filters.updatedTo   != null) {
-            addClause("lastUpdatedTimestamp <= ?", filters.updatedTo)
+        val useCreatedRange = filters.createdFrom != null || filters.createdTo != null
+        val useUpdatedRange = !useCreatedRange && (filters.updatedFrom != null || filters.updatedTo != null)
+
+        if (useCreatedRange) {
+            if (filters.createdFrom != null) addClause("createdTimestamp >= ?", filters.createdFrom)
+            if (filters.createdTo != null) addClause("createdTimestamp <= ?", filters.createdTo)
+        } else if (useUpdatedRange) {
+            if (filters.updatedFrom != null) addClause("lastUpdatedTimestamp >= ?", filters.updatedFrom)
+            if (filters.updatedTo != null) addClause("lastUpdatedTimestamp <= ?", filters.updatedTo)
         }
 
         val whereSql = if (whereParts.isEmpty()) "" else "WHERE " + whereParts.joinToString(" AND ")

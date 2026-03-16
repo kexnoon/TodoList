@@ -45,7 +45,7 @@ internal class NoteRepositoryImpl(private val database: AppDatabase): NoteReposi
     ): Long = withContext(Dispatchers.IO) {
         val newNote = NoteEntity(
             id = 0,
-            status = NoteStatus.IN_PROGRESS.toString(), //default status for new notes
+            status = NoteStatus.IN_PROGRESS.statusValue, //default status for new notes
             title = title,
             createdTimestamp = timestamp,
             lastUpdatedTimestamp = timestamp

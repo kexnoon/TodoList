@@ -9,6 +9,9 @@ agent_setup.md
 # Files for the ART/Dalvik VM
 *.dex
 
+# JSON
+*.json
+
 # Java class files
 *.class
 

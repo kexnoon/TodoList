@@ -45,12 +45,14 @@ open class BaseRepositoryTest : KoinTest {
         title: String = "Test Note ${id}",
         status: NoteStatus = NoteStatus.IN_PROGRESS,
         tasksList: List<NoteTask> = listOf(),
+        createdTimestamp: String = getDefaultTimestamp(),
         lastUpdatedTimestamp: String = getDefaultTimestamp()
     ) = Note(
         id = id,
         title = title,
         status = status,
         tasksList = tasksList,
+        createdTimestamp = createdTimestamp,
         lastUpdatedTimestamp = lastUpdatedTimestamp
     )
 }

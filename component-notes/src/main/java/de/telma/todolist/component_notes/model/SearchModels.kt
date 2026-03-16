@@ -17,13 +17,21 @@ data class SearchModel(
     val sortOrder: SortOrder = SortOrder.DESC,
     val filters: Filters = Filters()
 ) {
-    fun normalized() = copy(
-        query = query?.trim()?.takeIf { it.isNotEmpty() },
-        filters = filters.copy(
+    fun normalized(): SearchModel {
+        val trimmedFilters = filters.copy(
             createdFrom = filters.createdFrom?.trim()?.takeIf { it.isNotEmpty() },
             createdTo = filters.createdTo?.trim()?.takeIf { it.isNotEmpty() },
             updatedFrom = filters.updatedFrom?.trim()?.takeIf { it.isNotEmpty() },
-            updatedTo = filters.updatedTo?.trim()?.takeIf { it.isNotEmpty() },
+            updatedTo = filters.updatedTo?.trim()?.takeIf { it.isNotEmpty() }
         )
-    )
+        val hasCreated = trimmedFilters.createdFrom != null || trimmedFilters.createdTo != null
+        val hasUpdated = trimmedFilters.updatedFrom != null || trimmedFilters.updatedTo != null
+        if (hasCreated && hasUpdated) {
+            throw IllegalArgumentException("Use either created* or updated* filters, not both in one request")
+        }
+        return copy(
+            query = query?.trim()?.takeIf { it.isNotEmpty() },
+            filters = trimmedFilters
+        )
+    }
 }
