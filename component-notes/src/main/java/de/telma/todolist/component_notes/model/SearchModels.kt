@@ -1,5 +1,8 @@
 package de.telma.todolist.component_notes.model
 
+enum class SortBy { TITLE, STATUS, CREATED_AT, UPDATED_AT }
+enum class SortOrder { ASC, DESC }
+
 data class Filters(
     val timestampFrom: String? = null,
     val timestampTo: String? = null,
@@ -8,6 +11,8 @@ data class Filters(
 
 data class SearchModel(
     val query: String = "",
+    val sortBy: SortBy = SortBy.UPDATED_AT,
+    val sortOrder: SortOrder = SortOrder.DESC,
     val filters: Filters = Filters()
 ) {
     fun normalized() = copy(
