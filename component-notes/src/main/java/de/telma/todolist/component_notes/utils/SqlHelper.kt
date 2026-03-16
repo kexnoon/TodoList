@@ -4,29 +4,32 @@ import de.telma.todolist.component_notes.model.SearchModel
 import de.telma.todolist.component_notes.model.SortBy
 import de.telma.todolist.component_notes.model.SortOrder
 
-internal class SqlHelper() {
-    private val whereParts = mutableListOf<String>()
-    private val args = mutableListOf<Any?>()
+internal class SqlHelper {
 
     fun getNotesQueryModel(search: SearchModel): SqlQueryModel {
+        val whereParts = mutableListOf<String>()
+        val args = mutableListOf<Any?>()
+
+        fun addClause(clause: String, value: Any?) {
+            whereParts.add(clause)
+            args.add(value)
+        }
+
         val normalized = search.normalized()
         val filters = normalized.filters
 
-        if (normalized.query != null) {
-            addClause("title LIKE '%' || ? || '%' COLLATE NOCASE", normalized.query)
-        }
-        if (filters.status != null) {
-            addClause("status = ?", filters.status.statusValue)
-        }
+        if (normalized.query != null) addClause("title LIKE '%' || ? || '%' COLLATE NOCASE", normalized.query)
+        if (filters.status != null) addClause("status = ?", filters.status.statusValue)
+
         val useCreatedRange = filters.createdFrom != null || filters.createdTo != null
         val useUpdatedRange = !useCreatedRange && (filters.updatedFrom != null || filters.updatedTo != null)
 
         if (useCreatedRange) {
-            if (filters.createdFrom != null) addClause("createdTimestamp >= ?", filters.createdFrom)
-            if (filters.createdTo != null) addClause("createdTimestamp <= ?", filters.createdTo)
+            filters.createdFrom?.let { addClause("createdTimestamp >= ?", it) }
+            filters.createdTo?.let { addClause("createdTimestamp <= ?", it) }
         } else if (useUpdatedRange) {
-            if (filters.updatedFrom != null) addClause("lastUpdatedTimestamp >= ?", filters.updatedFrom)
-            if (filters.updatedTo != null) addClause("lastUpdatedTimestamp <= ?", filters.updatedTo)
+            filters.updatedFrom?.let { addClause("lastUpdatedTimestamp >= ?", it) }
+            filters.updatedTo?.let { addClause("lastUpdatedTimestamp <= ?", it) }
         }
 
         val whereSql = if (whereParts.isEmpty()) "" else "WHERE " + whereParts.joinToString(" AND ")
@@ -47,12 +50,6 @@ internal class SqlHelper() {
 
         return SqlQueryModel(sql, args)
     }
-
-    private fun addClause(clause: String, value: Any?) {
-        whereParts.add(clause)
-        args.add(value)
-    }
-
 }
 
 data class SqlQueryModel(val query: String, val args: List<Any?>)

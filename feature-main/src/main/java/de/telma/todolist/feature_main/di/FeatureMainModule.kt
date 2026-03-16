@@ -9,7 +9,7 @@ val featureMainModule = module {
     viewModel {
         MainScreenViewModel(
             coordinator = get(),
-            repository = get(),
+            getNotesUseCase = get(),
             createNewNoteUseCase = get(),
             deleteNotesUseCase = get()
         )

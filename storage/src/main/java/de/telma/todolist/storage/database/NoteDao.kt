@@ -20,6 +20,7 @@ interface NoteDao {
     @Query("SELECT * FROM notes WHERE id = :noteId")
     fun getNoteWithTasksById(noteId: Long): Flow<NoteWithTasks?>
 
+    @Transaction
     @RawQuery(observedEntities = [NoteEntity::class])
     fun getNotesWithTasks(query: SupportSQLiteQuery): Flow<List<NoteWithTasks>>
 

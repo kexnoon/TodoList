@@ -6,6 +6,7 @@ import de.telma.todolist.component_notes.model.SearchModel
 import de.telma.todolist.component_notes.repository.NoteRepository
 import de.telma.todolist.component_notes.useCase.note.CreateNewNoteUseCase
 import de.telma.todolist.component_notes.useCase.note.DeleteNoteUseCase
+import de.telma.todolist.component_notes.useCase.note.GetNotesUseCase
 import de.telma.todolist.core_ui.base.BaseViewModel
 import de.telma.todolist.core_ui.navigation.NavEvent
 import de.telma.todolist.core_ui.navigation.NavigationCoordinator
@@ -20,7 +21,7 @@ import kotlinx.coroutines.launch
 
 class MainScreenViewModel(
     private val coordinator: NavigationCoordinator,
-    private val repository: NoteRepository,
+    private val getNotesUseCase: GetNotesUseCase,
     private val createNewNoteUseCase: CreateNewNoteUseCase,
     private val deleteNotesUseCase: DeleteNoteUseCase
 ): BaseViewModel<MainScreenState, MainScreenUiEvents?, MainScreenUiErrors>() {
@@ -36,7 +37,7 @@ class MainScreenViewModel(
     }
     fun getAllNotes() {
         viewModelScope.launch {
-            repository.getNotes(search = search).collect { collectedNotes ->
+            getNotesUseCase(search = search).collect { collectedNotes ->
                 notes = collectedNotes
                 showResult(
                     MainScreenState(notes = collectedNotes.map { it.toNotesListItemModel() })
