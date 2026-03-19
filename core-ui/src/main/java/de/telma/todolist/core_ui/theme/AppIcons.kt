@@ -4,10 +4,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.FilterAlt
+import androidx.compose.material.icons.outlined.Search
 
 object AppIcons {
     val rightArrow = Icons.AutoMirrored.Outlined.KeyboardArrowRight
@@ -17,4 +21,6 @@ object AppIcons {
     val add = Icons.Outlined.Add
     val edit = Icons.Outlined.Edit
     val back = Icons.AutoMirrored.Outlined.ArrowBack
+    val search = Icons.Outlined.Search
+    val filter = Icons.Outlined.FilterAlt
 }
