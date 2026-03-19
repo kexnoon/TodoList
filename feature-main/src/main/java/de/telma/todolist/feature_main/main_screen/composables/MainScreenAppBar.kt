@@ -35,22 +35,24 @@ import de.telma.todolist.feature_main.R
 @Composable
 fun MainScreenAppBar(
     modifier: Modifier,
-    isSelectionMode: Boolean,
-    selectionCount: Int = 0,
+    state: MainScreenAppBarState = MainScreenAppBarState.Default,
     onDeleteClick: () -> Unit = {},
     onClearSelectionClick: () -> Unit = {}
 ) {
-    val title = if (isSelectionMode) {
-        stringResource(R.string.main_screen_app_bar_title_selection_mode, selectionCount)
-    } else {
-        stringResource(R.string.main_screen_app_bar_title_default)
+    val title = when (state) {
+        is MainScreenAppBarState.Selection ->
+            stringResource(R.string.main_screen_app_bar_title_selection_mode, state.count)
+        is MainScreenAppBarState.Search ->
+            stringResource(R.string.main_screen_app_bar_title_search_mode, state.count)
+        MainScreenAppBarState.Default ->
+            stringResource(R.string.main_screen_app_bar_title_default)
     }
 
     Box(modifier = modifier) {
         TopAppBar(
             title = { Text(title) },
             navigationIcon = {
-                if (isSelectionMode) {
+                if (state is MainScreenAppBarState.Selection) {
                     IconButton(onClick = onClearSelectionClick) {
                         Icon(
                             imageVector = AppIcons.clear,
@@ -60,7 +62,7 @@ fun MainScreenAppBar(
                 }
             },
             actions = {
-                if (isSelectionMode) {
+                if (state is MainScreenAppBarState.Selection) {
                     IconButton(onClick = onDeleteClick) {
                         Icon(
                             imageVector = AppIcons.delete,
@@ -79,7 +81,7 @@ fun MainScreenAppBar(
 private fun MainScreenAppBar_Default_Preview() {
     MainScreenAppBar(
         modifier = Modifier,
-        isSelectionMode = false
+        state = MainScreenAppBarState.Default
     )
 }
 
@@ -88,8 +90,16 @@ private fun MainScreenAppBar_Default_Preview() {
 private fun MainScreenAppBar_SelectionMode_Preview() {
     MainScreenAppBar(
         modifier = Modifier,
-        isSelectionMode = true,
-        selectionCount = 3
+        state = MainScreenAppBarState.Selection(count = 3)
+    )
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun MainScreenAppBar_Search_Preview() {
+    MainScreenAppBar(
+        modifier = Modifier,
+        state = MainScreenAppBarState.Search(count = 2)
     )
 }
 
@@ -99,6 +109,7 @@ private fun MainScreenAppBar_SelectionMode_Preview() {
 @Preview(showBackground = true)
 private fun MainScreenAppBar_Playground_Preview() {
     var selectionMode by rememberSaveable { mutableStateOf(true) }
+    var searchMode by rememberSaveable { mutableStateOf(false) }
     var showAlertDialog by rememberSaveable { mutableStateOf(false) }
 
     Surface(modifier = Modifier.fillMaxSize()) {
@@ -110,8 +121,11 @@ private fun MainScreenAppBar_Playground_Preview() {
         ) {
             MainScreenAppBar(
                 modifier = Modifier.fillMaxWidth(),
-                isSelectionMode = selectionMode,
-                selectionCount = 3,
+                state = when {
+                    searchMode -> MainScreenAppBarState.Search(count = 2)
+                    selectionMode -> MainScreenAppBarState.Selection(count = 3)
+                    else -> MainScreenAppBarState.Default
+                },
                 onClearSelectionClick = { selectionMode = false },
                 onDeleteClick = { showAlertDialog = true }
             )
@@ -119,6 +133,9 @@ private fun MainScreenAppBar_Playground_Preview() {
                 Button(onClick = { selectionMode = true }) {
                     Text("Restore selection mode")
                 }
+            }
+            Button(onClick = { searchMode = !searchMode }) {
+                Text("Toggle search mode")
             }
         }
 
@@ -144,3 +161,8 @@ private fun MainScreenAppBar_Playground_Preview() {
     }
 }
 
+sealed interface MainScreenAppBarState {
+    data object Default : MainScreenAppBarState
+    data class Selection(val count: Int) : MainScreenAppBarState
+    data class Search(val count: Int) : MainScreenAppBarState
+}

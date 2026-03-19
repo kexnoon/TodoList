@@ -15,7 +15,13 @@ import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.feature_main.MainDestination
 import de.telma.todolist.feature_main.main_screen.models.NotesListItemModel
 import de.telma.todolist.feature_main.main_screen.models.toNotesListItemModel
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 class MainScreenViewModel(
@@ -28,21 +34,59 @@ class MainScreenViewModel(
     override var _uiEvents: MutableStateFlow<MainScreenUiEvents?> = MutableStateFlow(null)
 
     private var notes: List<Note> = listOf()
-    private var search: SearchModel = SearchModel()
-
+    private var _search: MutableStateFlow<SearchModel> = MutableStateFlow(SearchModel())
+    var search: StateFlow<SearchModel> = _search
+    private var getNotesJob: Job? = null
+    private var mainScreenState = MainScreenState()
 
     init {
+        observeSearch()
         getAllNotes()
     }
     fun getAllNotes() {
-        viewModelScope.launch {
-            getNotesUseCase(search = search).collect { collectedNotes ->
-                notes = collectedNotes
-                showResult(
-                    MainScreenState(notes = collectedNotes.map { it.toNotesListItemModel() })
-                )
+        getNotesJob?.cancel()
+        getNotesJob = viewModelScope.launch {
+            getNotesUseCase(search = search.value)
+                .collect { collectedNotes ->
+                    notes = collectedNotes
+                    val state = if (search.value.query.isNullOrEmpty()) {
+                         mainScreenState.copy(notes = collectedNotes.map { it.toNotesListItemModel() },)
+                    } else {
+                        mainScreenState.copy(
+                            searchQuery = search.value.query,
+                            notes = collectedNotes.map { it.toNotesListItemModel() },
+                            searchCounter = collectedNotes.size
+                        )
+                    }
+                    mainScreenState = state
+                    showResult(mainScreenState)
             }
         }
+    }
+
+    @OptIn(FlowPreview::class)
+    private fun observeSearch() {
+        viewModelScope.launch {
+            search
+                .debounce(timeoutMillis = 100L)
+                .distinctUntilChanged()
+                .collectLatest {
+                    getAllNotes()
+                }
+        }
+    }
+
+    fun onSearchQueryInput(query: String) {
+        _search.value = _search.value.copy(query = query)
+        mainScreenState = mainScreenState.copy(searchQuery = query)
+        showResult(mainScreenState)
+
+    }
+
+    fun onClearSearchPressed() {
+        _search.value = _search.value.copy(query = "")
+        mainScreenState = mainScreenState.copy(searchQuery = "")
+        showResult(mainScreenState)
     }
 
     fun retryOnError() {
@@ -152,5 +196,7 @@ sealed interface MainScreenUiErrors: BaseUiError {
 data class MainScreenState(
     val notes: List<NotesListItemModel> = listOf(),
     val selectedNotesCount: Int = 0,
-    val isSelectionMode: Boolean = false
+    val searchCounter: Int = 0,
+    val isSelectionMode: Boolean = false,
+    val searchQuery: String? = null
 )

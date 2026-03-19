@@ -9,12 +9,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,7 +26,7 @@ import de.telma.todolist.core_ui.theme.TodoListTheme
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,
-    input: String = "",
+    input: String,
     state: SearchBarState,
     onInput: (String) -> Unit = { },
     onCancelClicked: () -> Unit = { },
@@ -53,6 +55,14 @@ fun SearchBar(
                 }
             }
         },
+        colors = TextFieldDefaults.colors(
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+            focusedContainerColor = Color(0xFFE9E5EE),   // свой фон
+            unfocusedContainerColor = Color(0xFFE9E5EE)
+        ),
         shape = RoundedCornerShape(24.dp),
     )
 
@@ -63,7 +73,8 @@ fun SearchBar(
 private fun SearchBar_Default_Preview() {
     TodoListTheme {
         Surface(modifier = Modifier.wrapContentSize()) {
-            SearchBar(state = SearchBarState.DEFAULT)
+            val input = remember { mutableStateOf("") }
+            SearchBar(input = input.value, state = SearchBarState.DEFAULT)
         }
     }
 }
@@ -73,7 +84,8 @@ private fun SearchBar_Default_Preview() {
 private fun SearchBar_Active_Preview() {
     TodoListTheme {
         Surface(modifier = Modifier.wrapContentSize()) {
-            SearchBar(state = SearchBarState.ACTIVE)
+            val input = remember { mutableStateOf("") }
+            SearchBar(input = input.value, state = SearchBarState.ACTIVE)
         }
     }
 }

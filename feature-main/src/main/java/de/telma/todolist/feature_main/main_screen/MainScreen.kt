@@ -29,12 +29,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.telma.todolist.core_ui.composables.BasicDialog
 import de.telma.todolist.core_ui.composables.InputDialog
+import de.telma.todolist.core_ui.composables.SearchBar
+import de.telma.todolist.core_ui.composables.SearchBarState
 import de.telma.todolist.core_ui.composables.TextBodyMedium
 import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.core_ui.theme.AppIcons
 import de.telma.todolist.core_ui.theme.TodoListTheme
 import de.telma.todolist.feature_main.R
 import de.telma.todolist.feature_main.main_screen.composables.MainScreenAppBar
+import de.telma.todolist.feature_main.main_screen.composables.MainScreenAppBarState
 import de.telma.todolist.feature_main.main_screen.composables.NotesList
 import de.telma.todolist.feature_main.main_screen.models.NotesListItemModel
 import de.telma.todolist.feature_main.main_screen.models.NotesListItemState
@@ -62,7 +65,9 @@ internal fun MainScreen(
                 onClearSelectionClick = { viewModel.onClearSelectionClicked() },
                 onNewNoteClick = { viewModel.onNewNoteClicked() },
                 onItemClick = { viewModel.toDetailsScreen(it) },
-                onItemSelected = { id, isSelected -> viewModel.onNoteSelected(id, isSelected) }
+                onItemSelected = { id, isSelected -> viewModel.onNoteSelected(id, isSelected) },
+                onSearchInput = { viewModel.onSearchQueryInput(it) },
+                onSearchClear = { viewModel.onClearSearchPressed() }
             )
 
             is UiState.Error -> StateError(
@@ -125,18 +130,32 @@ private fun StateResult(
     onClearSelectionClick: () -> Unit = {},
     onNewNoteClick: () -> Unit = {},
     onItemClick: (Long) -> Unit = {},
-    onItemSelected: (Long, Boolean) -> Unit = { _, _ -> }
+    onItemSelected: (Long, Boolean) -> Unit = { _, _ -> },
+    onSearchInput: (String) -> Unit = {},
+    onSearchClear: () -> Unit = {}
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
-            MainScreenAppBar(
-                modifier = Modifier.fillMaxWidth(),
-                isSelectionMode = result.isSelectionMode,
-                selectionCount = result.selectedNotesCount,
-                onDeleteClick = { onDeleteClick.invoke() },
-                onClearSelectionClick = { onClearSelectionClick.invoke() }
-            )
+            Column(modifier = Modifier.padding(bottom = 12.dp)) {
+                MainScreenAppBar(
+                    modifier = Modifier.fillMaxWidth(),
+                    state = when {
+                        result.isSelectionMode -> MainScreenAppBarState.Selection(result.selectedNotesCount)
+                        result.searchQuery.isNullOrEmpty() -> MainScreenAppBarState.Default
+                        else -> MainScreenAppBarState.Search(result.searchCounter)
+                    },
+                    onDeleteClick = { onDeleteClick.invoke() },
+                    onClearSelectionClick = { onClearSelectionClick.invoke() }
+                )
+                SearchBar(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
+                    input = result.searchQuery ?: "",
+                    state = if (result.searchQuery.isNullOrEmpty()) SearchBarState.DEFAULT else SearchBarState.ACTIVE,
+                    onInput = { onSearchInput(it) },
+                    onCancelClicked = { onSearchClear() }
+                )
+            }
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -155,17 +174,18 @@ private fun StateResult(
                         text = stringResource(R.string.main_screen_placeholder)
                     )
                 }
+            } else {
+                NotesList(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    items = result.notes,
+                    isSelectionMode = result.isSelectionMode,
+                    onClick = { id -> onItemClick.invoke(id) },
+                    onLongClick = { id -> onItemSelected.invoke(id, true) },
+                    onItemSelected = { id, isSelected -> onItemSelected(id, isSelected) }
+                )
             }
-            NotesList(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
-                items = result.notes,
-                isSelectionMode = result.isSelectionMode,
-                onClick = { id -> onItemClick.invoke(id) },
-                onLongClick = { id -> onItemSelected.invoke(id, true) },
-                onItemSelected = { id, isSelected -> onItemSelected(id, isSelected) }
-            )
         }
     )
 }
