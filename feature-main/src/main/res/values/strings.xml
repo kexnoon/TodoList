@@ -27,6 +27,7 @@
     <string name="main_screen_placeholder">No notes found!
 
         Add new note by pressing + in the bottom right corner.</string>
+    <string name="main_screen_search_placeholder">No notes found for \"%1$s\"</string>
     <string name="main_screen_error_failed_to_create_new_note">Failed to create new note</string>
     <string name="main_screen_error_failed_to_delete_notes">Failed to delete selected notes</string>
 

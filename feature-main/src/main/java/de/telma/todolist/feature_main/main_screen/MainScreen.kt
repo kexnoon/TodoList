@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import de.telma.todolist.component_notes.model.SearchModel
 import de.telma.todolist.core_ui.composables.BasicDialog
 import de.telma.todolist.core_ui.composables.InputDialog
 import de.telma.todolist.core_ui.composables.SearchBar
@@ -48,6 +49,7 @@ internal fun MainScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val uiEvents by viewModel.uiEvents.collectAsState()
+    val searchModel by viewModel.search.collectAsState()
 
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showNewNoteDialog by remember { mutableStateOf(false) }
@@ -61,6 +63,7 @@ internal fun MainScreen(
             is UiState.Result<MainScreenState> -> StateResult(
                 modifier = Modifier.fillMaxSize(),
                 result = result.data,
+                searchModel = searchModel,
                 onDeleteClick = { viewModel.onDeleteClicked() },
                 onClearSelectionClick = { viewModel.onClearSelectionClicked() },
                 onNewNoteClick = { viewModel.onNewNoteClicked() },
@@ -126,6 +129,7 @@ private fun StateLoading(modifier: Modifier = Modifier) {
 private fun StateResult(
     modifier: Modifier = Modifier,
     result: MainScreenState,
+    searchModel: SearchModel,
     onDeleteClick: () -> Unit = {},
     onClearSelectionClick: () -> Unit = {},
     onNewNoteClick: () -> Unit = {},
@@ -134,44 +138,54 @@ private fun StateResult(
     onSearchInput: (String) -> Unit = {},
     onSearchClear: () -> Unit = {}
 ) {
+    val appBarState = remember(result) {
+        when {
+            result.isSelectionMode -> MainScreenAppBarState.Selection(result.selectedNotesCount)
+            searchModel.query.isNullOrEmpty() -> MainScreenAppBarState.Default
+            else -> MainScreenAppBarState.Search(result.searchCounter)
+        }
+    }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
             Column(modifier = Modifier.padding(bottom = 12.dp)) {
                 MainScreenAppBar(
                     modifier = Modifier.fillMaxWidth(),
-                    state = when {
-                        result.isSelectionMode -> MainScreenAppBarState.Selection(result.selectedNotesCount)
-                        result.searchQuery.isNullOrEmpty() -> MainScreenAppBarState.Default
-                        else -> MainScreenAppBarState.Search(result.searchCounter)
-                    },
-                    onDeleteClick = { onDeleteClick.invoke() },
-                    onClearSelectionClick = { onClearSelectionClick.invoke() }
+                    state = appBarState,
+                    onDeleteClick = onDeleteClick,
+                    onClearSelectionClick = onClearSelectionClick
                 )
                 SearchBar(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
-                    input = result.searchQuery ?: "",
-                    state = if (result.searchQuery.isNullOrEmpty()) SearchBarState.DEFAULT else SearchBarState.ACTIVE,
-                    onInput = { onSearchInput(it) },
-                    onCancelClicked = { onSearchClear() }
+                    input = searchModel.query ?: "",
+                    state = if (searchModel.query.isNullOrEmpty()) SearchBarState.DEFAULT else SearchBarState.ACTIVE,
+                    onInput = onSearchInput,
+                    onCancelClicked = onSearchClear
                 )
             }
         },
         floatingActionButton = {
             FloatingActionButton(
                 modifier = Modifier.padding(bottom = 12.dp, end = 12.dp),
-                onClick = { onNewNoteClick.invoke() }
+                onClick = onNewNoteClick
             ) {
                 Icon(AppIcons.add, "Add new Note")
             }
         },
         content = { paddingValues ->
             if (result.notes.isEmpty()) {
+                val placeholderText = if (searchModel.query.isNullOrEmpty()) {
+                    stringResource(R.string.main_screen_placeholder)
+                } else {
+                    stringResource(R.string.main_screen_search_placeholder, searchModel.query ?: 0)
+                }
+
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     TextBodyMedium(
                         modifier = Modifier.padding(all = 16.dp),
                         textAlign = TextAlign.Center,
-                        text = stringResource(R.string.main_screen_placeholder)
+                        text = placeholderText
                     )
                 }
             } else {
@@ -181,9 +195,9 @@ private fun StateResult(
                         .padding(paddingValues),
                     items = result.notes,
                     isSelectionMode = result.isSelectionMode,
-                    onClick = { id -> onItemClick.invoke(id) },
-                    onLongClick = { id -> onItemSelected.invoke(id, true) },
-                    onItemSelected = { id, isSelected -> onItemSelected(id, isSelected) }
+                    onClick = onItemClick,
+                    onLongClick = { id -> onItemSelected(id, true) },
+                    onItemSelected = onItemSelected
                 )
             }
         }
@@ -244,10 +258,15 @@ private fun StateResult_Default_Preview() {
             numberOfTasks = 3
         )
 
+        val searchModel = SearchModel()
         val notes = List(10) { note.copy(id = it.toLong(), title = "Test Note $it") }
         val screenState by remember { mutableStateOf(MainScreenState(notes = notes)) }
 
-        StateResult(modifier = Modifier.fillMaxSize(), result = screenState)
+        StateResult(
+            modifier = Modifier.fillMaxSize(),
+            searchModel = searchModel,
+            result = screenState
+        )
     }
 
 }
@@ -256,8 +275,13 @@ private fun StateResult_Default_Preview() {
 @Composable
 private fun StateResult_EmptyNotes_Preview() {
     TodoListTheme {
+        val searchModel = SearchModel()
         val screenState by remember { mutableStateOf(MainScreenState(notes = listOf())) }
-        StateResult(modifier = Modifier.fillMaxSize(), result = screenState)
+        StateResult(
+            modifier = Modifier.fillMaxSize(),
+            searchModel = searchModel,
+            result = screenState
+        )
     }
 }
 

@@ -43,23 +43,26 @@ class MainScreenViewModel(
         observeSearch()
         getAllNotes()
     }
+
+    private fun updateScreenState(transform: (MainScreenState) -> MainScreenState) {
+        val currentState = (_uiState.value as? UiState.Result<MainScreenState>)?.data ?: mainScreenState
+        val newState = transform(currentState)
+        mainScreenState = newState
+        showResult(newState)
+    }
+
     fun getAllNotes() {
         getNotesJob?.cancel()
         getNotesJob = viewModelScope.launch {
             getNotesUseCase(search = search.value)
                 .collect { collectedNotes ->
                     notes = collectedNotes
-                    val state = if (search.value.query.isNullOrEmpty()) {
-                         mainScreenState.copy(notes = collectedNotes.map { it.toNotesListItemModel() },)
-                    } else {
-                        mainScreenState.copy(
-                            searchQuery = search.value.query,
+                    updateScreenState { state ->
+                        state.copy(
                             notes = collectedNotes.map { it.toNotesListItemModel() },
-                            searchCounter = collectedNotes.size
+                            searchCounter = if (search.value.query.isNullOrEmpty()) 0 else collectedNotes.size
                         )
                     }
-                    mainScreenState = state
-                    showResult(mainScreenState)
             }
         }
     }
@@ -68,7 +71,7 @@ class MainScreenViewModel(
     private fun observeSearch() {
         viewModelScope.launch {
             search
-                .debounce(timeoutMillis = 100L)
+                .debounce(timeoutMillis = 300L)
                 .distinctUntilChanged()
                 .collectLatest {
                     getAllNotes()
@@ -78,15 +81,10 @@ class MainScreenViewModel(
 
     fun onSearchQueryInput(query: String) {
         _search.value = _search.value.copy(query = query)
-        mainScreenState = mainScreenState.copy(searchQuery = query)
-        showResult(mainScreenState)
-
     }
 
     fun onClearSearchPressed() {
         _search.value = _search.value.copy(query = "")
-        mainScreenState = mainScreenState.copy(searchQuery = "")
-        showResult(mainScreenState)
     }
 
     fun retryOnError() {
@@ -95,33 +93,31 @@ class MainScreenViewModel(
     }
 
     fun onNoteSelected(id: Long, isSelected: Boolean) {
-        val currentState = (_uiState.value as UiState.Result<MainScreenState>).data
-        val updatedNotes = currentState.notes.map {
-            if (it.id == id) {
-                it.copy(isSelected = isSelected)
-            } else {
-                it
+        updateScreenState { currentState ->
+            val updatedNotes = currentState.notes.map {
+                if (it.id == id) {
+                    it.copy(isSelected = isSelected)
+                } else {
+                    it
+                }
             }
+            val selectedCount = updatedNotes.filter { it.isSelected }.size
+            currentState.copy(
+                isSelectionMode = true,
+                notes = updatedNotes,
+                selectedNotesCount = selectedCount
+            )
         }
-        val selectedCount = updatedNotes.filter { it.isSelected }.size
-        val newState = currentState.copy(
-            isSelectionMode = true,
-            notes = updatedNotes,
-            selectedNotesCount = selectedCount
-        )
-
-        showResult(newState)
     }
 
     fun onClearSelectionClicked() {
-        val currentState = (_uiState.value as UiState.Result<MainScreenState>).data
-        val newState = currentState.copy(
-            isSelectionMode = false,
-            selectedNotesCount = 0,
-            notes = currentState.notes.map { it.copy(isSelected = false) }
-        )
-
-        showResult(newState)
+        updateScreenState { currentState ->
+            currentState.copy(
+                isSelectionMode = false,
+                selectedNotesCount = 0,
+                notes = currentState.notes.map { it.copy(isSelected = false) }
+            )
+        }
     }
 
     fun deleteSelectedNotes() {
@@ -198,5 +194,4 @@ data class MainScreenState(
     val selectedNotesCount: Int = 0,
     val searchCounter: Int = 0,
     val isSelectionMode: Boolean = false,
-    val searchQuery: String? = null
 )
