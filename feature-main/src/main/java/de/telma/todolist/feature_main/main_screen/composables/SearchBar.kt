@@ -1,4 +1,4 @@
-package de.telma.todolist.core_ui.composables
+package de.telma.todolist.feature_main.main_screen.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

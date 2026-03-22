@@ -7,6 +7,7 @@
     <string name="hours_ago">%1$d hours ago</string>
     <string name="days_ago">%1$d days ago</string>
     <string name="date_format_long">dd MMMM yyyy</string>
+    <string name="date_format_full">dd MMMM yyyy HH:mm</string>
 
     <!-- BasicDialog -->
     <string name="basic_dialog_dismiss_default">Dismiss</string>

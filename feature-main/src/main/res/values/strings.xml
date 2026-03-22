@@ -72,4 +72,18 @@
     <string name="note_screen_rename_note_dismiss">Cancel</string>
     <string name="note_screen_rename_note_input_label">New title</string>
 
+    <!-- Filters dialog -->
+    <string name="filters_dialog_title">Filters</string>
+    <string name="filters_query_label">Query</string>
+    <string name="filters_created_from">Created from</string>
+    <string name="filters_created_to">Created to</string>
+    <string name="filters_updated_from">Updated from</string>
+    <string name="filters_updated_to">Updated to</string>
+    <string name="filters_status_label">Status</string>
+    <string name="filters_status_any">Any status</string>
+    <string name="filters_confirm">Confirm</string>
+    <string name="filters_dismiss">Dismiss</string>
+    <string name="filters_status_in_progress">In progress</string>
+    <string name="filters_status_completed">Completed</string>
+
 </resources>

@@ -84,7 +84,11 @@ class MainScreenViewModel(
     }
 
     fun onClearSearchPressed() {
-        _search.value = _search.value.copy(query = "")
+        _search.value = SearchModel()
+    }
+
+    fun onFiltersUpdate(searchModel: SearchModel) {
+        _search.value = searchModel
     }
 
     fun retryOnError() {

@@ -21,16 +21,10 @@ internal class SqlHelper {
         if (normalized.query != null) addClause("title LIKE '%' || ? || '%' COLLATE NOCASE", normalized.query)
         if (filters.status != null) addClause("status = ?", filters.status.statusValue)
 
-        val useCreatedRange = filters.createdFrom != null || filters.createdTo != null
-        val useUpdatedRange = !useCreatedRange && (filters.updatedFrom != null || filters.updatedTo != null)
-
-        if (useCreatedRange) {
-            filters.createdFrom?.let { addClause("createdTimestamp >= ?", it) }
-            filters.createdTo?.let { addClause("createdTimestamp <= ?", it) }
-        } else if (useUpdatedRange) {
-            filters.updatedFrom?.let { addClause("lastUpdatedTimestamp >= ?", it) }
-            filters.updatedTo?.let { addClause("lastUpdatedTimestamp <= ?", it) }
-        }
+        filters.createdFrom?.let { addClause("createdTimestamp >= ?", it) }
+        filters.createdTo?.let { addClause("createdTimestamp <= ?", it) }
+        filters.updatedFrom?.let { addClause("lastUpdatedTimestamp >= ?", it) }
+        filters.updatedTo?.let { addClause("lastUpdatedTimestamp <= ?", it) }
 
         val whereSql = if (whereParts.isEmpty()) "" else "WHERE " + whereParts.joinToString(" AND ")
 

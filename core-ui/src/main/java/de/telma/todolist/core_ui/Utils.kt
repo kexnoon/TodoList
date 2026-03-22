@@ -26,3 +26,12 @@ fun getLastUpdatedText(timestamp: String): String {
         }
     }
 }
+
+@Composable
+fun getReadableTimestamp(timestamp: String): String {
+    val lastUpdatedTime = ZonedDateTime.parse(timestamp).toLocalDateTime()
+    val pattern = stringResource(R.string.date_format_full)
+    val formatter = DateTimeFormatter.ofPattern(pattern)
+    return lastUpdatedTime.format(formatter)
+}
+

@@ -30,13 +30,14 @@ import androidx.compose.ui.unit.dp
 import de.telma.todolist.component_notes.model.SearchModel
 import de.telma.todolist.core_ui.composables.BasicDialog
 import de.telma.todolist.core_ui.composables.InputDialog
-import de.telma.todolist.core_ui.composables.SearchBar
-import de.telma.todolist.core_ui.composables.SearchBarState
+import de.telma.todolist.feature_main.main_screen.composables.SearchBar
+import de.telma.todolist.feature_main.main_screen.composables.SearchBarState
 import de.telma.todolist.core_ui.composables.TextBodyMedium
 import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.core_ui.theme.AppIcons
 import de.telma.todolist.core_ui.theme.TodoListTheme
 import de.telma.todolist.feature_main.R
+import de.telma.todolist.feature_main.main_screen.composables.FilterDialog
 import de.telma.todolist.feature_main.main_screen.composables.MainScreenAppBar
 import de.telma.todolist.feature_main.main_screen.composables.MainScreenAppBarState
 import de.telma.todolist.feature_main.main_screen.composables.NotesList
@@ -53,6 +54,7 @@ internal fun MainScreen(
 
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showNewNoteDialog by remember { mutableStateOf(false) }
+    var showFilterDialog by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -70,7 +72,8 @@ internal fun MainScreen(
                 onItemClick = { viewModel.toDetailsScreen(it) },
                 onItemSelected = { id, isSelected -> viewModel.onNoteSelected(id, isSelected) },
                 onSearchInput = { viewModel.onSearchQueryInput(it) },
-                onSearchClear = { viewModel.onClearSearchPressed() }
+                onSearchClear = { viewModel.onClearSearchPressed() },
+                onFiltersConfirm = { viewModel.onFiltersUpdate(it) }
             )
 
             is UiState.Error -> StateError(
@@ -110,6 +113,17 @@ internal fun MainScreen(
             )
         }
 
+        if (showFilterDialog) {
+            FilterDialog(
+                searchModel = searchModel,
+                onConfirm = {
+                    viewModel.onFiltersUpdate(it)
+                    showFilterDialog = false
+                },
+                onDismiss = { showFilterDialog = false }
+            )
+        }
+
     }
 }
 
@@ -136,7 +150,8 @@ private fun StateResult(
     onItemClick: (Long) -> Unit = {},
     onItemSelected: (Long, Boolean) -> Unit = { _, _ -> },
     onSearchInput: (String) -> Unit = {},
-    onSearchClear: () -> Unit = {}
+    onSearchClear: () -> Unit = {},
+    onFiltersConfirm: (SearchModel) -> Unit = {}
 ) {
     val appBarState = remember(result) {
         when {
@@ -145,6 +160,8 @@ private fun StateResult(
             else -> MainScreenAppBarState.Search(result.searchCounter)
         }
     }
+
+    var showFilterDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -161,7 +178,8 @@ private fun StateResult(
                     input = searchModel.query ?: "",
                     state = if (searchModel.query.isNullOrEmpty()) SearchBarState.DEFAULT else SearchBarState.ACTIVE,
                     onInput = onSearchInput,
-                    onCancelClicked = onSearchClear
+                    onCancelClicked = onSearchClear,
+                    onFilterClicked = { showFilterDialog = true }
                 )
             }
         },
@@ -202,6 +220,17 @@ private fun StateResult(
             }
         }
     )
+
+    if (showFilterDialog) {
+        FilterDialog(
+            searchModel = searchModel,
+            onConfirm = {
+                onFiltersConfirm(it)
+                showFilterDialog = false
+            },
+            onDismiss = { showFilterDialog = false }
+        )
+    }
 }
 
 @Composable

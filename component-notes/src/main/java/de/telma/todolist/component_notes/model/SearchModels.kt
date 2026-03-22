@@ -24,11 +24,6 @@ data class SearchModel(
             updatedFrom = filters.updatedFrom?.trim()?.takeIf { it.isNotEmpty() },
             updatedTo = filters.updatedTo?.trim()?.takeIf { it.isNotEmpty() }
         )
-        val hasCreated = trimmedFilters.createdFrom != null || trimmedFilters.createdTo != null
-        val hasUpdated = trimmedFilters.updatedFrom != null || trimmedFilters.updatedTo != null
-        if (hasCreated && hasUpdated) {
-            throw IllegalArgumentException("Use either created* or updated* filters, not both in one request")
-        }
         return copy(
             query = query?.trim()?.takeIf { it.isNotEmpty() },
             filters = trimmedFilters
