@@ -1,18 +1,24 @@
 package de.telma.todolist.feature_main.main_screen
 
+import android.widget.ImageButton
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,8 +32,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import de.telma.todolist.component_notes.model.Filters
 import de.telma.todolist.component_notes.model.SearchModel
+import de.telma.todolist.component_notes.model.SortBy
+import de.telma.todolist.component_notes.model.SortOrder
 import de.telma.todolist.core_ui.composables.BasicDialog
 import de.telma.todolist.core_ui.composables.InputDialog
 import de.telma.todolist.feature_main.main_screen.composables.SearchBar
@@ -41,6 +51,7 @@ import de.telma.todolist.feature_main.main_screen.composables.FilterDialog
 import de.telma.todolist.feature_main.main_screen.composables.MainScreenAppBar
 import de.telma.todolist.feature_main.main_screen.composables.MainScreenAppBarState
 import de.telma.todolist.feature_main.main_screen.composables.NotesList
+import de.telma.todolist.feature_main.main_screen.composables.SortBar
 import de.telma.todolist.feature_main.main_screen.models.NotesListItemModel
 import de.telma.todolist.feature_main.main_screen.models.NotesListItemState
 
@@ -73,7 +84,8 @@ internal fun MainScreen(
                 onItemSelected = { id, isSelected -> viewModel.onNoteSelected(id, isSelected) },
                 onSearchInput = { viewModel.onSearchQueryInput(it) },
                 onSearchClear = { viewModel.onClearSearchPressed() },
-                onFiltersConfirm = { viewModel.onFiltersUpdate(it) }
+                onFiltersConfirm = { viewModel.onFiltersUpdate(it) },
+                onSortUpdate = { viewModel.sortNotesList(it) }
             )
 
             is UiState.Error -> StateError(
@@ -151,7 +163,8 @@ private fun StateResult(
     onItemSelected: (Long, Boolean) -> Unit = { _, _ -> },
     onSearchInput: (String) -> Unit = {},
     onSearchClear: () -> Unit = {},
-    onFiltersConfirm: (SearchModel) -> Unit = {}
+    onFiltersConfirm: (SearchModel) -> Unit = {},
+    onSortUpdate: (SearchModel) -> Unit = {}
 ) {
     val appBarState = remember(result) {
         when {
@@ -207,16 +220,25 @@ private fun StateResult(
                     )
                 }
             } else {
-                NotesList(
+                Column(
                     modifier = Modifier
+                        .padding(paddingValues)
                         .fillMaxSize()
-                        .padding(paddingValues),
-                    items = result.notes,
-                    isSelectionMode = result.isSelectionMode,
-                    onClick = onItemClick,
-                    onLongClick = { id -> onItemSelected(id, true) },
-                    onItemSelected = onItemSelected
-                )
+                ) {
+                    SortBar(
+                        searchModel = searchModel,
+                        onSortUpdate = onSortUpdate
+                    )
+                    NotesList(
+                        modifier = Modifier.fillMaxSize(),
+                        items = result.notes,
+                        isSelectionMode = result.isSelectionMode,
+                        onClick = onItemClick,
+                        onLongClick = { id -> onItemSelected(id, true) },
+                        onItemSelected = onItemSelected
+                    )
+
+                }
             }
         }
     )
@@ -283,7 +305,7 @@ private fun StateResult_Default_Preview() {
             id = 0L,
             title = "Test Note",
             status = NotesListItemState.IN_PROGRESS,
-            lastUpdatedTimestamp = "12.01.2023",
+            lastUpdatedTimestamp = "2023-01-01T10:00:00Z",
             numberOfTasks = 3
         )
 

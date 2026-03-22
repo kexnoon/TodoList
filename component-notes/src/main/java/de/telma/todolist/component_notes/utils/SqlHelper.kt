@@ -34,12 +34,13 @@ internal class SqlHelper {
             SortBy.CREATED_AT -> "createdTimestamp"
             else -> "lastUpdatedTimestamp"
         }
+        val sortCollate = if (normalized.sortBy == SortBy.TITLE) " COLLATE NOCASE" else ""
         val sortOrder = if (normalized.sortOrder == SortOrder.ASC) "ASC" else "DESC"
 
         val sql = """
             SELECT * FROM notes
             $whereSql
-            ORDER BY $sortColumn $sortOrder
+            ORDER BY $sortColumn$sortCollate $sortOrder
         """.trimIndent()
 
         return SqlQueryModel(sql, args)

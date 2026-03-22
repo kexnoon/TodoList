@@ -3,6 +3,7 @@ package de.telma.todolist.core_ui.theme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.outlined.Sort
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Search
@@ -12,6 +13,8 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Sort
+import androidx.compose.material.icons.outlined.SortByAlpha
 
 object AppIcons {
     val rightArrow = Icons.AutoMirrored.Outlined.KeyboardArrowRight
@@ -23,4 +26,6 @@ object AppIcons {
     val back = Icons.AutoMirrored.Outlined.ArrowBack
     val search = Icons.Outlined.Search
     val filter = Icons.Outlined.FilterAlt
+    val sortOrder = Icons.AutoMirrored.Outlined.Sort
+    val sortBy = Icons.Outlined.SortByAlpha
 }

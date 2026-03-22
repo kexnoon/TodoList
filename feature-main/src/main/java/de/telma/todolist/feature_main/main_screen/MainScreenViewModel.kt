@@ -1,6 +1,7 @@
 package de.telma.todolist.feature_main.main_screen
 
 import androidx.lifecycle.viewModelScope
+import de.telma.todolist.component_notes.model.Filters
 import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.model.SearchModel
 import de.telma.todolist.component_notes.useCase.note.CreateNewNoteUseCase
@@ -88,6 +89,10 @@ class MainScreenViewModel(
     }
 
     fun onFiltersUpdate(searchModel: SearchModel) {
+        _search.value = searchModel
+    }
+
+    fun sortNotesList(searchModel: SearchModel) {
         _search.value = searchModel
     }
 

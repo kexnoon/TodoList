@@ -86,4 +86,11 @@
     <string name="filters_status_in_progress">In progress</string>
     <string name="filters_status_completed">Completed</string>
 
+    <!-- Sort bar -->
+    <string name="sort_bar_title">Title</string>
+    <string name="sort_bar_status">Status</string>
+    <string name="sort_bar_created_at">Created at</string>
+    <string name="sort_bar_updated_at">Last updated at</string>
+    <string name="sort_bar_asc">Ascending</string>
+    <string name="sort_bar_desc">Descending</string>
 </resources>
