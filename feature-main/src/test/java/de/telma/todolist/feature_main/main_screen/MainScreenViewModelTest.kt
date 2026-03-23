@@ -1,20 +1,24 @@
 package de.telma.todolist.feature_main.main_screen
 
+import de.telma.todolist.component_notes.model.Filters
 import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.model.NoteStatus
+import de.telma.todolist.component_notes.model.SearchModel
+import de.telma.todolist.component_notes.model.SortBy
+import de.telma.todolist.component_notes.model.SortOrder
 import de.telma.todolist.component_notes.useCase.note.CreateNewNoteUseCase
 import de.telma.todolist.component_notes.useCase.note.DeleteNoteUseCase
 import de.telma.todolist.component_notes.useCase.note.GetNotesUseCase
 import de.telma.todolist.core_ui.navigation.NavigationCoordinator
 import de.telma.todolist.core_ui.state.UiState
 import io.mockk.coEvery
+import io.mockk.clearMocks
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -75,7 +79,8 @@ class MainScreenViewModelTest {
     }
 
     @Test
-    fun `onSearchQueryInput should update search flow and eventually call getAllNotes`() = runTest {
+    fun `onSearchQueryInput should update search flow and call getAllNotes with query`() = runTest {
+        clearMocks(getNotesUseCase, answers = false)
         val query = "test query"
         coEvery { getNotesUseCase(any()) } returns flowOf(emptyList())
 
@@ -83,28 +88,32 @@ class MainScreenViewModelTest {
         
         assertEquals(query, viewModel.search.value.query)
         
-        // Advance time for debounce (300ms)
-        advanceTimeBy(301)
+        testDispatcher.scheduler.advanceTimeBy(301)
         testDispatcher.scheduler.runCurrent()
         
-        coVerify { getNotesUseCase(match { it.query == query }) }
+        coVerify(exactly = 1) { getNotesUseCase(match { it.query == query }) }
     }
 
     @Test
-    fun `onClearSearchPressed should reset search query`() = runTest {
+    fun `onClearSearchClicked should reset search model and fetch default`() = runTest {
         viewModel.onSearchQueryInput("some text")
+        testDispatcher.scheduler.advanceTimeBy(301)
+        testDispatcher.scheduler.runCurrent()
+
+        clearMocks(getNotesUseCase, answers = false)
+
         viewModel.onClearSearchClicked()
+        testDispatcher.scheduler.advanceTimeBy(301)
+        testDispatcher.scheduler.runCurrent()
         
-        assertEquals("", viewModel.search.value.query)
+        assertEquals(SearchModel(), viewModel.search.value)
+        coVerify(exactly = 1) { getNotesUseCase(SearchModel()) }
     }
 
     @Test
     fun `onNoteSelected should enable selection mode and update count`() = runTest {
         val noteId = 1L
-        val notes = listOf(
-            Note(id = 1L, title = "Note 1", status = NoteStatus.IN_PROGRESS, lastUpdatedTimestamp = "", createdTimestamp = "", tasksList = listOf()),
-            Note(id = 2L, title = "Note 2", status = NoteStatus.IN_PROGRESS, lastUpdatedTimestamp = "", createdTimestamp = "", tasksList = listOf())
-        )
+        val notes = listOf(testNote.copy(id = noteId), testNote.copy(id = 2L))
         coEvery { getNotesUseCase(any()) } returns flowOf(notes)
         
         viewModel.getAllNotes()
@@ -131,9 +140,7 @@ class MainScreenViewModelTest {
 
     @Test
     fun `deleteSelectedNotes should call useCase and clear selection on success`() = runTest {
-        val notes = listOf(
-            Note(id = 1L, title = "Note 1", status = NoteStatus.IN_PROGRESS, lastUpdatedTimestamp = "", createdTimestamp = "", tasksList = listOf())
-        )
+        val notes = listOf(testNote.copy())
         coEvery { getNotesUseCase(any()) } returns flowOf(notes)
         coEvery { deleteNoteUseCase(any<List<Note>>()) } returns DeleteNoteUseCase.Result.SUCCESS
         
@@ -148,4 +155,56 @@ class MainScreenViewModelTest {
         val state = (viewModel.uiState.value as UiState.Result).data
         assertTrue(!state.isSelectionMode)
     }
+
+    @Test
+    fun `onSearchModelUpdate should apply filters and fetch notes`() = runTest {
+        clearMocks(getNotesUseCase, answers = false)
+        val filters = Filters(status = NoteStatus.COMPLETE)
+        val searchModel = SearchModel(filters = filters)
+
+        viewModel.onSearchModelUpdate(searchModel)
+        testDispatcher.scheduler.advanceTimeBy(301)
+        testDispatcher.scheduler.runCurrent()
+
+        assertEquals(filters, viewModel.search.value.filters)
+        assertEquals(null, viewModel.search.value.query)
+        coVerify(exactly = 1) { getNotesUseCase(match { it.filters == filters && it.query == null }) }
+    }
+
+    @Test
+    fun `onSearchModelUpdate should request notes with updated sortBy`() = runTest {
+        clearMocks(getNotesUseCase, answers = false)
+        val searchModel = SearchModel(sortBy = SortBy.TITLE)
+
+        viewModel.onSearchModelUpdate(searchModel)
+        testDispatcher.scheduler.advanceTimeBy(301)
+        testDispatcher.scheduler.runCurrent()
+
+        assertEquals(SortBy.TITLE, viewModel.search.value.sortBy)
+        coVerify(exactly = 1) { getNotesUseCase(match { it.sortBy == SortBy.TITLE }) }
+    }
+
+    @Test
+    fun `onSearchModelUpdate should request notes with updated sortOrder`() = runTest {
+        clearMocks(getNotesUseCase, answers = false)
+        val searchModel = SearchModel(sortOrder = SortOrder.ASC)
+
+        viewModel.onSearchModelUpdate(searchModel)
+        testDispatcher.scheduler.advanceTimeBy(301)
+        testDispatcher.scheduler.runCurrent()
+
+        assertEquals(SortOrder.ASC, viewModel.search.value.sortOrder)
+        coVerify(exactly = 1) { getNotesUseCase(match { it.sortOrder == SortOrder.ASC }) }
+    }
 }
+
+private val testNote = Note(
+    id = 1L,
+    title = "Note 1",
+    status = NoteStatus.IN_PROGRESS,
+    lastUpdatedTimestamp = "",
+    createdTimestamp = "",
+    tasksList = listOf()
+)
+
+
