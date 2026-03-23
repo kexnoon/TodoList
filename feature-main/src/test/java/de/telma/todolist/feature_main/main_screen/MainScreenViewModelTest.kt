@@ -93,7 +93,7 @@ class MainScreenViewModelTest {
     @Test
     fun `onClearSearchPressed should reset search query`() = runTest {
         viewModel.onSearchQueryInput("some text")
-        viewModel.onClearSearchPressed()
+        viewModel.onClearSearchClicked()
         
         assertEquals("", viewModel.search.value.query)
     }

@@ -1,7 +1,6 @@
 package de.telma.todolist.feature_main.main_screen
 
 import androidx.lifecycle.viewModelScope
-import de.telma.todolist.component_notes.model.Filters
 import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.model.SearchModel
 import de.telma.todolist.component_notes.useCase.note.CreateNewNoteUseCase
@@ -45,13 +44,6 @@ class MainScreenViewModel(
         getAllNotes()
     }
 
-    private fun updateScreenState(transform: (MainScreenState) -> MainScreenState) {
-        val currentState = (_uiState.value as? UiState.Result<MainScreenState>)?.data ?: mainScreenState
-        val newState = transform(currentState)
-        mainScreenState = newState
-        showResult(newState)
-    }
-
     fun getAllNotes() {
         getNotesJob?.cancel()
         getNotesJob = viewModelScope.launch {
@@ -61,7 +53,7 @@ class MainScreenViewModel(
                     updateScreenState { state ->
                         state.copy(
                             notes = collectedNotes.map { it.toNotesListItemModel() },
-                            searchCounter = if (search.value.query.isNullOrEmpty()) 0 else collectedNotes.size
+                            searchCounter = if (!search.value.query.isNullOrEmpty()) collectedNotes.size else null
                         )
                     }
             }
@@ -78,22 +70,6 @@ class MainScreenViewModel(
                     getAllNotes()
                 }
         }
-    }
-
-    fun onSearchQueryInput(query: String) {
-        _search.value = _search.value.copy(query = query)
-    }
-
-    fun onClearSearchPressed() {
-        _search.value = SearchModel()
-    }
-
-    fun onFiltersUpdate(searchModel: SearchModel) {
-        _search.value = searchModel
-    }
-
-    fun sortNotesList(searchModel: SearchModel) {
-        _search.value = searchModel
     }
 
     fun retryOnError() {
@@ -161,12 +137,24 @@ class MainScreenViewModel(
         }
     }
 
-    fun toDetailsScreen(noteId: Long) {
-        viewModelScope.launch {
-            coordinator.execute(
-                NavEvent.ToComposeScreen(MainDestination.NoteScreen(noteId))
-            )
-        }
+    fun onSearchQueryInput(query: String) {
+        _search.value = _search.value.copy(query = query)
+    }
+
+    fun onSearchModelUpdate(searchModel: SearchModel) {
+        _search.value = searchModel
+    }
+
+    fun onClearSearchClicked() {
+        _search.value = SearchModel()
+    }
+
+    fun showFilterDialog() {
+        showUiEvent(MainScreenUiEvents.ShowFilterDialog)
+    }
+
+    fun dismissFilterDialog() {
+        showUiEvent(MainScreenUiEvents.DismissFilterDialog)
     }
 
     fun onNewNoteClicked() {
@@ -184,13 +172,31 @@ class MainScreenViewModel(
     fun dismissNewNoteDialog() {
         showUiEvent(MainScreenUiEvents.DismissCreateNewNoteDialog)
     }
+
+    private fun updateScreenState(transform: (MainScreenState) -> MainScreenState) {
+        val currentState = (_uiState.value as? UiState.Result<MainScreenState>)?.data ?: mainScreenState
+        val newState = transform(currentState)
+        mainScreenState = newState
+        showResult(newState)
+    }
+
+    fun toDetailsScreen(noteId: Long) {
+        viewModelScope.launch {
+            coordinator.execute(
+                NavEvent.ToComposeScreen(MainDestination.NoteScreen(noteId))
+            )
+        }
+    }
+
 }
 
 sealed interface MainScreenUiEvents: BaseUiEvents {
     data object ShowDeleteDialog: MainScreenUiEvents
     data object ShowCreateNewNoteDialog: MainScreenUiEvents
+    data object ShowFilterDialog: MainScreenUiEvents
     data object DismissDeleteDialog: MainScreenUiEvents
     data object DismissCreateNewNoteDialog: MainScreenUiEvents
+    data object DismissFilterDialog: MainScreenUiEvents
 }
 
 sealed interface MainScreenUiErrors: BaseUiError {
@@ -201,6 +207,6 @@ sealed interface MainScreenUiErrors: BaseUiError {
 data class MainScreenState(
     val notes: List<NotesListItemModel> = listOf(),
     val selectedNotesCount: Int = 0,
-    val searchCounter: Int = 0,
+    val searchCounter: Int? = null,
     val isSelectionMode: Boolean = false,
 )

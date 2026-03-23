@@ -1,26 +1,9 @@
 package de.telma.todolist.feature_main.main_screen
 
-import android.widget.ImageButton
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -30,31 +13,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import de.telma.todolist.component_notes.model.Filters
-import de.telma.todolist.component_notes.model.SearchModel
-import de.telma.todolist.component_notes.model.SortBy
-import de.telma.todolist.component_notes.model.SortOrder
 import de.telma.todolist.core_ui.composables.BasicDialog
 import de.telma.todolist.core_ui.composables.InputDialog
-import de.telma.todolist.feature_main.main_screen.composables.SearchBar
-import de.telma.todolist.feature_main.main_screen.composables.SearchBarState
-import de.telma.todolist.core_ui.composables.TextBodyMedium
 import de.telma.todolist.core_ui.state.UiState
-import de.telma.todolist.core_ui.theme.AppIcons
 import de.telma.todolist.core_ui.theme.TodoListTheme
 import de.telma.todolist.feature_main.R
 import de.telma.todolist.feature_main.main_screen.composables.FilterDialog
-import de.telma.todolist.feature_main.main_screen.composables.MainScreenAppBar
-import de.telma.todolist.feature_main.main_screen.composables.MainScreenAppBarState
-import de.telma.todolist.feature_main.main_screen.composables.NotesList
-import de.telma.todolist.feature_main.main_screen.composables.SortBar
-import de.telma.todolist.feature_main.main_screen.models.NotesListItemModel
-import de.telma.todolist.feature_main.main_screen.models.NotesListItemState
-
+import de.telma.todolist.feature_main.main_screen.states.*
 @Composable
 internal fun MainScreen(
     viewModel: MainScreenViewModel
@@ -83,9 +50,9 @@ internal fun MainScreen(
                 onItemClick = { viewModel.toDetailsScreen(it) },
                 onItemSelected = { id, isSelected -> viewModel.onNoteSelected(id, isSelected) },
                 onSearchInput = { viewModel.onSearchQueryInput(it) },
-                onSearchClear = { viewModel.onClearSearchPressed() },
-                onFiltersConfirm = { viewModel.onFiltersUpdate(it) },
-                onSortUpdate = { viewModel.sortNotesList(it) }
+                onSearchClear = { viewModel.onClearSearchClicked() },
+                onSearchFilterClicked = { viewModel.showFilterDialog() },
+                onSortUpdate = { viewModel.onSearchModelUpdate(it) },
             )
 
             is UiState.Error -> StateError(
@@ -97,9 +64,11 @@ internal fun MainScreen(
 
         when (uiEvents) {
             is MainScreenUiEvents.ShowDeleteDialog -> showDeleteDialog = true
-            is MainScreenUiEvents.ShowCreateNewNoteDialog -> showNewNoteDialog = true
             is MainScreenUiEvents.DismissDeleteDialog -> showDeleteDialog = false
+            is MainScreenUiEvents.ShowCreateNewNoteDialog -> showNewNoteDialog = true
             is MainScreenUiEvents.DismissCreateNewNoteDialog -> showNewNoteDialog = false
+            is MainScreenUiEvents.ShowFilterDialog -> showFilterDialog = true
+            is MainScreenUiEvents.DismissFilterDialog -> showFilterDialog = false
             else -> {}
         }
 
@@ -129,13 +98,12 @@ internal fun MainScreen(
             FilterDialog(
                 searchModel = searchModel,
                 onConfirm = {
-                    viewModel.onFiltersUpdate(it)
-                    showFilterDialog = false
+                    viewModel.onSearchModelUpdate(it)
+                    viewModel.dismissFilterDialog()
                 },
-                onDismiss = { showFilterDialog = false }
+                onDismiss = { viewModel.dismissFilterDialog() }
             )
         }
-
     }
 }
 
@@ -150,144 +118,6 @@ private fun StateLoading(modifier: Modifier = Modifier) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun StateResult(
-    modifier: Modifier = Modifier,
-    result: MainScreenState,
-    searchModel: SearchModel,
-    onDeleteClick: () -> Unit = {},
-    onClearSelectionClick: () -> Unit = {},
-    onNewNoteClick: () -> Unit = {},
-    onItemClick: (Long) -> Unit = {},
-    onItemSelected: (Long, Boolean) -> Unit = { _, _ -> },
-    onSearchInput: (String) -> Unit = {},
-    onSearchClear: () -> Unit = {},
-    onFiltersConfirm: (SearchModel) -> Unit = {},
-    onSortUpdate: (SearchModel) -> Unit = {}
-) {
-    val appBarState = remember(result) {
-        when {
-            result.isSelectionMode -> MainScreenAppBarState.Selection(result.selectedNotesCount)
-            searchModel.query.isNullOrEmpty() -> MainScreenAppBarState.Default
-            else -> MainScreenAppBarState.Search(result.searchCounter)
-        }
-    }
-
-    var showFilterDialog by remember { mutableStateOf(false) }
-
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        topBar = {
-            Column(modifier = Modifier.padding(bottom = 12.dp)) {
-                MainScreenAppBar(
-                    modifier = Modifier.fillMaxWidth(),
-                    state = appBarState,
-                    onDeleteClick = onDeleteClick,
-                    onClearSelectionClick = onClearSelectionClick
-                )
-                SearchBar(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
-                    input = searchModel.query ?: "",
-                    state = if (searchModel.query.isNullOrEmpty()) SearchBarState.DEFAULT else SearchBarState.ACTIVE,
-                    onInput = onSearchInput,
-                    onCancelClicked = onSearchClear,
-                    onFilterClicked = { showFilterDialog = true }
-                )
-            }
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                modifier = Modifier.padding(bottom = 12.dp, end = 12.dp),
-                onClick = onNewNoteClick
-            ) {
-                Icon(AppIcons.add, "Add new Note")
-            }
-        },
-        content = { paddingValues ->
-            if (result.notes.isEmpty()) {
-                val placeholderText = if (searchModel.query.isNullOrEmpty()) {
-                    stringResource(R.string.main_screen_placeholder)
-                } else {
-                    stringResource(R.string.main_screen_search_placeholder, searchModel.query ?: 0)
-                }
-
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    TextBodyMedium(
-                        modifier = Modifier.padding(all = 16.dp),
-                        textAlign = TextAlign.Center,
-                        text = placeholderText
-                    )
-                }
-            } else {
-                Column(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .fillMaxSize()
-                ) {
-                    SortBar(
-                        searchModel = searchModel,
-                        onSortUpdate = onSortUpdate
-                    )
-                    NotesList(
-                        modifier = Modifier.fillMaxSize(),
-                        items = result.notes,
-                        isSelectionMode = result.isSelectionMode,
-                        onClick = onItemClick,
-                        onLongClick = { id -> onItemSelected(id, true) },
-                        onItemSelected = onItemSelected
-                    )
-
-                }
-            }
-        }
-    )
-
-    if (showFilterDialog) {
-        FilterDialog(
-            searchModel = searchModel,
-            onConfirm = {
-                onFiltersConfirm(it)
-                showFilterDialog = false
-            },
-            onDismiss = { showFilterDialog = false }
-        )
-    }
-}
-
-@Composable
-private fun StateError(
-    modifier: Modifier = Modifier,
-    error: MainScreenUiErrors,
-    onRetryPressed: () -> Unit = {}
-) {
-    TodoListTheme {
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .wrapContentHeight(),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            TextBodyMedium(text = stringResource(R.string.main_screen_error_title))
-            TextBodyMedium(text = errorHandler(error))
-            Button(onClick = onRetryPressed) {
-                Text(stringResource(R.string.main_screen_error_retry))
-            }
-        }
-    }
-}
-
-
-@Composable
-private fun errorHandler(error: MainScreenUiErrors): String {
-    return when (error) {
-        is MainScreenUiErrors.FailedToCreateNewNote ->
-            stringResource(R.string.main_screen_error_failed_to_create_new_note)
-        is MainScreenUiErrors.FailedToDeleteNotes ->
-            stringResource(R.string.main_screen_error_failed_to_delete_notes)
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
@@ -297,52 +127,3 @@ private fun StateLoading_Preview() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun StateResult_Default_Preview() {
-    TodoListTheme {
-        val note = NotesListItemModel(
-            id = 0L,
-            title = "Test Note",
-            status = NotesListItemState.IN_PROGRESS,
-            lastUpdatedTimestamp = "2023-01-01T10:00:00Z",
-            numberOfTasks = 3
-        )
-
-        val searchModel = SearchModel()
-        val notes = List(10) { note.copy(id = it.toLong(), title = "Test Note $it") }
-        val screenState by remember { mutableStateOf(MainScreenState(notes = notes)) }
-
-        StateResult(
-            modifier = Modifier.fillMaxSize(),
-            searchModel = searchModel,
-            result = screenState
-        )
-    }
-
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun StateResult_EmptyNotes_Preview() {
-    TodoListTheme {
-        val searchModel = SearchModel()
-        val screenState by remember { mutableStateOf(MainScreenState(notes = listOf())) }
-        StateResult(
-            modifier = Modifier.fillMaxSize(),
-            searchModel = searchModel,
-            result = screenState
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun StateError_Preview() {
-    TodoListTheme {
-        StateError(
-            modifier = Modifier.fillMaxSize(),
-            error = MainScreenUiErrors.FailedToCreateNewNote
-        )
-    }
-}

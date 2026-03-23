@@ -70,7 +70,10 @@
     <string name="note_screen_rename_note_title">Rename note</string>
     <string name="note_screen_rename_note_confirm">Rename</string>
     <string name="note_screen_rename_note_dismiss">Cancel</string>
-    <string name="note_screen_rename_note_input_label">New title</string>
+    <string name="note_screen_rename_note_input_label">New title</string>#
+
+    <!-- Search bar -->
+    <string name="search_bar_placeholder">Search</string>
 
     <!-- Filters dialog -->
     <string name="filters_dialog_title">Filters</string>

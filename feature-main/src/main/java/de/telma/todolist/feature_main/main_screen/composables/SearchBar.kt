@@ -22,11 +22,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.telma.todolist.core_ui.theme.AppIcons
 import de.telma.todolist.core_ui.theme.TodoListTheme
+import de.telma.todolist.feature_main.R
 
 @Composable
 fun SearchBar(
@@ -34,7 +36,7 @@ fun SearchBar(
     input: String,
     state: SearchBarState,
     onInput: (String) -> Unit = { },
-    onCancelClicked: () -> Unit = { },
+    onClearClicked: () -> Unit = { },
     onFilterClicked: () -> Unit = { },
     onSearchAction: () -> Unit = { }
 ) {
@@ -42,21 +44,22 @@ fun SearchBar(
     TextField(
         modifier = modifier,
         value = input,
-        onValueChange = {
-            onInput(it)
-        },
+        onValueChange = { onInput(it) },
         singleLine = true,
-        placeholder = { Text("Search") },
+        placeholder = { Text(stringResource(R.string.search_bar_placeholder)) },
         leadingIcon = { Icon(AppIcons.search, contentDescription = "Search icon") },
         trailingIcon = {
             if (state == SearchBarState.ACTIVE) {
-                Row(modifier = Modifier.wrapContentWidth(), horizontalArrangement = Arrangement.spacedBy(0.dp)) {
+                Row(
+                    modifier = Modifier.wrapContentWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(0.dp)
+                ) {
                     IconButton(onClick = onFilterClicked) {
                         Icon(AppIcons.filter, contentDescription = "Filter")
                     }
                     IconButton(
                         onClick = {
-                            onCancelClicked()
+                            onClearClicked()
                             focusManager.clearFocus()
                         }
                     ) {
@@ -99,7 +102,7 @@ private fun SearchBar_Default_Preview() {
 private fun SearchBar_Active_Preview() {
     TodoListTheme {
         Surface(modifier = Modifier.wrapContentSize()) {
-            SearchBar(input = "Running", state = SearchBarState.ACTIVE)
+            SearchBar(input = "lorem ipsum", state = SearchBarState.ACTIVE)
         }
     }
 }
@@ -114,7 +117,7 @@ private fun SearchBar_Playground() {
                 state = if (text.isEmpty()) SearchBarState.DEFAULT else SearchBarState.ACTIVE,
                 input = text,
                 onInput = { text = it },
-                onCancelClicked = { text = "" },
+                onClearClicked = { text = "" },
             )
         }
     }
