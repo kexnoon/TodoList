@@ -36,24 +36,12 @@ Here you can read more about some technical aspects of this app:
 - [Navigation](docs/navigation.md)
 - [Gradle Convention Plugins](docs/convention_plugins.md)
 
-## 🎯 Current Goals (2 weeks)
+Here you can read more about some of the project's business features
+- [Search](docs/search_flow.md)
 
-- 🔍 **Search** – Quickly find notes by keywords
+## 🎯 Immediate Goals (2 weeks)
+- 🔍 **Search** – Quickly find notes by keywords ✅
 - 🗂 **Folders** – Organize notes into custom categories
-
-## 🧩 Upcoming Features (2 months)
-
-- 🧩 **Transition to KMP and Compose Multiplatform**
-- 🖼 **Rich Notes** – Support for text, images, media files, etc.
-- ⏰ **Reminders** – Add alarms or time-based notifications
-
-## 🌟 Potential Enhancements
-
-- 📒 **Projects** - Uniting Notes into Projects with goals, milestones and deadlines
-- 🔐 **Authentication & Sync** – Firebase integration for login and cloud storage
-- 💵 **Budgeting module** – Potential module for personal expenses assessment
-- 🧠 **More Tools** – Calendar, prioritization, and more
-
 ---
 
 ## 🤝 Contributing
