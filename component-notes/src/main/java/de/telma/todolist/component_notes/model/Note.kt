@@ -4,6 +4,7 @@ data class Note(
     val id: Long,
     val title: String = "Untitled",
     val status: NoteStatus,
+    val folderId: Long? = null,
     val tasksList: List<NoteTask>,
     val createdTimestamp: String,
     val lastUpdatedTimestamp: String

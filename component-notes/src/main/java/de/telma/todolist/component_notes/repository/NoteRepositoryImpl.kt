@@ -31,6 +31,14 @@ internal class NoteRepositoryImpl(private val database: AppDatabase): NoteReposi
             .flowOn(Dispatchers.IO)
     }
 
+    override suspend fun getNotesInFolder(folderId: Long?): Flow<List<Note>> {
+        return database.noteDao()
+            .getNotesWithTasksInFolder(folderId)
+            .map(List<NoteWithTasks>::toNotesList)
+            .distinctUntilChanged()
+            .flowOn(Dispatchers.IO)
+    }
+
     override suspend fun getNoteById(id: Long): Flow<Note?> {
         return database.noteDao()
             .getNoteWithTasksById(noteId = id)
@@ -41,19 +49,30 @@ internal class NoteRepositoryImpl(private val database: AppDatabase): NoteReposi
 
     override suspend fun createNewNote(
         title: String,
-        timestamp: String
+        timestamp: String,
+        folderId: Long?
     ): Long = withContext(Dispatchers.IO) {
         val newNote = NoteEntity(
             id = 0,
             status = NoteStatus.IN_PROGRESS.statusValue, //default status for new notes
             title = title,
             createdTimestamp = timestamp,
-            lastUpdatedTimestamp = timestamp
+            lastUpdatedTimestamp = timestamp,
+            folderId = folderId
         )
 
         val id = database.noteDao().insertNote(newNote)
 
         return@withContext id
+    }
+
+    override suspend fun updateNoteTimestamp(noteId: Long, timestamp: String): Boolean = withContext(Dispatchers.IO) {
+        return@withContext database.noteDao().updateNoteTimestamp(noteId, timestamp) == 1
+    }
+
+    override suspend fun updateNotesFolder(noteIds: List<Long>, folderId: Long?): Boolean = withContext(Dispatchers.IO) {
+        if (noteIds.isEmpty()) return@withContext true
+        return@withContext database.noteDao().updateNotesFolder(noteIds, folderId) == noteIds.size
     }
 
     override suspend fun updateNote(note: Note): Boolean = withContext(Dispatchers.IO) {

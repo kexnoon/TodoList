@@ -24,11 +24,21 @@ interface NoteDao {
     @RawQuery(observedEntities = [NoteEntity::class])
     fun getNotesWithTasks(query: SupportSQLiteQuery): Flow<List<NoteWithTasks>>
 
+    @Transaction
+    @Query("SELECT * FROM notes WHERE folderId IS :folderId ORDER BY lastUpdatedTimestamp DESC")
+    fun getNotesWithTasksInFolder(folderId: Long?): Flow<List<NoteWithTasks>>
+
     @Insert(onConflict = ABORT)
     suspend fun insertNote(entity: NoteEntity): Long
 
     @Update(onConflict = REPLACE)
     suspend fun updateNote(entity: NoteEntity): Int
+
+    @Query("UPDATE notes SET lastUpdatedTimestamp = :timestamp WHERE id = :noteId")
+    suspend fun updateNoteTimestamp(noteId: Long, timestamp: String): Int
+
+    @Query("UPDATE notes SET folderId = :folderId WHERE id IN (:noteIds)")
+    suspend fun updateNotesFolder(noteIds: List<Long>, folderId: Long?): Int
 
     @Delete
     suspend fun deleteNote(entity: NoteEntity): Int

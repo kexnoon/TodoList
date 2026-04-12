@@ -47,7 +47,7 @@ class MainScreenViewModel(
     fun getAllNotes() {
         getNotesJob?.cancel()
         getNotesJob = viewModelScope.launch {
-            getNotesUseCase(search = search.value)
+            getNotesUseCase(search.value)
                 .collect { collectedNotes ->
                     notes = collectedNotes
                     updateScreenState { state ->

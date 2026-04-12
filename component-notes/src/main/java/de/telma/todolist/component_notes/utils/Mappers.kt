@@ -1,9 +1,11 @@
 package de.telma.todolist.component_notes.utils
 
+import de.telma.todolist.component_notes.model.Folder
 import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.model.NoteStatus
 import de.telma.todolist.component_notes.model.NoteTask
 import de.telma.todolist.component_notes.model.NoteTaskStatus
+import de.telma.todolist.storage.database.entity.FolderEntity
 import de.telma.todolist.storage.database.entity.NoteEntity
 import de.telma.todolist.storage.database.entity.NoteTaskEntity
 import de.telma.todolist.storage.database.entity.NoteWithTasks
@@ -26,6 +28,7 @@ internal fun NoteWithTasks.toNote(): Note {
         },
         createdTimestamp = this.note.createdTimestamp,
         lastUpdatedTimestamp = this.note.lastUpdatedTimestamp,
+        folderId = this.note.folderId
     )
 }
 
@@ -52,7 +55,8 @@ internal fun Note.toNoteEntity(): NoteEntity {
         title = this.title,
         status = this.status.statusValue,
         createdTimestamp = this.createdTimestamp,
-        lastUpdatedTimestamp = this.lastUpdatedTimestamp
+        lastUpdatedTimestamp = this.lastUpdatedTimestamp,
+        folderId = this.folderId
     )
 }
 
@@ -72,3 +76,13 @@ internal fun NoteTaskEntity.toNoteTask() : NoteTask {
         status = this.status.toNoteTaskStatus()
     )
 }
+
+internal fun FolderEntity.toFolder(): Folder {
+    return Folder(
+        id = this.id,
+        name = this.name,
+        lastUpdatedTimestamp = this.lastUpdatedTimestamp
+    )
+}
+
+internal fun List<FolderEntity>.toFoldersList(): List<Folder> = this.map(FolderEntity::toFolder)
