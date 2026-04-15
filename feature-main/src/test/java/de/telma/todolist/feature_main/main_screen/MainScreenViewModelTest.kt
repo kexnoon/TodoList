@@ -6,6 +6,10 @@ import de.telma.todolist.component_notes.model.NoteStatus
 import de.telma.todolist.component_notes.model.SearchModel
 import de.telma.todolist.component_notes.model.SortBy
 import de.telma.todolist.component_notes.model.SortOrder
+import de.telma.todolist.component_notes.useCase.folder.CreateFolderUseCase
+import de.telma.todolist.component_notes.useCase.folder.DeleteFolderUseCase
+import de.telma.todolist.component_notes.useCase.folder.GetFoldersUseCase
+import de.telma.todolist.component_notes.useCase.folder.RenameFolderUseCase
 import de.telma.todolist.component_notes.useCase.note.CreateNewNoteUseCase
 import de.telma.todolist.component_notes.useCase.note.DeleteNoteUseCase
 import de.telma.todolist.component_notes.useCase.note.GetNotesUseCase
@@ -14,6 +18,7 @@ import de.telma.todolist.core_ui.state.UiState
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.clearMocks
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,6 +40,10 @@ class MainScreenViewModelTest {
     
     private lateinit var coordinator: NavigationCoordinator
     private lateinit var getNotesUseCase: GetNotesUseCase
+    private lateinit var getFoldersUseCase: GetFoldersUseCase
+    private lateinit var createFolderUseCase: CreateFolderUseCase
+    private lateinit var renameFolderUseCase: RenameFolderUseCase
+    private lateinit var deleteFolderUseCase: DeleteFolderUseCase
     private lateinit var createNewNoteUseCase: CreateNewNoteUseCase
     private lateinit var deleteNoteUseCase: DeleteNoteUseCase
     
@@ -46,15 +55,24 @@ class MainScreenViewModelTest {
         
         coordinator = mockk(relaxed = true)
         getNotesUseCase = mockk()
+        getFoldersUseCase = mockk()
+        createFolderUseCase = mockk()
+        renameFolderUseCase = mockk()
+        deleteFolderUseCase = mockk()
         createNewNoteUseCase = mockk()
         deleteNoteUseCase = mockk()
         
         // Default mock for init
         coEvery { getNotesUseCase(any(), any()) } returns flowOf(emptyList())
+        every { getFoldersUseCase() } returns flowOf(emptyList())
         
         viewModel = MainScreenViewModel(
             coordinator,
             getNotesUseCase,
+            getFoldersUseCase,
+            createFolderUseCase,
+            renameFolderUseCase,
+            deleteFolderUseCase,
             createNewNoteUseCase,
             deleteNoteUseCase
         )
@@ -237,6 +255,8 @@ class MainScreenViewModelTest {
     @Test
     fun `clearing search should return notes request to previously selected folder`() = runTest {
         setSelectedFolderId(7L)
+        clearMocks(getNotesUseCase, answers = false)
+        coEvery { getNotesUseCase(any(), any()) } returns flowOf(emptyList())
         viewModel.onSearchQueryInput("work")
         testDispatcher.scheduler.advanceTimeBy(301)
         testDispatcher.scheduler.runCurrent()
@@ -274,10 +294,8 @@ class MainScreenViewModelTest {
     }
 
     private fun setSelectedFolderId(folderId: Long?) {
-        val field = MainScreenViewModel::class.java.getDeclaredField("mainScreenState")
-        field.isAccessible = true
-        val currentState = field.get(viewModel) as MainScreenState
-        field.set(viewModel, currentState.copy(selectedFolderId = folderId))
+        viewModel.onFolderSelected(folderId)
+        testDispatcher.scheduler.advanceUntilIdle()
     }
 }
 

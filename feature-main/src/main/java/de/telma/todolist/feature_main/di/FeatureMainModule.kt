@@ -10,6 +10,10 @@ val featureMainModule = module {
         MainScreenViewModel(
             coordinator = get(),
             getNotesUseCase = get(),
+            getFoldersUseCase = get(),
+            createFolderUseCase = get(),
+            renameFolderUseCase = get(),
+            deleteFolderUseCase = get(),
             createNewNoteUseCase = get(),
             deleteNotesUseCase = get()
         )

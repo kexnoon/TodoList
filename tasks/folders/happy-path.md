@@ -53,6 +53,16 @@
 - Add handlers for folder dialog flow: create/rename/delete/select.
 - Integrate note creation with current selected folder.
 
+### Planning update: extract folder chips mapper from ViewModel
+- Decision: move folder chips building logic out of `MainScreenViewModel` into `feature_main/utils/Mappers.kt`.
+- Reasoning:
+  - `MainScreenViewModel` already has high responsibility and should stay focused on state orchestration;
+  - folder chips mapping is a pure transformation and must be covered by focused unit tests.
+- What will be done instead:
+  - use `buildFolderChips(...)` from `feature_main/utils/Mappers.kt` inside ViewModel;
+  - add dedicated mapper unit tests in `feature-main/src/test/.../utils/MappersTest.kt` for chip ordering and selection rules.
+
+
 
 ## 6. Green: MainScreen UI
 - Add chip row in MainScreen:
@@ -62,6 +72,20 @@
   - `New folder` -> input dialog;
   - long-press folder chip -> rename/delete dialog.
 - Bind UI callbacks to ViewModel events/handlers.
+
+### Planning update: move All/New folders mapping to StateResult with string resources
+- Decision:
+  - `MainScreenViewModel` should expose only folders received from repository (without injecting synthetic `All Notes` and `New Folder` chips).
+  - Mapping that adds `All Notes` and `New Folder` must be called only in `feature-main/src/main/java/de/telma/todolist/feature_main/main_screen/states/StateResult.kt`.
+  - Mapper must receive `allNotesChipTitle` and `newFolderChipTitle` as `@StringRes Int` arguments.
+- Reasoning:
+  - titles must come from string resources so chip labels work correctly with translations;
+  - avoid accessing `Context` in ViewModel to prevent lifecycle/memory-leak risks.
+- What will be done instead:
+  - keep ViewModel focused on state and raw folders data only;
+  - resolve chip titles in `StateResult` via `stringResource(...)`;
+  - call mapper from `StateResult` with resource IDs and render resulting chips.
+
 
 ## 7. Refactor + verify
 - Minimal refactor without behavior changes.
