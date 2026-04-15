@@ -12,6 +12,14 @@ class DeleteFolderUseCase(
     }
 
     suspend operator fun invoke(folderId: Long): Result {
-        return Result.FAILURE
+        return try {
+            if (folderRepository.deleteFolder(folderId)) {
+                Result.SUCCESS
+            } else {
+                Result.FAILURE
+            }
+        } catch (e: Exception) {
+            Result.FAILURE
+        }
     }
 }

@@ -32,8 +32,18 @@
 - Add folder filter to notes retrieval path so it works together with `SearchModel`.
 - Implement `CreateNewNoteUseCase(title, folderId)`:
   - create note with `folderId`;
-  - best-effort folder timestamp update after successful note creation (if `folderId != null`).
+  - update folder timestamp with the same `Clock` timestamp as a regular operation (if `folderId != null`), without special fallback handling.
 - Update DI for new dependencies and signatures.
+
+### Planning update: remove best-effort timestamp handling
+- Decision: do not use a best-effort strategy for folder timestamp updates.
+- Reasoning:
+  - timestamp is generated from local `Clock`, so there is no external time dependency;
+  - best-effort logic adds extra branching and testing without meaningful UX value.
+- What will be done instead:
+  - use a single timestamp value from `Clock` in note creation flow;
+  - apply that timestamp directly for related folder update as a regular operation, without a special fallback policy.
+
 
 ## 5. Green: MainScreenViewModel
 - Add selected folder state and chip row data.
@@ -42,6 +52,7 @@
   - `query == blank` -> filter by selected folder + current `SearchModel`.
 - Add handlers for folder dialog flow: create/rename/delete/select.
 - Integrate note creation with current selected folder.
+
 
 ## 6. Green: MainScreen UI
 - Add chip row in MainScreen:

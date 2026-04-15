@@ -1,7 +1,9 @@
 package de.telma.todolist.component_notes.useCase.folder
 
 import de.telma.todolist.component_notes.repository.FolderRepository
+import de.telma.todolist.component_notes.utils.getTimestamp
 import java.time.Clock
+import java.time.LocalDateTime
 
 class CreateFolderUseCase(
     private val folderRepository: FolderRepository,
@@ -15,10 +17,21 @@ class CreateFolderUseCase(
     }
 
     suspend operator fun invoke(name: String): Result {
-        if (name.trim().isEmpty()) {
+        val normalizedName = name.trim()
+        if (normalizedName.isEmpty()) {
             return Result.INVALID_NAME
         }
 
-        return Result.FAILURE
+        return try {
+            val timestamp = getTimestamp(LocalDateTime.now(clock))
+            val folderId = folderRepository.createFolder(normalizedName, timestamp)
+            if (folderId > 0L) {
+                Result.SUCCESS(folderId)
+            } else {
+                Result.FAILURE
+            }
+        } catch (e: Exception) {
+            Result.FAILURE
+        }
     }
 }
