@@ -12,8 +12,8 @@ import de.telma.todolist.component_notes.useCase.note.GetNotesUseCase
 import de.telma.todolist.core_ui.navigation.NavigationCoordinator
 import de.telma.todolist.core_ui.state.UiState
 import io.mockk.coEvery
-import io.mockk.clearMocks
 import io.mockk.coVerify
+import io.mockk.clearMocks
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -50,7 +50,7 @@ class MainScreenViewModelTest {
         deleteNoteUseCase = mockk()
         
         // Default mock for init
-        coEvery { getNotesUseCase(any()) } returns flowOf(emptyList())
+        coEvery { getNotesUseCase(any(), any()) } returns flowOf(emptyList())
         
         viewModel = MainScreenViewModel(
             coordinator,
@@ -68,7 +68,7 @@ class MainScreenViewModelTest {
     @Test
     fun `init should call getAllNotes and show Result state`() = runTest {
         val notes = listOf(mockk<Note>(relaxed = true))
-        coEvery { getNotesUseCase(any()) } returns flowOf(notes)
+        coEvery { getNotesUseCase(any(), any()) } returns flowOf(notes)
         
         viewModel.getAllNotes()
         testDispatcher.scheduler.advanceUntilIdle()
@@ -82,7 +82,7 @@ class MainScreenViewModelTest {
     fun `onSearchQueryInput should update search flow and call getAllNotes with query`() = runTest {
         clearMocks(getNotesUseCase, answers = false)
         val query = "test query"
-        coEvery { getNotesUseCase(any()) } returns flowOf(emptyList())
+        coEvery { getNotesUseCase(any(), any()) } returns flowOf(emptyList())
 
         viewModel.onSearchQueryInput(query)
         
@@ -91,7 +91,7 @@ class MainScreenViewModelTest {
         testDispatcher.scheduler.advanceTimeBy(301)
         testDispatcher.scheduler.runCurrent()
         
-        coVerify(exactly = 1) { getNotesUseCase(match { it.query == query }) }
+        coVerify(exactly = 1) { getNotesUseCase(match { it.query == query }, null) }
     }
 
     @Test
@@ -107,14 +107,14 @@ class MainScreenViewModelTest {
         testDispatcher.scheduler.runCurrent()
         
         assertEquals(SearchModel(), viewModel.search.value)
-        coVerify(exactly = 1) { getNotesUseCase(SearchModel()) }
+        coVerify(exactly = 1) { getNotesUseCase(SearchModel(), null) }
     }
 
     @Test
     fun `onNoteSelected should enable selection mode and update count`() = runTest {
         val noteId = 1L
         val notes = listOf(testNote.copy(id = noteId), testNote.copy(id = 2L))
-        coEvery { getNotesUseCase(any()) } returns flowOf(notes)
+        coEvery { getNotesUseCase(any(), any()) } returns flowOf(notes)
         
         viewModel.getAllNotes()
         testDispatcher.scheduler.advanceUntilIdle()
@@ -141,7 +141,7 @@ class MainScreenViewModelTest {
     @Test
     fun `deleteSelectedNotes should call useCase and clear selection on success`() = runTest {
         val notes = listOf(testNote.copy())
-        coEvery { getNotesUseCase(any()) } returns flowOf(notes)
+        coEvery { getNotesUseCase(any(), any()) } returns flowOf(notes)
         coEvery { deleteNoteUseCase(any<List<Note>>()) } returns DeleteNoteUseCase.Result.SUCCESS
         
         viewModel.getAllNotes()
@@ -168,7 +168,7 @@ class MainScreenViewModelTest {
 
         assertEquals(filters, viewModel.search.value.filters)
         assertEquals(null, viewModel.search.value.query)
-        coVerify(exactly = 1) { getNotesUseCase(match { it.filters == filters && it.query == null }) }
+        coVerify(exactly = 1) { getNotesUseCase(match { it.filters == filters && it.query == null }, null) }
     }
 
     @Test
@@ -181,7 +181,7 @@ class MainScreenViewModelTest {
         testDispatcher.scheduler.runCurrent()
 
         assertEquals(SortBy.TITLE, viewModel.search.value.sortBy)
-        coVerify(exactly = 1) { getNotesUseCase(match { it.sortBy == SortBy.TITLE }) }
+        coVerify(exactly = 1) { getNotesUseCase(match { it.sortBy == SortBy.TITLE }, null) }
     }
 
     @Test
@@ -194,7 +194,90 @@ class MainScreenViewModelTest {
         testDispatcher.scheduler.runCurrent()
 
         assertEquals(SortOrder.ASC, viewModel.search.value.sortOrder)
-        coVerify(exactly = 1) { getNotesUseCase(match { it.sortOrder == SortOrder.ASC }) }
+        coVerify(exactly = 1) { getNotesUseCase(match { it.sortOrder == SortOrder.ASC }, null) }
+    }
+
+    @Test
+    fun `init should expose folder chips in order All first and New folder last`() = runTest {
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = (viewModel.uiState.value as UiState.Result).data
+        assertTrue(state.folderChips.isNotEmpty())
+        assertEquals(null, state.folderChips.first().folderId)
+        assertTrue(state.folderChips.last().isNewFolderChip)
+    }
+
+    @Test
+    fun `getAllNotes should request notes from selected folder when query is empty`() = runTest {
+        setSelectedFolderId(7L)
+        clearMocks(getNotesUseCase, answers = false)
+        coEvery { getNotesUseCase(any(), any()) } returns flowOf(emptyList())
+
+        viewModel.getAllNotes()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify(exactly = 1) { getNotesUseCase(match { it.query == null }, 7L) }
+    }
+
+    @Test
+    fun `active search should be global and hide folder chip row`() = runTest {
+        setSelectedFolderId(7L)
+        clearMocks(getNotesUseCase, answers = false)
+        coEvery { getNotesUseCase(any(), any()) } returns flowOf(emptyList())
+
+        viewModel.onSearchQueryInput("work")
+        testDispatcher.scheduler.advanceTimeBy(301)
+        testDispatcher.scheduler.runCurrent()
+
+        coVerify(exactly = 1) { getNotesUseCase(match { it.query == "work" }, null) }
+        val state = (viewModel.uiState.value as UiState.Result).data
+        assertTrue(!state.isFolderChipRowVisible)
+    }
+
+    @Test
+    fun `clearing search should return notes request to previously selected folder`() = runTest {
+        setSelectedFolderId(7L)
+        viewModel.onSearchQueryInput("work")
+        testDispatcher.scheduler.advanceTimeBy(301)
+        testDispatcher.scheduler.runCurrent()
+
+        clearMocks(getNotesUseCase, answers = false)
+        coEvery { getNotesUseCase(any(), any()) } returns flowOf(emptyList())
+
+        viewModel.onClearSearchClicked()
+        testDispatcher.scheduler.advanceTimeBy(301)
+        testDispatcher.scheduler.runCurrent()
+
+        coVerify(exactly = 1) { getNotesUseCase(match { it.query == null }, 7L) }
+    }
+
+    @Test
+    fun `createNewNote should pass selectedFolderId`() = runTest {
+        setSelectedFolderId(9L)
+        coEvery { createNewNoteUseCase(any(), any()) } returns CreateNewNoteUseCase.Result.SUCCESS(42L)
+
+        viewModel.createNewNote("Test")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify(exactly = 1) { createNewNoteUseCase("Test", 9L) }
+    }
+
+    @Test
+    fun `createNewNote should pass null folderId when All is selected`() = runTest {
+        setSelectedFolderId(null)
+        coEvery { createNewNoteUseCase(any(), any()) } returns CreateNewNoteUseCase.Result.SUCCESS(42L)
+
+        viewModel.createNewNote("Test")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify(exactly = 1) { createNewNoteUseCase("Test", null) }
+    }
+
+    private fun setSelectedFolderId(folderId: Long?) {
+        val field = MainScreenViewModel::class.java.getDeclaredField("mainScreenState")
+        field.isAccessible = true
+        val currentState = field.get(viewModel) as MainScreenState
+        field.set(viewModel, currentState.copy(selectedFolderId = folderId))
     }
 }
 
