@@ -50,7 +50,7 @@
 - Breaking down steps into tasks should follow TDD principles (see above)
   - First goes a task with contracts. 
     - If you need needed to generate new business models and/or update Database and DAO, you should do it in this step too.
-    - Setting up DI is also a part of this step
+    - Setting up DI is also a part of this step. No temporary constructors and stuff.
   - Then goes a task with writing tests (red), follow the testing strategy (see above)
   - Then you should go for implementation of data and domain layer so it could pass the tests (green)
   - Then you should implement UI logic (ViewModels, States, Events) so it could pass the tests for ViewModel (green)

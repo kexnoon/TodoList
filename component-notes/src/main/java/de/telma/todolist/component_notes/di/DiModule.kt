@@ -32,10 +32,10 @@ val componentNotesModule = module {
     factory<TaskRepository> { TaskRepositoryImpl(get()) }
     factory<Clock> { Clock.systemUTC() }
 
-    factory { GetFoldersUseCase() }
-    factory { CreateFolderUseCase() }
-    factory { RenameFolderUseCase() }
-    factory { DeleteFolderUseCase() }
+    factory { GetFoldersUseCase(get()) }
+    factory { CreateFolderUseCase(get(), get()) }
+    factory { RenameFolderUseCase(get(), get()) }
+    factory { DeleteFolderUseCase(get()) }
 
     factory { GetNotesUseCase(get()) }
     factory { GetNotesInFolderUseCase(get()) }

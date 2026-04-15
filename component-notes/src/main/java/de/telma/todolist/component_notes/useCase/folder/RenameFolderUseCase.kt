@@ -1,6 +1,13 @@
 package de.telma.todolist.component_notes.useCase.folder
 
-class RenameFolderUseCase {
+import de.telma.todolist.component_notes.repository.FolderRepository
+import java.time.Clock
+
+class RenameFolderUseCase(
+    private val folderRepository: FolderRepository,
+    private val clock: Clock
+) {
+
     sealed interface Result {
         data object SUCCESS : Result
         data object INVALID_NAME : Result
