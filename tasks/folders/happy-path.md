@@ -96,3 +96,4 @@
   - new note folder assignment;
   - global search behavior;
   - timestamp update when creating a new note in a folder.
+- Check all IDE warnings
