@@ -1,11 +1,11 @@
 package de.telma.todolist.component_notes.useCase.folder
 
-class GetFoldersUseCase {
-    sealed interface Result {
-        data object SUCCESS : Result
-    }
+import de.telma.todolist.component_notes.model.Folder
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
-    suspend operator fun invoke(): Result {
-        return Result.SUCCESS
+class GetFoldersUseCase {
+    operator fun invoke(): Flow<List<Folder>> {
+        return flowOf(emptyList())
     }
 }

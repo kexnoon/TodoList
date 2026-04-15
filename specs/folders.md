@@ -94,3 +94,4 @@
 - After successful "Move to folder" from multi-select mode, selection mode is exited.
 - "Any note edit" for folder timestamp update includes task edits (add/rename/status/delete task) as well.
 - When search is inactive and a folder is selected, existing `SearchModel` sort/filters are still applied inside that folder.
+- Creating a new note from MainScreen in a selected folder updates `folder.lastUpdatedTimestamp` for that folder.

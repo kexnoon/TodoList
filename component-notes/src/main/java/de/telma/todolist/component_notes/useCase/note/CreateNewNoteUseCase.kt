@@ -15,10 +15,12 @@ class CreateNewNoteUseCase(
         data object FAILURE: Result
     }
 
-    suspend operator fun invoke(title: String): Result {
+    suspend operator fun invoke(title: String, folderId: Long? = null): Result {
         try {
             val newNoteId = noteRepository.createNewNote(
-                title, getTimestamp(LocalDateTime.now(clock))
+                title,
+                getTimestamp(LocalDateTime.now(clock)),
+                folderId
             )
             return Result.SUCCESS(newNoteId)
         } catch (e: Exception) {

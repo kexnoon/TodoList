@@ -20,8 +20,11 @@ import kotlinx.coroutines.withContext
 
 internal class NoteRepositoryImpl(private val database: AppDatabase): NoteRepository {
 
-    override suspend fun getNotes(search: SearchModel?): Flow<List<Note>> {
-        val queryModel = SqlHelper().getNotesQueryModel(search ?: SearchModel())
+    override suspend fun getNotes(search: SearchModel?, folderId: Long?): Flow<List<Note>> {
+        val queryModel = SqlHelper().getNotesQueryModel(
+            search = search ?: SearchModel(),
+            folderId = folderId
+        )
         val query = SimpleSQLiteQuery(queryModel.query, queryModel.args.toTypedArray())
 
         return database.noteDao()
@@ -32,11 +35,7 @@ internal class NoteRepositoryImpl(private val database: AppDatabase): NoteReposi
     }
 
     override suspend fun getNotesInFolder(folderId: Long?): Flow<List<Note>> {
-        return database.noteDao()
-            .getNotesWithTasksInFolder(folderId)
-            .map(List<NoteWithTasks>::toNotesList)
-            .distinctUntilChanged()
-            .flowOn(Dispatchers.IO)
+        return getNotes(search = SearchModel(), folderId = folderId)
     }
 
     override suspend fun getNoteById(id: Long): Flow<Note?> {

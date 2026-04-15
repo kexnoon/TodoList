@@ -6,7 +6,7 @@ import de.telma.todolist.component_notes.model.SortOrder
 
 internal class SqlHelper {
 
-    fun getNotesQueryModel(search: SearchModel): SqlQueryModel {
+    fun getNotesQueryModel(search: SearchModel, folderId: Long? = null): SqlQueryModel {
         val whereParts = mutableListOf<String>()
         val args = mutableListOf<Any?>()
 
@@ -20,6 +20,7 @@ internal class SqlHelper {
 
         if (normalized.query != null) addClause("title LIKE '%' || ? || '%' COLLATE NOCASE", normalized.query)
         if (filters.status != null) addClause("status = ?", filters.status.statusValue)
+        if (folderId != null) addClause("folderId = ?", folderId)
 
         filters.createdFrom?.let { addClause("createdTimestamp >= ?", it) }
         filters.createdTo?.let { addClause("createdTimestamp <= ?", it) }

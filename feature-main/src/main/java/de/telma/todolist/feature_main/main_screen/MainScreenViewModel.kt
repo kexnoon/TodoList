@@ -194,9 +194,15 @@ sealed interface MainScreenUiEvents: BaseUiEvents {
     data object ShowDeleteDialog: MainScreenUiEvents
     data object ShowCreateNewNoteDialog: MainScreenUiEvents
     data object ShowFilterDialog: MainScreenUiEvents
+    data object ShowCreateFolderDialog: MainScreenUiEvents
+    data class ShowRenameFolderDialog(val folderId: Long, val currentName: String): MainScreenUiEvents
+    data class ShowDeleteFolderDialog(val folderId: Long, val currentName: String): MainScreenUiEvents
     data object DismissDeleteDialog: MainScreenUiEvents
     data object DismissCreateNewNoteDialog: MainScreenUiEvents
     data object DismissFilterDialog: MainScreenUiEvents
+    data object DismissCreateFolderDialog: MainScreenUiEvents
+    data object DismissRenameFolderDialog: MainScreenUiEvents
+    data object DismissDeleteFolderDialog: MainScreenUiEvents
 }
 
 sealed interface MainScreenUiErrors: BaseUiError {
@@ -206,7 +212,17 @@ sealed interface MainScreenUiErrors: BaseUiError {
 
 data class MainScreenState(
     val notes: List<NotesListItemModel> = listOf(),
+    val folderChips: List<FolderChipModel> = listOf(),
+    val selectedFolderId: Long? = null,
+    val isFolderChipRowVisible: Boolean = true,
     val selectedNotesCount: Int = 0,
     val searchCounter: Int? = null,
     val isSelectionMode: Boolean = false,
+)
+
+data class FolderChipModel(
+    val folderId: Long?,
+    val title: String,
+    val isSelected: Boolean = false,
+    val isNewFolderChip: Boolean = false
 )

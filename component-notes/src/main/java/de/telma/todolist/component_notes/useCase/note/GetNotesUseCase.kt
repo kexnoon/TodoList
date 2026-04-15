@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 class GetNotesUseCase(
     private val repository: NoteRepository
 ) {
-    operator suspend fun invoke(search: SearchModel): Flow<List<Note>> {
-        return repository.getNotes(search)
+    operator suspend fun invoke(search: SearchModel, folderId: Long? = null): Flow<List<Note>> {
+        return repository.getNotes(search, folderId)
     }
 }

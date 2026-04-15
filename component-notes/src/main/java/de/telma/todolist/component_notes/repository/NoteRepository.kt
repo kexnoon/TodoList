@@ -5,7 +5,7 @@ import de.telma.todolist.component_notes.model.SearchModel
 import kotlinx.coroutines.flow.Flow
 
 interface NoteRepository {
-    suspend fun getNotes(search: SearchModel? = null): Flow<List<Note>>
+    suspend fun getNotes(search: SearchModel? = null, folderId: Long? = null): Flow<List<Note>>
     suspend fun getNotesInFolder(folderId: Long?): Flow<List<Note>>
 
     /**
