@@ -85,7 +85,7 @@
 - Implementation (green).
 - Refactor if needed.
 
-## Locked decisions (2026-04-15)
+## Locked decisions
 - During active search (`query` is not blank), results are always global (`All Notes`) and folder chip row is hidden.
 - Chip row is visible when search is inactive even if notes list is empty.
 - Chip row always includes:
