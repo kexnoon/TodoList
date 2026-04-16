@@ -65,6 +65,7 @@
     - Dropdown options: `No folder` first, then existing folders, then `New Folder`.
     - `New Folder` from dropdown creates folder and assigns it to current note.
     - Folder selection/unselection updates current note folder immediately.
+    - Contracts step includes final DI setup for NoteScreen folder flow (`SetNoteFolderUseCase`, `GetFoldersUseCase`, `CreateFolderUseCase`) without temporary constructor wiring.
 
 - Step 3 — Multi-select Move Flow (MainScreen):
     - In selection mode user opens `Move to folder`.
@@ -78,6 +79,7 @@
     - Deleting selected folder switches current filter to `All Notes`.
     - `folder.lastUpdatedTimestamp` updates on folder create/rename and on note edits in folder, including task add/rename/status/delete.
     - On moving notes between folders, both source and destination folder timestamps are updated (when applicable).
+    - On unassigning a note to `No folder`, source folder timestamp is updated.
 
 ## TDD policy for each step
 - Contracts first.

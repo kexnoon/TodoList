@@ -1,10 +1,14 @@
 package de.telma.todolist.feature_main.note_screen
 
 import androidx.lifecycle.viewModelScope
+import de.telma.todolist.component_notes.model.Folder
 import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.model.NoteStatus
 import de.telma.todolist.component_notes.repository.NoteRepository
+import de.telma.todolist.component_notes.useCase.folder.CreateFolderUseCase
+import de.telma.todolist.component_notes.useCase.folder.GetFoldersUseCase
 import de.telma.todolist.component_notes.useCase.note.DeleteNoteUseCase
+import de.telma.todolist.component_notes.useCase.note.SetNoteFolderUseCase
 import de.telma.todolist.component_notes.useCase.task.CreateNewTaskUseCase
 import de.telma.todolist.component_notes.useCase.task.DeleteTaskUseCase
 import de.telma.todolist.component_notes.useCase.note.RenameNoteUseCase
@@ -30,6 +34,9 @@ class NoteScreenViewModel(
     private val coordinator: NavigationCoordinator,
 
     private val noteRepository: NoteRepository,
+    private val getFoldersUseCase: GetFoldersUseCase,
+    private val createFolderUseCase: CreateFolderUseCase,
+    private val setNoteFolderUseCase: SetNoteFolderUseCase,
     private val renameNoteUseCase: RenameNoteUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase,
 
@@ -212,6 +219,14 @@ class NoteScreenViewModel(
         }
     }
 
+    fun onCreateFolderPressed() {
+        showUiEvent(NoteScreenUiEvents.ShowCreateFolderDialog)
+    }
+
+    fun dismissCreateFolderDialog() {
+        showUiEvent(NoteScreenUiEvents.DismissCreateFolderDialog)
+    }
+
     private suspend fun sync(scope: CoroutineScope) {
         val result = scope.async { syncNoteStatusUseCase(currentNote.id) }.await()
         when (result) {
@@ -233,6 +248,8 @@ sealed interface NoteScreenUiEvents : BaseUiEvents {
     data object ShowAddTaskDialog : NoteScreenUiEvents
     data object ShowDeleteNoteDialog : NoteScreenUiEvents
     data class ShowNoteRenameDialog(val currentTitle: String) : NoteScreenUiEvents
+    data object ShowCreateFolderDialog : NoteScreenUiEvents
+    data object DismissCreateFolderDialog : NoteScreenUiEvents
     data object DismissDialog : NoteScreenUiEvents
 }
 
@@ -251,5 +268,7 @@ sealed interface NoteScreenUiErrors : BaseUiError {
 data class NoteScreenState(
     val noteId: Long,
     val appBar: NoteScreenAppBarModel,
-    val tasks: List<TaskItemModel>
+    val tasks: List<TaskItemModel>,
+    val folders: List<Folder> = listOf(),
+    val selectedFolderId: Long? = null
 )

@@ -6,7 +6,7 @@
     - assign note to folder;
     - unassign note to `No folder` (`folderId = null`) with source folder timestamp update;
     - move between folders with source/destination timestamp updates;
-    - return explicit result states for success/failure/not-found/no-op.
+    - return explicit result states for success/failure.
 - Define NoteScreen contracts for state/events:
     - folder indicator data under title/status;
     - dropdown actions (`No folder`, existing folders, `New folder`);
@@ -19,11 +19,9 @@
 ## 2. Unit tests (red): domain logic and existing NoteScreen edit use cases
 ### `SetNoteFolderUseCase`
 - Add unit tests for:
-    - note not found;
     - assign from `No folder` to folder;
     - unassign folder -> `No folder` and source folder timestamp is updated;
     - move folder A -> B (both timestamps updated);
-    - same folder selected (no-op);
     - repository update failure;
     - folder timestamp update failure.
 - Verify timestamp generation with fixed `Clock`.
@@ -66,6 +64,15 @@
     - dropdown visibility/selection handling;
     - new-folder dialog open/confirm/dismiss.
 - Keep existing note/task flows intact outside folder-related behavior.
+
+### Planning update: prevent no-op `SetNoteFolderUseCase` calls
+- Decision:
+    - when user selects the same folder as currently assigned, `SetNoteFolderUseCase` must not be called.
+- Reasoning:
+    - same-folder selection is a pure no-op in UX flow and should be filtered in ViewModel/UI layer.
+- What will be done instead:
+    - compare target folder with current note folder before invoking folder-change flow;
+    - skip use-case call when IDs are equal (including `null == null`).
 
 ## 6. Green: `NoteScreen` UI
 - Render folder indicator under title/status with dropdown actions.
