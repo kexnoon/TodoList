@@ -1,9 +1,11 @@
 package de.telma.todolist.component_notes.useCase.note
 
 import de.telma.todolist.component_notes.model.NoteStatus
+import de.telma.todolist.component_notes.repository.FolderRepository
 import de.telma.todolist.component_notes.repository.NoteRepository
 import de.telma.todolist.component_notes.useCase.BaseNoteComponentUnitTest
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -13,12 +15,18 @@ import kotlin.test.assertEquals
 
 class SyncNoteStatusUseCaseTest: BaseNoteComponentUnitTest() {
     private lateinit var notesRepository: NoteRepository
+    private lateinit var folderRepository: FolderRepository
     private lateinit var useCase: SyncNoteStatusUseCase
 
     @Before
     fun setUp() {
         notesRepository = mockk<NoteRepository>()
-        useCase = SyncNoteStatusUseCase(notesRepository)
+        folderRepository = mockk<FolderRepository>()
+        useCase = SyncNoteStatusUseCase(
+            repository = notesRepository,
+            folderRepository = folderRepository,
+            clock = getClockForTest(getUpdatedTimestamp())
+        )
     }
 
     @Test
@@ -27,11 +35,12 @@ class SyncNoteStatusUseCaseTest: BaseNoteComponentUnitTest() {
         val task1 = getTaskComplete()
         val task2 = getTaskComplete()
 
-        val note = getNote(tasks = listOf(task1, task2))
+        val note = getNote(tasks = listOf(task1, task2)).copy(folderId = 5L)
         val updatedNote = note.copy(status = NoteStatus.COMPLETE)
 
         coEvery { notesRepository.getNoteById(note.id) } returns flowOf(note)
         coEvery { notesRepository.updateNote(updatedNote) } returns true
+        coEvery { folderRepository.updateFolderTimestamp(5L, getUpdatedTimestamp()) } returns true
 
         // ACT
         val result = useCase(note.id)
@@ -41,6 +50,7 @@ class SyncNoteStatusUseCaseTest: BaseNoteComponentUnitTest() {
             expected = SyncNoteStatusUseCase.Result.SyncSucceed,
             actual = result
         )
+        coVerify(exactly = 1) { folderRepository.updateFolderTimestamp(5L, getUpdatedTimestamp()) }
     }
 
     @Test
@@ -49,7 +59,7 @@ class SyncNoteStatusUseCaseTest: BaseNoteComponentUnitTest() {
         val task1 = getTaskInProgress()
         val task2 = getTaskComplete()
 
-        val note = getNote(tasks = listOf(task1, task2), status = NoteStatus.COMPLETE)
+        val note = getNote(tasks = listOf(task1, task2), status = NoteStatus.COMPLETE).copy(folderId = null)
         val updatedNote = note.copy(status = NoteStatus.IN_PROGRESS)
 
         coEvery { notesRepository.getNoteById(note.id) } returns flowOf(note)
@@ -63,6 +73,7 @@ class SyncNoteStatusUseCaseTest: BaseNoteComponentUnitTest() {
             expected = SyncNoteStatusUseCase.Result.SyncSucceed,
             actual = result
         )
+        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any(), any()) }
     }
 
     @Test
@@ -84,6 +95,7 @@ class SyncNoteStatusUseCaseTest: BaseNoteComponentUnitTest() {
             expected = SyncNoteStatusUseCase.Result.UpToDate,
             actual = result
         )
+        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any(), any()) }
     }
 
     @Test

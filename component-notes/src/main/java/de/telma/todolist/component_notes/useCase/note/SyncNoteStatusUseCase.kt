@@ -3,10 +3,16 @@ package de.telma.todolist.component_notes.useCase.note
 import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.model.NoteStatus
 import de.telma.todolist.component_notes.model.NoteTaskStatus
+import de.telma.todolist.component_notes.repository.FolderRepository
 import de.telma.todolist.component_notes.repository.NoteRepository
 import kotlinx.coroutines.flow.first
+import java.time.Clock
 
-class SyncNoteStatusUseCase(private val repository: NoteRepository) {
+class SyncNoteStatusUseCase(
+    private val repository: NoteRepository,
+    private val folderRepository: FolderRepository,
+    private val clock: Clock
+) {
 
     sealed interface Result {
         object UpToDate : Result

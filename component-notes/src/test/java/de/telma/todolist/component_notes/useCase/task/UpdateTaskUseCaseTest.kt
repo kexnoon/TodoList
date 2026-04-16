@@ -1,10 +1,12 @@
 package de.telma.todolist.component_notes.useCase.task
 
 import de.telma.todolist.component_notes.model.NoteTaskStatus
+import de.telma.todolist.component_notes.repository.FolderRepository
 import de.telma.todolist.component_notes.repository.NoteRepository
 import de.telma.todolist.component_notes.repository.TaskRepository
 import de.telma.todolist.component_notes.useCase.BaseNoteComponentUnitTest
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.coVerifyOrder
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -16,28 +18,37 @@ import kotlin.test.assertEquals
 class UpdateTaskUseCaseTest: BaseNoteComponentUnitTest() {
     private lateinit var taskRepository: TaskRepository
     private lateinit var noteRepository: NoteRepository
+    private lateinit var folderRepository: FolderRepository
 
     @Before
     fun setUp() {
         noteRepository = mockk<NoteRepository>()
         taskRepository = mockk<TaskRepository>()
+        folderRepository = mockk<FolderRepository>()
     }
 
     @Test
     fun `should return SUCCESS if task update succeed`() = runTest {
-        val useCase = UpdateTaskStatusUseCase(taskRepository, noteRepository, getClockForTest(getUpdatedTimestamp()))
+        val useCase = UpdateTaskStatusUseCase(
+            taskRepository,
+            noteRepository,
+            folderRepository,
+            getClockForTest(getUpdatedTimestamp())
+        )
+
         // SETUP
         val initialTask = getTaskInProgress()
         val newStatus = NoteTaskStatus.COMPLETE
         val updatedTask = initialTask.copy(status = newStatus)
 
         val testNoteId = 1L
-        val noteFromRepo = getNote(id = testNoteId, tasks = listOf(updatedTask))
+        val noteFromRepo = getNote(id = testNoteId, tasks = listOf(updatedTask)).copy(folderId = 70L)
         val noteExpectedForFinalUpdate = noteFromRepo.copy(lastUpdatedTimestamp = getUpdatedTimestamp())
 
         coEvery { taskRepository.updateTask(testNoteId, updatedTask) } returns true
         coEvery { noteRepository.getNoteById(testNoteId) } returns flowOf(noteFromRepo)
         coEvery { noteRepository.updateNote(noteExpectedForFinalUpdate) } returns true
+        coEvery { folderRepository.updateFolderTimestamp(70L, getUpdatedTimestamp()) } returns true
 
         // ACT
         val result = useCase(testNoteId, initialTask, newStatus)
@@ -51,12 +62,18 @@ class UpdateTaskUseCaseTest: BaseNoteComponentUnitTest() {
             taskRepository.updateTask(testNoteId, updatedTask)
             noteRepository.getNoteById(testNoteId)
             noteRepository.updateNote(noteExpectedForFinalUpdate)
+            folderRepository.updateFolderTimestamp(70L, getUpdatedTimestamp())
         }
     }
 
     @Test
     fun `should return FAILURE if task update succeed but note update fails`() = runTest {
-        val useCase = UpdateTaskStatusUseCase(taskRepository, noteRepository, getClockForTest(getUpdatedTimestamp()))
+        val useCase = UpdateTaskStatusUseCase(
+            taskRepository,
+            noteRepository,
+            folderRepository,
+            getClockForTest(getUpdatedTimestamp())
+        )
 
         // SETUP
         val initialTask = getTaskInProgress()
@@ -84,5 +101,6 @@ class UpdateTaskUseCaseTest: BaseNoteComponentUnitTest() {
             noteRepository.getNoteById(testNoteId)
             noteRepository.updateNote(noteExpectedForFinalUpdate)
         }
+        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any(), any()) }
     }
 }

@@ -174,7 +174,7 @@ class NoteScreenViewModel(
                 return@launch
             }
 
-            val result = async { deleteTaskUseCase(currentTask) }.await()
+            val result = async { deleteTaskUseCase(currentNote.id, currentTask) }.await()
             if (result == DeleteTaskUseCase.Result.FAILURE)
                 showError(NoteScreenUiErrors.FailedToDeleteTask(taskId))
             else

@@ -2,6 +2,7 @@ package de.telma.todolist.component_notes.useCase.task
 
 import de.telma.todolist.component_notes.model.NoteTask
 import de.telma.todolist.component_notes.model.NoteTaskStatus
+import de.telma.todolist.component_notes.repository.FolderRepository
 import de.telma.todolist.component_notes.repository.NoteRepository
 import de.telma.todolist.component_notes.repository.TaskRepository
 import de.telma.todolist.component_notes.utils.getTimestamp
@@ -12,6 +13,7 @@ import java.time.LocalDateTime
 class UpdateTaskStatusUseCase(
     private val taskRepository: TaskRepository,
     private val noteRepository: NoteRepository,
+    private val folderRepository: FolderRepository,
     private val clock: Clock
 ) {
     sealed interface Result {

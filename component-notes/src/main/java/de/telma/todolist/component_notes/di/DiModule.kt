@@ -42,13 +42,13 @@ val componentNotesModule = module {
     factory { MoveNotesToFolderUseCase() }
     factory { SetNoteFolderUseCase(get(), get(), get()) }
     factory { CreateNewNoteUseCase(get(), get(), get()) }
-    factory { RenameNoteUseCase(get(), get()) }
+    factory { RenameNoteUseCase(get(), get(), get()) }
     factory { UpdateNoteStatusUseCase(get(), get()) }
     factory { DeleteNoteUseCase(get()) }
 
-    factory { CreateNewTaskUseCase(get(), get(), get()) }
-    factory { RenameTaskUseCase(get(), get(), get()) }
-    factory { UpdateTaskStatusUseCase(get(), get(), get()) }
-    factory { DeleteTaskUseCase(get()) }
-    factory { SyncNoteStatusUseCase(get()) }
+    factory { CreateNewTaskUseCase(get(), get(), get(), get()) }
+    factory { RenameTaskUseCase(get(), get(), get(), get()) }
+    factory { UpdateTaskStatusUseCase(get(), get(), get(), get()) }
+    factory { DeleteTaskUseCase(get(), get(), get(), get()) }
+    factory { SyncNoteStatusUseCase(get(), get(), get()) }
 }
