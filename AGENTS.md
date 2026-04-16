@@ -14,6 +14,7 @@
 - Follow KISS and DRY principles and general SOLID/Clean Code/Clean Architecture rules
 - Avoid overengineering
 - Avoid spending too much tokens
+- Avoid constantly re-running tests while working with UI layer
 
 ## Test-Driven Development
 - You should follow Test-Driven Development 

@@ -86,6 +86,30 @@
   - resolve chip titles in `StateResult` via `stringResource(...)`;
   - call mapper from `StateResult` with resource IDs and render resulting chips.
 
+### Planning update: use dropdown menu for folder chip actions
+- Decision:
+  - after long-click on a folder chip, show a dropdown menu with actions `Rename` and `Delete` instead of a two-button dialog;
+  - implement this menu as a separate private composable inside `feature-main/src/main/java/de/telma/todolist/feature_main/main_screen/MainScreen.kt`;
+  - each action item must include a corresponding icon from `AppIcons`.
+- Reasoning:
+  - better UX.
+- What will be done instead:
+  - render a contextual dropdown menu on long-click action event;
+  - keep existing rename/delete flows, but trigger them from dropdown menu actions;
+  - use outlined Material icons via `AppIcons` for both menu items.
+
+### Planning update: remove folder chips mapper and hardcode synthetic chips in FolderChipRow
+- Decision:
+  - remove folder chips mapper from feature-main flow;
+  - hardcode `All Notes` and `New Folder` chips directly inside `feature-main/src/main/java/de/telma/todolist/feature_main/composables/FolderChipRow.kt`;
+  - add dedicated callback `onNewFolderPressed` to avoid callback multiplexing through synthetic chip model flags.
+- Reasoning:
+  - issues with passing callback to `New Folder` chip.
+- What will be done instead:
+  - `FolderChipRow` will receive raw `folders` and `selectedFolderId`;
+  - `All Notes` chip will select `null` folder, `New Folder` chip will call `onNewFolderPressed`;
+  - remove `FolderChipUiModel`, `Mappers.kt`, and mapper tests.
+
 
 ## 7. Refactor + verify
 - Minimal refactor without behavior changes.
@@ -97,3 +121,4 @@
   - global search behavior;
   - timestamp update when creating a new note in a folder.
 - Check all IDE warnings
+- Do code review against the base branch (`feature/folders`)

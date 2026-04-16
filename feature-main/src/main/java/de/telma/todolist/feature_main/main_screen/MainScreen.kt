@@ -33,6 +33,11 @@ internal fun MainScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showNewNoteDialog by remember { mutableStateOf(false) }
     var showFilterDialog by remember { mutableStateOf(false) }
+    var showCreateFolderDialog by remember { mutableStateOf(false) }
+    var showRenameFolderDialog by remember { mutableStateOf(false) }
+    var showDeleteFolderDialog by remember { mutableStateOf(false) }
+    var currentFolderId by remember { mutableStateOf<Long?>(null) }
+    var currentFolderName by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -53,6 +58,10 @@ internal fun MainScreen(
                 onSearchClear = { viewModel.onClearSearchClicked() },
                 onSearchFilterClicked = { viewModel.showFilterDialog() },
                 onSortUpdate = { viewModel.onSearchModelUpdate(it) },
+                onFolderSelected = { folderId -> viewModel.onFolderSelected(folderId) },
+                onNewFolderPressed = { viewModel.onNewFolderPressed() },
+                onFolderRenameRequest = { folderId -> viewModel.onFolderRenameRequested(folderId) },
+                onFolderDeleteRequest = { folderId -> viewModel.onFolderDeleteRequested(folderId) }
             )
 
             is UiState.Error -> StateError(
@@ -62,13 +71,28 @@ internal fun MainScreen(
             )
         }
 
-        when (uiEvents) {
+        val event = uiEvents
+        when (event) {
             is MainScreenUiEvents.ShowDeleteDialog -> showDeleteDialog = true
             is MainScreenUiEvents.DismissDeleteDialog -> showDeleteDialog = false
             is MainScreenUiEvents.ShowCreateNewNoteDialog -> showNewNoteDialog = true
             is MainScreenUiEvents.DismissCreateNewNoteDialog -> showNewNoteDialog = false
             is MainScreenUiEvents.ShowFilterDialog -> showFilterDialog = true
             is MainScreenUiEvents.DismissFilterDialog -> showFilterDialog = false
+            is MainScreenUiEvents.ShowCreateFolderDialog -> showCreateFolderDialog = true
+            is MainScreenUiEvents.DismissCreateFolderDialog -> showCreateFolderDialog = false
+            is MainScreenUiEvents.ShowRenameFolderDialog -> {
+                currentFolderId = event.folderId
+                currentFolderName = event.currentName
+                showRenameFolderDialog = true
+            }
+            is MainScreenUiEvents.DismissRenameFolderDialog -> showRenameFolderDialog = false
+            is MainScreenUiEvents.ShowDeleteFolderDialog -> {
+                currentFolderId = event.folderId
+                currentFolderName = event.currentName
+                showDeleteFolderDialog = true
+            }
+            is MainScreenUiEvents.DismissDeleteFolderDialog -> showDeleteFolderDialog = false
             else -> {}
         }
 
@@ -104,6 +128,46 @@ internal fun MainScreen(
                 onDismiss = { viewModel.dismissFilterDialog() }
             )
         }
+
+        if (showCreateFolderDialog) {
+            InputDialog(
+                title = stringResource(R.string.main_screen_create_folder_dialog_title),
+                inputLabel = stringResource(R.string.main_screen_create_folder_dialog_input_label),
+                confirmText = stringResource(R.string.main_screen_create_folder_dialog_confirm_text),
+                dismissText = stringResource(R.string.main_screen_create_folder_dialog_dismiss_text),
+                onConfirm = { viewModel.createFolder(it) },
+                onDismiss = { viewModel.dismissCreateFolderDialog() }
+            )
+        }
+
+        if (showRenameFolderDialog && currentFolderId != null) {
+            InputDialog(
+                title = stringResource(R.string.main_screen_rename_folder_dialog_title),
+                input = currentFolderName,
+                inputLabel = stringResource(R.string.main_screen_rename_folder_dialog_input_label),
+                confirmText = stringResource(R.string.main_screen_rename_folder_dialog_confirm_text),
+                dismissText = stringResource(R.string.main_screen_rename_folder_dialog_dismiss_text),
+                onConfirm = { newName ->
+                    val folderId = currentFolderId ?: return@InputDialog
+                    viewModel.renameFolder(folderId, newName)
+                },
+                onDismiss = { viewModel.dismissRenameFolderDialog() }
+            )
+        }
+
+        if (showDeleteFolderDialog && currentFolderId != null) {
+            BasicDialog(
+                title = stringResource(R.string.main_screen_delete_folder_dialog_title),
+                text = stringResource(R.string.main_screen_delete_folder_dialog_text, currentFolderName),
+                confirmText = stringResource(R.string.main_screen_delete_folder_dialog_confirm_text),
+                dismissText = stringResource(R.string.main_screen_delete_folder_dialog_dismiss_text),
+                onConfirm = {
+                    val folderId = currentFolderId ?: return@BasicDialog
+                    viewModel.deleteFolder(folderId)
+                },
+                onDismiss = { viewModel.dismissDeleteFolderDialog() }
+            )
+        }
     }
 }
 
@@ -117,7 +181,6 @@ private fun StateLoading(modifier: Modifier = Modifier) {
         )
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

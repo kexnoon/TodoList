@@ -48,7 +48,11 @@ internal fun StateResult(
     onSearchInput: (String) -> Unit = {},
     onSearchClear: () -> Unit = {},
     onSearchFilterClicked: () -> Unit = {},
-    onSortUpdate: (SearchModel) -> Unit = {}
+    onSortUpdate: (SearchModel) -> Unit = {},
+    onFolderSelected: (Long?) -> Unit = {},
+    onNewFolderPressed: () -> Unit = {},
+    onFolderRenameRequest: (Long) -> Unit = {},
+    onFolderDeleteRequest: (Long) -> Unit = {}
 ) {
     val appBarState = remember(result) {
         when {
@@ -57,7 +61,6 @@ internal fun StateResult(
             else -> MainScreenAppBarState.Search(result.searchCounter ?: 0)
         }
     }
-
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -87,30 +90,43 @@ internal fun StateResult(
             }
         },
         content = { paddingValues ->
-            if (result.notes.isEmpty()) {
-                val placeholderText = if (searchModel.query.isNullOrEmpty()) {
-                    stringResource(R.string.main_screen_placeholder)
-                } else {
-                    stringResource(R.string.main_screen_search_placeholder, searchModel.query ?: 0)
-                }
+            Column(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+            ) {
+                val isEmpty = result.notes.isEmpty()
 
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    TextBodyMedium(
-                        modifier = Modifier.padding(all = 16.dp),
-                        textAlign = TextAlign.Center,
-                        text = placeholderText
-                    )
-                }
-            } else {
-                Column(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .fillMaxSize()
-                ) {
-                    SortBar(
-                        searchModel = searchModel,
-                        onSortUpdate = onSortUpdate
-                    )
+                SortBar(
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                    searchModel = searchModel,
+                    onSortUpdate = onSortUpdate,
+                    folders = result.folders,
+                    selectedFolderId = result.selectedFolderId,
+                    onFolderSelected = onFolderSelected,
+                    onNewFolderPressed = onNewFolderPressed,
+                    onFolderRenameRequest = onFolderRenameRequest,
+                    onFolderDeleteRequest = onFolderDeleteRequest,
+                    showFolderChips = result.isFolderChipRowVisible,
+                )
+                if (isEmpty) {
+                    val placeholderText = if (searchModel.query.isNullOrEmpty()) {
+                        stringResource(R.string.main_screen_placeholder)
+                    } else {
+                        stringResource(R.string.main_screen_search_placeholder, searchModel.query ?: 0)
+                    }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        TextBodyMedium(
+                            modifier = Modifier.padding(all = 16.dp),
+                            textAlign = TextAlign.Center,
+                            text = placeholderText
+                        )
+                    }
+                } else {
                     NotesList(
                         modifier = Modifier.fillMaxSize(),
                         items = result.notes,
@@ -119,7 +135,6 @@ internal fun StateResult(
                         onLongClick = { id -> onItemSelected(id, true) },
                         onItemSelected = onItemSelected
                     )
-
                 }
             }
         }

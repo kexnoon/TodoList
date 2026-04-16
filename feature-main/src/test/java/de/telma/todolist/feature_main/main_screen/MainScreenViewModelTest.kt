@@ -1,6 +1,7 @@
 package de.telma.todolist.feature_main.main_screen
 
 import de.telma.todolist.component_notes.model.Filters
+import de.telma.todolist.component_notes.model.Folder
 import de.telma.todolist.component_notes.model.Note
 import de.telma.todolist.component_notes.model.NoteStatus
 import de.telma.todolist.component_notes.model.SearchModel
@@ -216,17 +217,31 @@ class MainScreenViewModelTest {
     }
 
     @Test
-    fun `init should expose folder chips in order All first and New folder last`() = runTest {
+    fun `init should expose folders from repository`() = runTest {
+        val folders = listOf(
+            Folder(id = 1L, name = "Work", lastUpdatedTimestamp = "2024-01-02T10:00:00Z"),
+            Folder(id = 2L, name = "Home", lastUpdatedTimestamp = "2024-01-01T10:00:00Z")
+        )
+        every { getFoldersUseCase() } returns flowOf(folders)
+        viewModel = MainScreenViewModel(
+            coordinator,
+            getNotesUseCase,
+            getFoldersUseCase,
+            createFolderUseCase,
+            renameFolderUseCase,
+            deleteFolderUseCase,
+            createNewNoteUseCase,
+            deleteNoteUseCase
+        )
         testDispatcher.scheduler.advanceUntilIdle()
 
         val state = (viewModel.uiState.value as UiState.Result).data
-        assertTrue(state.folderChips.isNotEmpty())
-        assertEquals(null, state.folderChips.first().folderId)
-        assertTrue(state.folderChips.last().isNewFolderChip)
+        assertEquals(folders, state.folders)
     }
 
     @Test
     fun `getAllNotes should request notes from selected folder when query is empty`() = runTest {
+        recreateViewModelWithFolders(listOf(testFolder(7L)))
         setSelectedFolderId(7L)
         clearMocks(getNotesUseCase, answers = false)
         coEvery { getNotesUseCase(any(), any()) } returns flowOf(emptyList())
@@ -239,6 +254,7 @@ class MainScreenViewModelTest {
 
     @Test
     fun `active search should be global and hide folder chip row`() = runTest {
+        recreateViewModelWithFolders(listOf(testFolder(7L)))
         setSelectedFolderId(7L)
         clearMocks(getNotesUseCase, answers = false)
         coEvery { getNotesUseCase(any(), any()) } returns flowOf(emptyList())
@@ -254,6 +270,7 @@ class MainScreenViewModelTest {
 
     @Test
     fun `clearing search should return notes request to previously selected folder`() = runTest {
+        recreateViewModelWithFolders(listOf(testFolder(7L)))
         setSelectedFolderId(7L)
         clearMocks(getNotesUseCase, answers = false)
         coEvery { getNotesUseCase(any(), any()) } returns flowOf(emptyList())
@@ -273,6 +290,7 @@ class MainScreenViewModelTest {
 
     @Test
     fun `createNewNote should pass selectedFolderId`() = runTest {
+        recreateViewModelWithFolders(listOf(testFolder(9L)))
         setSelectedFolderId(9L)
         coEvery { createNewNoteUseCase(any(), any()) } returns CreateNewNoteUseCase.Result.SUCCESS(42L)
 
@@ -296,6 +314,25 @@ class MainScreenViewModelTest {
     private fun setSelectedFolderId(folderId: Long?) {
         viewModel.onFolderSelected(folderId)
         testDispatcher.scheduler.advanceUntilIdle()
+    }
+
+    private fun recreateViewModelWithFolders(folders: List<Folder>) {
+        every { getFoldersUseCase() } returns flowOf(folders)
+        viewModel = MainScreenViewModel(
+            coordinator,
+            getNotesUseCase,
+            getFoldersUseCase,
+            createFolderUseCase,
+            renameFolderUseCase,
+            deleteFolderUseCase,
+            createNewNoteUseCase,
+            deleteNoteUseCase
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
+    }
+
+    private fun testFolder(id: Long): Folder {
+        return Folder(id = id, name = "Folder $id", lastUpdatedTimestamp = "2024-01-01T00:00:00Z")
     }
 }
 

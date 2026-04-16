@@ -20,7 +20,6 @@ import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.feature_main.MainDestination
 import de.telma.todolist.feature_main.main_screen.models.NotesListItemModel
 import de.telma.todolist.feature_main.main_screen.models.toNotesListItemModel
-import de.telma.todolist.feature_main.utils.buildFolderChips
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -94,7 +93,7 @@ class MainScreenViewModel(
                 updateScreenState { state ->
                     state.copy(
                         selectedFolderId = normalizedSelectedFolderId,
-                        folderChips = buildFolderChips(folders, normalizedSelectedFolderId),
+                        folders = folders,
                         isFolderChipRowVisible = !isSearchActive()
                     )
                 }
@@ -235,19 +234,10 @@ class MainScreenViewModel(
         showUiEvent(MainScreenUiEvents.DismissDeleteFolderDialog)
     }
 
-    fun onFolderChipClicked(folderChip: FolderChipModel) {
-        if (folderChip.isNewFolderChip) {
-            showCreateFolderDialog()
-        } else {
-            onFolderSelected(folderChip.folderId)
-        }
-    }
-
     fun onFolderSelected(folderId: Long?) {
         updateScreenState { state ->
             state.copy(
                 selectedFolderId = folderId,
-                folderChips = buildFolderChips(folders, folderId),
                 isFolderChipRowVisible = !isSearchActive()
             )
         }
@@ -259,6 +249,15 @@ class MainScreenViewModel(
     fun onFolderRenameRequested(folderId: Long) {
         val folder = folders.firstOrNull { it.id == folderId } ?: return
         showUiEvent(MainScreenUiEvents.ShowRenameFolderDialog(folder.id, folder.name))
+    }
+
+    fun onFolderLongPressed(folderId: Long) {
+        val folder = folders.firstOrNull { it.id == folderId } ?: return
+        showUiEvent(MainScreenUiEvents.ShowFolderActionsDialog(folder.id, folder.name))
+    }
+
+    fun onNewFolderPressed() {
+        showCreateFolderDialog()
     }
 
     fun onFolderDeleteRequested(folderId: Long) {
@@ -307,9 +306,8 @@ class MainScreenViewModel(
 
     private fun updateFolderUiState() {
         updateScreenState { state ->
-            val selectedFolderId = state.selectedFolderId
             state.copy(
-                folderChips = buildFolderChips(folders, selectedFolderId),
+                folders = folders,
                 isFolderChipRowVisible = !isSearchActive()
             )
         }
@@ -349,6 +347,7 @@ sealed interface MainScreenUiEvents: BaseUiEvents {
     data object ShowCreateNewNoteDialog: MainScreenUiEvents
     data object ShowFilterDialog: MainScreenUiEvents
     data object ShowCreateFolderDialog: MainScreenUiEvents
+    data class ShowFolderActionsDialog(val folderId: Long, val currentName: String): MainScreenUiEvents
     data class ShowRenameFolderDialog(val folderId: Long, val currentName: String): MainScreenUiEvents
     data class ShowDeleteFolderDialog(val folderId: Long, val currentName: String): MainScreenUiEvents
     data object DismissDeleteDialog: MainScreenUiEvents
@@ -366,17 +365,10 @@ sealed interface MainScreenUiErrors: BaseUiError {
 
 data class MainScreenState(
     val notes: List<NotesListItemModel> = listOf(),
-    val folderChips: List<FolderChipModel> = listOf(),
+    val folders: List<Folder> = listOf(),
     val selectedFolderId: Long? = null,
     val isFolderChipRowVisible: Boolean = true,
     val selectedNotesCount: Int = 0,
     val searchCounter: Int? = null,
     val isSelectionMode: Boolean = false,
-)
-
-data class FolderChipModel(
-    val folderId: Long?,
-    val title: String,
-    val isSelected: Boolean = false,
-    val isNewFolderChip: Boolean = false
 )
