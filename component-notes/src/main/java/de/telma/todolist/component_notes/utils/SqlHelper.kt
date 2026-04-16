@@ -17,6 +17,12 @@ internal class SqlHelper {
 
         val normalized = search.normalized()
         val filters = normalized.filters
+        val hasCreatedRange = filters.createdFrom != null || filters.createdTo != null
+        val hasUpdatedRange = filters.updatedFrom != null || filters.updatedTo != null
+
+        require(!(hasCreatedRange && hasUpdatedRange)) {
+            "Created and updated ranges cannot be set together"
+        }
 
         if (normalized.query != null) addClause("title LIKE '%' || ? || '%' COLLATE NOCASE", normalized.query)
         if (filters.status != null) addClause("status = ?", filters.status.statusValue)

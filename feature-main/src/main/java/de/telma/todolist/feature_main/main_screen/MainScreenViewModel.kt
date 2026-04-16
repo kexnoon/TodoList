@@ -251,11 +251,6 @@ class MainScreenViewModel(
         showUiEvent(MainScreenUiEvents.ShowRenameFolderDialog(folder.id, folder.name))
     }
 
-    fun onFolderLongPressed(folderId: Long) {
-        val folder = folders.firstOrNull { it.id == folderId } ?: return
-        showUiEvent(MainScreenUiEvents.ShowFolderActionsDialog(folder.id, folder.name))
-    }
-
     fun onNewFolderPressed() {
         showCreateFolderDialog()
     }
@@ -347,7 +342,6 @@ sealed interface MainScreenUiEvents: BaseUiEvents {
     data object ShowCreateNewNoteDialog: MainScreenUiEvents
     data object ShowFilterDialog: MainScreenUiEvents
     data object ShowCreateFolderDialog: MainScreenUiEvents
-    data class ShowFolderActionsDialog(val folderId: Long, val currentName: String): MainScreenUiEvents
     data class ShowRenameFolderDialog(val folderId: Long, val currentName: String): MainScreenUiEvents
     data class ShowDeleteFolderDialog(val folderId: Long, val currentName: String): MainScreenUiEvents
     data object DismissDeleteDialog: MainScreenUiEvents
