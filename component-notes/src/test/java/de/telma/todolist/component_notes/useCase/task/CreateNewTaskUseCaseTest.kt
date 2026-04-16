@@ -80,7 +80,7 @@ class CreateNewTaskUseCaseTest : BaseNoteComponentUnitTest() {
         val result = useCase(note, "New task")
 
         assertEquals(CreateNewTaskUseCase.Result.SUCCESS(note.id), result)
-        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any(), any()) }
+        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any<Long>(), any<String>()) }
     }
 
     @Test
@@ -94,7 +94,7 @@ class CreateNewTaskUseCaseTest : BaseNoteComponentUnitTest() {
         assertEquals(CreateNewTaskUseCase.Result.FAILURE, result)
         coVerify(exactly = 1) { taskRepository.createNewTask(note.id, "New task") }
         coVerify(exactly = 0) { noteRepository.updateNote(any()) }
-        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any(), any()) }
+        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any<Long>(), any<String>()) }
     }
 
     @Test
@@ -112,6 +112,6 @@ class CreateNewTaskUseCaseTest : BaseNoteComponentUnitTest() {
             taskRepository.createNewTask(note.id, "New task")
             noteRepository.updateNote(updatedNote)
         }
-        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any(), any()) }
+        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any<Long>(), any<String>()) }
     }
 }

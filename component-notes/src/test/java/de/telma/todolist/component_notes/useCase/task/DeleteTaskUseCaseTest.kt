@@ -73,6 +73,6 @@ class DeleteTaskUseCaseTest: BaseNoteComponentUnitTest() {
         val result = useCase(noteId, taskToDelete)
 
         assertEquals(DeleteTaskUseCase.Result.SUCCESS, result)
-        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any(), any()) }
+        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any<Long>(), any<String>()) }
     }
 }

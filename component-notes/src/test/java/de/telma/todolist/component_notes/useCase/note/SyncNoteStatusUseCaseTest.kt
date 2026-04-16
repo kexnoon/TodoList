@@ -73,7 +73,7 @@ class SyncNoteStatusUseCaseTest: BaseNoteComponentUnitTest() {
             expected = SyncNoteStatusUseCase.Result.SyncSucceed,
             actual = result
         )
-        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any(), any()) }
+        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any<Long>(), any<String>()) }
     }
 
     @Test
@@ -95,7 +95,7 @@ class SyncNoteStatusUseCaseTest: BaseNoteComponentUnitTest() {
             expected = SyncNoteStatusUseCase.Result.UpToDate,
             actual = result
         )
-        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any(), any()) }
+        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any<Long>(), any<String>()) }
     }
 
     @Test

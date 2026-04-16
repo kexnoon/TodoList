@@ -22,11 +22,18 @@ class RenameNoteUseCase(
         val timestamp = getTimestamp(LocalDateTime.now(clock))
         val updatedNote = note.copy(title = newTitle, lastUpdatedTimestamp = timestamp)
 
-        return if (repository.updateNote(updatedNote)) {
-            Result.SUCCESS
-        } else {
-            Result.FAILURE
+        val isNoteUpdated = repository.updateNote(updatedNote)
+        if (!isNoteUpdated)
+            return Result.FAILURE
+
+        val folderId = note.folderId
+        if (folderId != null) {
+            val isFolderTimestampUpdated = folderRepository.updateFolderTimestamp(folderId, timestamp)
+            if (!isFolderTimestampUpdated)
+                return Result.FAILURE
         }
+
+        return Result.SUCCESS
     }
 
 }

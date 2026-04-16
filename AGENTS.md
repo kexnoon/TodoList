@@ -58,6 +58,8 @@
   - Then you should implement Screens and Views
     - Composables needed for the screen are also the part of this step
   - Finally you should refactor the code where needed, but it still should pass the tests.
+- Tasks should be implemented ONE BY ONE.
+- After a completion of a task you should stop, present user with the results of task implementation and wait for an explicit user's command to start doing the next task.
 
 ## Documentation
 - If user decides to make changes into requirements or implementation process, those changes should be clearly logged into spec or task, depending on what was affected.

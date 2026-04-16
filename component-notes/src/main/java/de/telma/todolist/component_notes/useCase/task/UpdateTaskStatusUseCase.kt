@@ -22,18 +22,26 @@ class UpdateTaskStatusUseCase(
     }
 
     suspend operator fun invoke(noteId: Long, task: NoteTask, newStatus: NoteTaskStatus): Result {
-        var result: Result = Result.FAILURE
-
         val updatedTask = task.copy(status = newStatus)
         if (taskRepository.updateTask(noteId, updatedTask)) {
             noteRepository.getNoteById(noteId).first()?.let {
                 val timestamp = getTimestamp(LocalDateTime.now(clock))
                 val isTimestampSet = noteRepository.updateNote(it.copy(lastUpdatedTimestamp = timestamp))
-                if (isTimestampSet) result = Result.SUCCESS
+                if (!isTimestampSet)
+                    return Result.FAILURE
+
+                val folderId = it.folderId
+                if (folderId != null) {
+                    val isFolderTimestampUpdated = folderRepository.updateFolderTimestamp(folderId, timestamp)
+                    if (!isFolderTimestampUpdated)
+                        return Result.FAILURE
+                }
+
+                return Result.SUCCESS
             }
         }
 
-        return result
+        return Result.FAILURE
     }
 
 }

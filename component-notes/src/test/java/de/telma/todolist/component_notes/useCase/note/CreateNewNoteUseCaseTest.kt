@@ -43,7 +43,7 @@ class CreateNewNoteUseCaseTest : BaseNoteComponentUnitTest() {
             actual = result
         )
         coVerify { noteRepository.createNewNote(title, getUpdatedTimestamp(), null) }
-        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any(), any()) }
+        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any<Long>(), any<String>()) }
     }
 
     @Test
@@ -62,7 +62,7 @@ class CreateNewNoteUseCaseTest : BaseNoteComponentUnitTest() {
             actual = result
         )
         coVerify { noteRepository.createNewNote(title, getUpdatedTimestamp(), null) }
-        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any(), any()) }
+        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any<Long>(), any<String>()) }
     }
 
     @Test
@@ -71,7 +71,7 @@ class CreateNewNoteUseCaseTest : BaseNoteComponentUnitTest() {
         val folderId = 7L
         val expectedNoteId = 1L
         coEvery { noteRepository.createNewNote(any(), any(), any()) } returns expectedNoteId
-        coEvery { folderRepository.updateFolderTimestamp(any(), any()) } returns true
+        coEvery { folderRepository.updateFolderTimestamp(any<Long>(), any<String>()) } returns true
 
         val result = useCase(title, folderId)
 
@@ -86,7 +86,7 @@ class CreateNewNoteUseCaseTest : BaseNoteComponentUnitTest() {
         val folderId = 7L
         val expectedNoteId = 1L
         coEvery { noteRepository.createNewNote(any(), any(), any()) } returns expectedNoteId
-        coEvery { folderRepository.updateFolderTimestamp(any(), any()) } returns false
+        coEvery { folderRepository.updateFolderTimestamp(any<Long>(), any<String>()) } returns false
 
         val result = useCase(title, folderId)
 
@@ -101,7 +101,7 @@ class CreateNewNoteUseCaseTest : BaseNoteComponentUnitTest() {
         val folderId = 7L
         val expectedNoteId = 1L
         coEvery { noteRepository.createNewNote(any(), any(), any()) } returns expectedNoteId
-        coEvery { folderRepository.updateFolderTimestamp(any(), any()) } throws RuntimeException("db error")
+        coEvery { folderRepository.updateFolderTimestamp(any<Long>(), any<String>()) } throws RuntimeException("db error")
 
         val result = useCase(title, folderId)
 

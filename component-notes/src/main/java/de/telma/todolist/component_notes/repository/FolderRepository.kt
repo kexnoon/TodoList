@@ -14,5 +14,7 @@ interface FolderRepository {
     suspend fun deleteFolder(id: Long): Boolean
 
     suspend fun updateFolderTimestamp(id: Long, timestamp: String): Boolean
+
+    suspend fun updateFolderTimestamp(folderIds: List<Long>, timestamp: String): Boolean
 }
 

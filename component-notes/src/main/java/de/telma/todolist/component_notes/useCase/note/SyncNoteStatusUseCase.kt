@@ -5,8 +5,10 @@ import de.telma.todolist.component_notes.model.NoteStatus
 import de.telma.todolist.component_notes.model.NoteTaskStatus
 import de.telma.todolist.component_notes.repository.FolderRepository
 import de.telma.todolist.component_notes.repository.NoteRepository
+import de.telma.todolist.component_notes.utils.getTimestamp
 import kotlinx.coroutines.flow.first
 import java.time.Clock
+import java.time.LocalDateTime
 
 class SyncNoteStatusUseCase(
     private val repository: NoteRepository,
@@ -38,11 +40,18 @@ class SyncNoteStatusUseCase(
 
     private suspend fun updateNoteStatus(note: Note, newStatus: NoteStatus): Result {
         val updatedNote = note.copy(status = newStatus)
-        val updateResult = repository.updateNote(updatedNote)
-        return if (updateResult) {
-            Result.SyncSucceed
-        } else {
-            Result.SyncFailed
+        val isNoteUpdated = repository.updateNote(updatedNote)
+        if (!isNoteUpdated)
+            return Result.SyncFailed
+
+        val folderId = note.folderId
+        if (folderId != null) {
+            val timestamp = getTimestamp(LocalDateTime.now(clock))
+            val isFolderTimestampUpdated = folderRepository.updateFolderTimestamp(folderId, timestamp)
+            if (!isFolderTimestampUpdated)
+                return Result.SyncFailed
         }
+
+        return Result.SyncSucceed
     }
 }

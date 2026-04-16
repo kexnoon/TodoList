@@ -82,7 +82,7 @@ class RenameTaskUseCaseTest: BaseNoteComponentUnitTest() {
         coEvery { noteRepository.updateNote(updatedNote) } returns true
 
         useCase(testNoteId, testTask, newTitle)
-        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any(), any()) }
+        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any<Long>(), any<String>()) }
     }
 
     @Test
@@ -109,7 +109,7 @@ class RenameTaskUseCaseTest: BaseNoteComponentUnitTest() {
         coVerify(exactly = 1) { taskRepository.updateTask(testNoteId, testTask) }
         coVerify(exactly = 0) { noteRepository.getNoteById(any()) }
         coVerify(exactly = 0) { noteRepository.updateNote(any()) }
-        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any(), any()) }
+        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any<Long>(), any<String>()) }
     }
 
 }

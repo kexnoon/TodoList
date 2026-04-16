@@ -22,19 +22,24 @@ class RenameTaskUseCase(
     }
 
     suspend operator fun invoke(noteId: Long, task: NoteTask, newTitle: String): Result {
-        var result: Result = Result.FAILURE
-
         val updatedTask = task.copy(title = newTitle)
         if (taskRepository.updateTask(noteId, updatedTask)) {
             val note = noteRepository.getNoteById(noteId)
             note.first()?.let {
                 val timestamp = getTimestamp(LocalDateTime.now(clock))
                 val isTimestampSet = noteRepository.updateNote(it.copy(lastUpdatedTimestamp = timestamp))
-                if (isTimestampSet) result = Result.SUCCESS
+                if (!isTimestampSet)
+                    return Result.FAILURE
+
+                val folderId = it.folderId
+                if (folderId != null) {
+                    val isFolderTimestampUpdated = folderRepository.updateFolderTimestamp(folderId, timestamp)
+                    if (!isFolderTimestampUpdated)
+                        return Result.FAILURE
+                }
+                return Result.SUCCESS
             }
         }
-
-        return result
+        return Result.FAILURE
     }
-
 }

@@ -65,6 +65,6 @@ class RenameNoteUseCaseTest: BaseNoteComponentUnitTest() {
             actual = result
         )
         coVerify(exactly = 1) { notesRepository.updateNote(updatedNote) }
-        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any(), any()) }
+        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any<Long>(), any<String>()) }
     }
 }

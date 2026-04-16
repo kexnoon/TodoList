@@ -79,8 +79,7 @@ class SetNoteFolderUseCaseTest : BaseNoteComponentUnitTest() {
 
         coEvery { noteRepository.getNoteById(noteId) } returns flowOf(note)
         coEvery { noteRepository.updateNotesFolder(listOf(noteId), targetFolderId) } returns true
-        coEvery { folderRepository.updateFolderTimestamp(sourceFolderId, getUpdatedTimestamp()) } returns true
-        coEvery { folderRepository.updateFolderTimestamp(targetFolderId, getUpdatedTimestamp()) } returns true
+        coEvery { folderRepository.updateFolderTimestamp(listOf(sourceFolderId, targetFolderId), getUpdatedTimestamp()) } returns true
 
         val result = useCase(noteId, targetFolderId)
 
@@ -88,8 +87,7 @@ class SetNoteFolderUseCaseTest : BaseNoteComponentUnitTest() {
         coVerifyOrder {
             noteRepository.getNoteById(noteId)
             noteRepository.updateNotesFolder(listOf(noteId), targetFolderId)
-            folderRepository.updateFolderTimestamp(sourceFolderId, getUpdatedTimestamp())
-            folderRepository.updateFolderTimestamp(targetFolderId, getUpdatedTimestamp())
+            folderRepository.updateFolderTimestamp(listOf(sourceFolderId, targetFolderId), getUpdatedTimestamp())
         }
     }
 
@@ -106,7 +104,8 @@ class SetNoteFolderUseCaseTest : BaseNoteComponentUnitTest() {
 
         assertEquals(SetNoteFolderUseCase.Result.FAILURE, result)
         coVerify(exactly = 1) { noteRepository.updateNotesFolder(listOf(noteId), targetFolderId) }
-        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any(), any()) }
+        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any<Long>(), any<String>()) }
+        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any<List<Long>>(), any<String>()) }
     }
 
     @Test

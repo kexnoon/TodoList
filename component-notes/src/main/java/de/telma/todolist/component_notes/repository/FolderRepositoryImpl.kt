@@ -44,4 +44,18 @@ internal class FolderRepositoryImpl(
     override suspend fun updateFolderTimestamp(id: Long, timestamp: String): Boolean = withContext(Dispatchers.IO) {
         database.folderDao().updateFolderTimestampById(id, timestamp) == 1
     }
+
+    override suspend fun updateFolderTimestamp(folderIds: List<Long>, timestamp: String): Boolean = withContext(Dispatchers.IO) {
+        if (folderIds.isEmpty())
+            return@withContext true
+
+        val uniqueIds = folderIds.distinct()
+        for (folderId in uniqueIds) {
+            val updatedRows = database.folderDao().updateFolderTimestampById(folderId, timestamp)
+            if (updatedRows != 1)
+                return@withContext false
+        }
+
+        return@withContext true
+    }
 }

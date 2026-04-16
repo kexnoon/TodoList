@@ -101,6 +101,6 @@ class UpdateTaskUseCaseTest: BaseNoteComponentUnitTest() {
             noteRepository.getNoteById(testNoteId)
             noteRepository.updateNote(noteExpectedForFinalUpdate)
         }
-        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any(), any()) }
+        coVerify(exactly = 0) { folderRepository.updateFolderTimestamp(any<Long>(), any<String>()) }
     }
 }

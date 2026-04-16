@@ -5,6 +5,9 @@ import de.telma.todolist.component_notes.repository.FolderRepository
 import de.telma.todolist.component_notes.repository.NoteRepository
 import de.telma.todolist.component_notes.repository.TaskRepository
 import java.time.Clock
+import de.telma.todolist.component_notes.utils.getTimestamp
+import kotlinx.coroutines.flow.first
+import java.time.LocalDateTime
 
 class DeleteTaskUseCase(
     private val repository: TaskRepository,
@@ -18,6 +21,20 @@ class DeleteTaskUseCase(
     }
 
     suspend operator fun invoke(noteId: Long, task: NoteTask): Result {
-        return if (repository.deleteTask(task)) Result.SUCCESS else Result.FAILURE
+        val note = noteRepository.getNoteById(noteId).first() ?: return Result.FAILURE
+
+        val isDeleted = repository.deleteTask(task)
+        if (!isDeleted)
+            return Result.FAILURE
+
+        val folderId = note.folderId
+        if (folderId != null) {
+            val timestamp = getTimestamp(LocalDateTime.now(clock))
+            val isFolderTimestampUpdated = folderRepository.updateFolderTimestamp(folderId, timestamp)
+            if (!isFolderTimestampUpdated)
+                return Result.FAILURE
+        }
+
+        return Result.SUCCESS
     }
 }

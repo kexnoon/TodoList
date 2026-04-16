@@ -20,16 +20,23 @@ class CreateNewTaskUseCase(
     }
 
     suspend operator fun invoke(note: Note, title: String): Result {
-        var result: Result = Result.FAILURE
+        val timestamp = getTimestamp(LocalDateTime.now(clock))
+        if (taskRepository.createNewTask(note.id, title)) {
+            val isNoteUpdated = noteRepository.updateNote(note.copy(lastUpdatedTimestamp = timestamp))
+            if (!isNoteUpdated)
+                return Result.FAILURE
 
-        if(taskRepository.createNewTask(note.id, title)) {
-            val isNoteUpdated = noteRepository.updateNote(
-                note.copy(lastUpdatedTimestamp = getTimestamp(LocalDateTime.now(clock)))
-            )
-            result = if (isNoteUpdated) Result.SUCCESS(note.id) else Result.FAILURE
+            val folderId = note.folderId
+            if (folderId != null) {
+                val isFolderTimestampUpdated = folderRepository.updateFolderTimestamp(folderId, timestamp)
+                if (!isFolderTimestampUpdated)
+                    return Result.FAILURE
+            }
+
+            return Result.SUCCESS(note.id)
         }
 
-        return result
+        return Result.FAILURE
     }
 
 

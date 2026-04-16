@@ -44,6 +44,17 @@
 - Update DI registrations in `component-notes` so `SetNoteFolderUseCase` has required dependencies.
 - Apply folder timestamp update logic across NoteScreen edit use cases per Step 2 rules.
 
+### Planning update: batch folder timestamp update for folder move flow
+- Decision:
+    - overload `FolderRepository.updateFolderTimestamp` with `updateFolderTimestamp(folderIds: List<Long>, timestamp: String)`.
+    - use this overload in `SetNoteFolderUseCase` instead of per-folder loop calls.
+- Reasoning:
+    - folder move/unassign flow already computes all affected folders before update;
+    - one repository call for the full set keeps use-case flow simpler and deterministic.
+- What will be done instead:
+    - keep existing single-id overload for other use cases;
+    - call the new list overload from `SetNoteFolderUseCase` with deduplicated source/destination folder ids.
+
 ## 4. Unit tests (red): `NoteScreenViewModel` folder flow
 - Add dedicated ViewModel tests for:
     - initial load includes folder indicator state;
