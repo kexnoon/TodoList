@@ -4,6 +4,5 @@ data class NoteScreenAppBarModel(
     val noteId: Long,
     val title: String,
     val isComplete: Boolean,
-    val folderLabel: String = "No folder",
-    val selectedFolderId: Long? = null,
+    val currentFolder: CurrentFolderModel
 )

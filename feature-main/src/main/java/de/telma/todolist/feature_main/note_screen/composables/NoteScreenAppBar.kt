@@ -18,6 +18,7 @@ import de.telma.todolist.core_ui.theme.AppColors
 import de.telma.todolist.core_ui.theme.AppIcons
 import de.telma.todolist.core_ui.theme.TodoListTheme
 import de.telma.todolist.feature_main.R
+import de.telma.todolist.feature_main.note_screen.models.CurrentFolderModel
 import de.telma.todolist.feature_main.note_screen.models.NoteScreenAppBarModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -82,7 +83,8 @@ fun NoteScreenAppBar_InProgress_Preview() {
             val model = NoteScreenAppBarModel(
                 noteId = 0L,
                 title = "Note in progress",
-                isComplete = false
+                isComplete = false,
+                currentFolder = CurrentFolderModel(name = "No folder", folderId = null)
             )
             NoteScreenAppBar(
                 modifier = Modifier
@@ -104,7 +106,8 @@ fun NoteScreenAppBar_Complete_Preview() {
             val model = NoteScreenAppBarModel(
                 noteId = 0L,
                 title = "Completed note",
-                isComplete = true
+                isComplete = true,
+                currentFolder = CurrentFolderModel(name = "No folder", folderId = null)
             )
             NoteScreenAppBar(
                 modifier = Modifier

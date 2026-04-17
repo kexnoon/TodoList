@@ -22,10 +22,13 @@ import de.telma.todolist.core_ui.state.BaseUiEvents
 import de.telma.todolist.core_ui.state.BaseUiError
 import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.feature_main.note_screen.models.NoteScreenAppBarModel
+import de.telma.todolist.feature_main.note_screen.models.CurrentFolderModel
 import de.telma.todolist.feature_main.note_screen.models.TaskItemModel
 import de.telma.todolist.feature_main.note_screen.models.toTaskItemModel
+import de.telma.todolist.feature_main.utils.toCurrentFolderModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -53,6 +56,8 @@ class NoteScreenViewModel(
     override var _uiEvents: MutableStateFlow<NoteScreenUiEvents?> = MutableStateFlow(null)
 
     private lateinit var currentNote: Note
+    private lateinit var selectedFolderModel: CurrentFolderModel
+    private lateinit var availableFolders: List<Folder>
 
     init {
         getNoteById()
@@ -65,11 +70,13 @@ class NoteScreenViewModel(
                     showError(NoteScreenUiErrors.NoteNotFound(noteId))
                 } else {
                     currentNote = note
+                    updateFolders(note.folderId)
 
                     val appBarState = NoteScreenAppBarModel(
                         noteId = note.id,
                         title = note.title,
-                        isComplete = note.status == NoteStatus.COMPLETE
+                        isComplete = note.status == NoteStatus.COMPLETE,
+                        currentFolder = selectedFolderModel
                     )
 
                     val taskModels = note.tasksList.map { it.toTaskItemModel() }
@@ -77,7 +84,9 @@ class NoteScreenViewModel(
                     val screenState = NoteScreenState(
                         noteId = note.id,
                         appBar = appBarState,
-                        tasks = taskModels
+                        tasks = taskModels,
+                        availableFolders = availableFolders,
+                        currentFolder = selectedFolderModel
                     )
 
                     showResult(screenState)
@@ -227,6 +236,72 @@ class NoteScreenViewModel(
         showUiEvent(NoteScreenUiEvents.DismissCreateFolderDialog)
     }
 
+    fun onFolderSelected(targetFolderId: Long?) {
+        if (currentNote.folderId == targetFolderId)
+            return
+
+        viewModelScope.launch {
+            applyFolderSelection(targetFolderId)
+        }
+    }
+
+    fun createFolderAndAssign(folderName: String) {
+        viewModelScope.launch {
+            when (val createResult = createFolderUseCase(folderName)) {
+                is CreateFolderUseCase.Result.SUCCESS -> {
+                    val isAssigned = applyFolderSelection(createResult.folderId)
+                    if (!isAssigned)
+                        return@launch
+
+                    updateFolders(createResult.folderId)
+                    updateCurrentState()
+                    showUiEvent(NoteScreenUiEvents.DismissCreateFolderDialog)
+                }
+
+                CreateFolderUseCase.Result.INVALID_NAME -> {
+                    showError(NoteScreenUiErrors.FailedToRenameNote(noteId))
+                }
+
+                CreateFolderUseCase.Result.FAILURE -> {
+                    showError(NoteScreenUiErrors.FailedToRenameNote(noteId))
+                }
+            }
+        }
+    }
+
+    private suspend fun applyFolderSelection(targetFolderId: Long?): Boolean {
+        val result = setNoteFolderUseCase(noteId, targetFolderId)
+        if (result == SetNoteFolderUseCase.Result.FAILURE) {
+            showError(NoteScreenUiErrors.FailedToRenameNote(noteId))
+            return false
+        }
+
+        currentNote = currentNote.copy(folderId = targetFolderId)
+        updateFolders(selectedFolderId = targetFolderId)
+        updateCurrentState()
+
+        return true
+    }
+
+    private fun updateCurrentState() {
+        val currentState = (uiState.value as? UiState.Result<NoteScreenState>)?.data ?: return
+
+        showResult(
+            currentState.copy(
+                appBar = currentState.appBar.copy(currentFolder = selectedFolderModel),
+                currentFolder = selectedFolderModel,
+                availableFolders = availableFolders
+            )
+        )
+    }
+
+    private suspend fun updateFolders(selectedFolderId: Long?) {
+        availableFolders = getFoldersUseCase().first()
+        selectedFolderModel = availableFolders.firstOrNull { folder ->
+            folder.id == selectedFolderId
+        }?.toCurrentFolderModel() ?: CurrentFolderModel(name = "No folder", folderId = null)
+    }
+
     private suspend fun sync(scope: CoroutineScope) {
         val result = scope.async { syncNoteStatusUseCase(currentNote.id) }.await()
         when (result) {
@@ -269,6 +344,6 @@ data class NoteScreenState(
     val noteId: Long,
     val appBar: NoteScreenAppBarModel,
     val tasks: List<TaskItemModel>,
-    val folders: List<Folder> = listOf(),
-    val selectedFolderId: Long? = null
+    val currentFolder: CurrentFolderModel,
+    val availableFolders: List<Folder> = listOf(),
 )

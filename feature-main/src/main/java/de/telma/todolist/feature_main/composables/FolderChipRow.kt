@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.telma.todolist.component_notes.model.Folder
 import de.telma.todolist.core_ui.composables.FilterChip
+import de.telma.todolist.core_ui.composables.FilterChipModel
 import de.telma.todolist.core_ui.theme.AppIcons
 import de.telma.todolist.core_ui.theme.TodoListTheme
 import de.telma.todolist.feature_main.R
@@ -36,21 +37,25 @@ internal fun FolderChipRow(
     onFolderDeleteRequest: (Long) -> Unit
 ) {
     var expandedMenuFolderId by remember { mutableStateOf<Long?>(null) }
+    val allNotesText = stringResource(R.string.main_screen_folder_chip_all_notes)
+    val newFolderText = stringResource(R.string.main_screen_folder_chip_new_folder)
+
     LazyRow(
         modifier = modifier
             .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        val allModelsModel = FilterChipModel(
+            text = allNotesText,
+            selected = selectedFolderId == null,
+            onClick = { onFolderSelected(null) }
+        )
         item(key = "all-notes") {
-            FilterChip(
-                text = stringResource(R.string.main_screen_folder_chip_all_notes),
-                selected = selectedFolderId == null,
-                onClick = { onFolderSelected(null) }
-            )
+            FilterChip(model = allModelsModel)
         }
         items(folders, key = { folder -> folder.id }) { folder ->
             Box {
-                FilterChip(
+                val chipModel = FilterChipModel(
                     text = folder.name,
                     selected = selectedFolderId == folder.id,
                     icon = AppIcons.folder,
@@ -58,6 +63,8 @@ internal fun FolderChipRow(
                     onClick = { onFolderSelected(folder.id) },
                     onLongClick = { expandedMenuFolderId = folder.id }
                 )
+
+                FilterChip(model = chipModel)
                 DropdownMenu(
                     expanded = expandedMenuFolderId == folder.id,
                     onDismissRequest = { expandedMenuFolderId = null }
@@ -96,13 +103,14 @@ internal fun FolderChipRow(
             }
         }
         item(key = "new-folder") {
-            FilterChip(
-                text = stringResource(R.string.main_screen_folder_chip_new_folder),
+            val chipModel = FilterChipModel(
+                text = newFolderText,
                 selected = false,
                 icon = AppIcons.add,
-                iconContentDescription = stringResource(R.string.main_screen_folder_chip_new_folder),
+                iconContentDescription = newFolderText,
                 onClick = onNewFolderPressed
             )
+            FilterChip(model = chipModel)
         }
     }
 }

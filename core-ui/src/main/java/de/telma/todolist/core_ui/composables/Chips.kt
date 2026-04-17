@@ -28,25 +28,20 @@ import de.telma.todolist.core_ui.theme.TodoListTheme
 @Composable
 fun FilterChip(
     modifier: Modifier = Modifier,
-    text: String,
-    selected: Boolean,
-    icon: ImageVector? = null,
-    iconContentDescription: String? = null,
-    onClick: () -> Unit = {},
-    onLongClick: (() -> Unit)? = null
+    model: FilterChipModel
 ) {
     val shape = RoundedCornerShape(100.dp)
-    val containerColor = if (selected) {
+    val containerColor = if (model.selected) {
         MaterialTheme.colorScheme.primaryContainer
     } else {
         MaterialTheme.colorScheme.surfaceVariant
     }
-    val contentColor = if (selected) {
+    val contentColor = if (model.selected) {
         MaterialTheme.colorScheme.onPrimaryContainer
     } else {
         MaterialTheme.colorScheme.onSurfaceVariant
     }
-    val borderColor = if (selected) {
+    val borderColor = if (model.selected) {
         MaterialTheme.colorScheme.primary.copy(alpha = 0.72f)
     } else {
         MaterialTheme.colorScheme.outlineVariant
@@ -56,8 +51,8 @@ fun FilterChip(
         modifier = modifier
             .clip(shape)
             .combinedClickable(
-                onClick = onClick,
-                onLongClick = onLongClick
+                onClick = model.onClick,
+                onLongClick = model.onLongClick
             )
     ) {
         Surface(
@@ -73,21 +68,30 @@ fun FilterChip(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                if (icon != null) {
+                if (model.icon != null) {
                     Icon(
                         modifier = Modifier.size(18.dp),
-                        imageVector = icon,
-                        contentDescription = iconContentDescription
+                        imageVector = model.icon,
+                        contentDescription = model.iconContentDescription
                     )
                 }
                 Text(
-                    text = text,
+                    text = model.text,
                     style = MaterialTheme.typography.labelLarge
                 )
             }
         }
     }
 }
+
+data class FilterChipModel(
+    val text: String,
+    val selected: Boolean,
+    val icon: ImageVector? = null,
+    val iconContentDescription: String? = null,
+    val onClick: () -> Unit = {},
+    val onLongClick: (() -> Unit)? = null
+)
 
 @Preview(showBackground = true)
 @Composable
@@ -98,14 +102,16 @@ private fun FilterChip_Default_Preview() {
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                FilterChip(
+                val workChipModel = FilterChipModel(
                     text = "Work",
                     selected = false
                 )
-                FilterChip(
+                val allNotesChipModel = FilterChipModel(
                     text = "All Notes",
                     selected = true
                 )
+                FilterChip(model = workChipModel)
+                FilterChip(model = allNotesChipModel)
             }
         }
     }
@@ -120,18 +126,20 @@ private fun FilterChip_WithIcon_Preview() {
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                FilterChip(
+                val newFolderModel = FilterChipModel(
                     text = "New Folder",
                     selected = false,
                     icon = AppIcons.add,
                     iconContentDescription = "Add folder"
                 )
-                FilterChip(
+                val renameModel = FilterChipModel(
                     text = "Rename",
                     selected = true,
                     icon = AppIcons.edit,
                     iconContentDescription = "Rename"
                 )
+                FilterChip(model = newFolderModel)
+                FilterChip(model = renameModel)
             }
         }
     }
@@ -143,7 +151,7 @@ private fun FilterChip_LongClick_Preview() {
     TodoListTheme {
         Surface {
             Box(modifier = Modifier.padding(16.dp)) {
-                FilterChip(
+                val longClickModel = FilterChipModel(
                     text = "Long Press Enabled",
                     selected = false,
                     icon = AppIcons.folder,
@@ -151,6 +159,7 @@ private fun FilterChip_LongClick_Preview() {
                     onClick = {},
                     onLongClick = {}
                 )
+                FilterChip(model = longClickModel)
             }
         }
     }

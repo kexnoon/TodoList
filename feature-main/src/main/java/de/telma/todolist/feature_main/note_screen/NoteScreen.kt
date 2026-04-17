@@ -33,6 +33,7 @@ import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.core_ui.theme.AppIcons
 import de.telma.todolist.core_ui.theme.TodoListTheme
 import de.telma.todolist.feature_main.R
+import de.telma.todolist.feature_main.note_screen.models.CurrentFolderModel
 import de.telma.todolist.feature_main.note_screen.composables.NoteScreenAppBar
 import de.telma.todolist.feature_main.note_screen.composables.TasksList
 import de.telma.todolist.feature_main.note_screen.models.NoteScreenAppBarModel
@@ -281,7 +282,8 @@ private fun StateResult_Default_Preview() {
         val appBarState = NoteScreenAppBarModel(
             noteId = noteId,
             title = "Test Note",
-            isComplete = false
+            isComplete = false,
+            currentFolder = CurrentFolderModel("No folder", null)
         )
         val task = TaskItemModel(
             id = 0,
@@ -301,7 +303,10 @@ private fun StateResult_Default_Preview() {
         val state by rememberSaveable {
             mutableStateOf(
                 NoteScreenState(
-                    noteId, appBarState, tasksList
+                    noteId = noteId,
+                    appBar = appBarState,
+                    tasks = tasksList,
+                    currentFolder = appBarState.currentFolder
                 )
             )
         }
@@ -321,12 +326,20 @@ private fun StateResult_NoTasks_Preview() {
     TodoListTheme {
         val noteId = 0L
         val appBarState = NoteScreenAppBarModel(
-                noteId = noteId, title = "Empty note", isComplete = false
+                noteId = noteId,
+                title = "Empty note",
+                isComplete = false,
+                currentFolder = CurrentFolderModel("No folder", null)
         )
 
         val state by rememberSaveable {
             mutableStateOf(
-                NoteScreenState(noteId, appBarState, listOf())
+                NoteScreenState(
+                    noteId = noteId,
+                    appBar = appBarState,
+                    tasks = listOf(),
+                    currentFolder = appBarState.currentFolder
+                )
             )
         }
 

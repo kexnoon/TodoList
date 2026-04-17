@@ -30,9 +30,9 @@ class NoteScreenViewModelFolderFlowTest : NoteScreenViewModelTestBase() {
         advanceUntilIdle()
 
         val state = assertIs<UiState.Result<NoteScreenState>>(viewModel.uiState.value).data
-        assertEquals(9L, state.appBar.selectedFolderId)
-        assertEquals("Work", state.appBar.folderLabel)
-        assertEquals(folders, state.folders)
+        assertEquals(9L, state.appBar.currentFolder.folderId)
+        assertEquals("Work", state.appBar.currentFolder.name)
+        assertEquals(folders, state.availableFolders)
     }
 
     @Test
@@ -47,7 +47,7 @@ class NoteScreenViewModelFolderFlowTest : NoteScreenViewModelTestBase() {
         advanceUntilIdle()
 
         val state = assertIs<UiState.Result<NoteScreenState>>(viewModel.uiState.value).data
-        val labels = listOf("No folder") + state.folders.map { it.name } + listOf("New folder")
+        val labels = listOf("No folder") + state.availableFolders.map { it.name } + listOf("New folder")
         assertEquals(listOf("No folder", "Work", "Home", "New folder"), labels)
     }
 
