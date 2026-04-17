@@ -27,6 +27,7 @@
 - Unit tests should cover: Use Cases, ViewModels, special classes of business logic (i.e mappers, helpers etc.)
 - Integration test should cover repositories and their integration with storage and network
 - At this stage of development avoid writing UI tests
+- If you create a new unit or integration test file for functionality that had no tests before (UseCase, ViewModel, Repository), you must cover the full behavior of that functionality, even when part of that behavior is outside the current task, step, or feature scope.
 
 ## Constraints
 - Do not invent requirements that are not described

@@ -65,6 +65,14 @@
     - invalid folder name handling for create flow;
     - assignment/create failures mapped to UI error state/events.
 
+### Planning update: full `NoteScreenViewModel` coverage
+- Decision:
+    - when creating `NoteScreenViewModelTest` from scratch, cover all current `NoteScreenViewModel` behavior, not only folder-related flows.
+- Reasoning:
+    - the ViewModel had no prior tests; partial tests only for folders are insufficient for baseline quality and regression protection.
+- What will be done instead:
+    - include tests for all existing NoteScreen flows (note/task actions, dialogs, navigation, sync/error paths) together with folder scenarios.
+
 ## 5. Green: `NoteScreenViewModel`
 - Inject and wire folder use cases:
     - `GetFoldersUseCase`;
