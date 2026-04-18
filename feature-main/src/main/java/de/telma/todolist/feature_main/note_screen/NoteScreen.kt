@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -18,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -26,7 +29,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import de.telma.todolist.component_notes.model.Folder
 import de.telma.todolist.core_ui.composables.BasicDialog
+import de.telma.todolist.core_ui.composables.FilterChip
+import de.telma.todolist.core_ui.composables.FilterChipModel
 import de.telma.todolist.core_ui.composables.InputDialog
 import de.telma.todolist.core_ui.composables.TextBodyMedium
 import de.telma.todolist.core_ui.state.UiState
@@ -50,7 +56,9 @@ fun NoteScreen(
         onRenamePressed = { viewModel.onRenameNotePressed() },
         onDeletePressed = { viewModel.onDeleteNotePressed() },
         onBackPressed = { viewModel.onBackPressed() },
-        onAddTaskPressed = { viewModel.onAddTaskPressed() }
+        onAddTaskPressed = { viewModel.onAddTaskPressed() },
+        onFolderSelected = { folderId -> viewModel.onFolderSelected(folderId) },
+        onCreateFolderPressed = { viewModel.onCreateFolderPressed() }
     )
 
     val itemActions = ItemActions(
@@ -107,6 +115,12 @@ fun NoteScreen(
                 onConfirm = { newTitle -> viewModel.renameNote(newTitle) },
                 onDismiss = { viewModel.dismissDialog() })
         }
+        is NoteScreenUiEvents.ShowCreateFolderDialog -> {
+            CreateFolderDialog(
+                onConfirm = { folderName -> viewModel.createFolderAndAssign(folderName) },
+                onDismiss = { viewModel.dismissCreateFolderDialog() }
+            )
+        }
 
         else -> {}
     }
@@ -122,13 +136,24 @@ private fun StateResult(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
-            NoteScreenAppBar(
-                modifier = Modifier.fillMaxWidth(),
-                model = screenState.appBar,
-                onBackPressed = { scaffoldActions.onBackPressed.invoke() },
-                onRenamePressed = { scaffoldActions.onRenamePressed.invoke() },
-                onDeletePressed = { scaffoldActions.onDeletePressed.invoke() }
-            )
+            Column(modifier = Modifier.fillMaxWidth()) {
+                NoteScreenAppBar(
+                    modifier = Modifier.fillMaxWidth(),
+                    model = screenState.appBar,
+                    onBackPressed = { scaffoldActions.onBackPressed.invoke() },
+                    onRenamePressed = { scaffoldActions.onRenamePressed.invoke() },
+                    onDeletePressed = { scaffoldActions.onDeletePressed.invoke() }
+                )
+                FolderIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp),
+                    currentFolder = screenState.currentFolder,
+                    availableFolders = screenState.availableFolders,
+                    onFolderSelected = { folderId -> scaffoldActions.onFolderSelected.invoke(folderId) },
+                    onCreateFolderPressed = { scaffoldActions.onCreateFolderPressed.invoke() }
+                )
+            }
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -161,7 +186,6 @@ private fun StateResult(
                     onDeleteTaskPressed = { taskId -> itemActions.onDeletePressed.invoke(taskId) }
                 )
             }
-
         }
     )
 }
@@ -275,6 +299,102 @@ private fun NoteRenameDialog(
 }
 
 @Composable
+private fun FolderIndicator(
+    modifier: Modifier = Modifier,
+    currentFolder: CurrentFolderModel,
+    availableFolders: List<Folder>,
+    onFolderSelected: (Long?) -> Unit = { },
+    onCreateFolderPressed: () -> Unit = { }
+) {
+    var isMenuExpanded by remember { mutableStateOf(false) }
+    val noFolderText = stringResource(R.string.note_screen_folder_chip_no_folder)
+    val newFolderText = stringResource(R.string.note_screen_folder_dropdown_new_folder)
+    val currentFolderText = currentFolder.name ?: noFolderText
+
+    Box(modifier = modifier) {
+        FilterChip(
+            model = FilterChipModel(
+                text = currentFolderText,
+                selected = currentFolder.folderId != null,
+                icon = AppIcons.folder,
+                iconContentDescription = currentFolderText,
+                onClick = { isMenuExpanded = true }
+            )
+        )
+        FolderIndicatorDropdownMenu(
+            expanded = isMenuExpanded,
+            noFolderText = noFolderText,
+            newFolderText = newFolderText,
+            availableFolders = availableFolders,
+            onDismissRequest = { isMenuExpanded = false },
+            onFolderSelected = onFolderSelected,
+            onCreateFolderPressed = onCreateFolderPressed
+        )
+    }
+}
+
+@Composable
+private fun FolderIndicatorDropdownMenu(
+    expanded: Boolean,
+    noFolderText: String,
+    newFolderText: String,
+    availableFolders: List<Folder>,
+    onDismissRequest: () -> Unit = { },
+    onFolderSelected: (Long?) -> Unit = { },
+    onCreateFolderPressed: () -> Unit = { }
+) {
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismissRequest
+    ) {
+        DropdownMenuItem(
+            text = { Text(noFolderText) },
+            onClick = {
+                onDismissRequest()
+                onFolderSelected(null)
+            }
+        )
+        availableFolders.forEach { folder ->
+            DropdownMenuItem(
+                text = { Text(folder.name) },
+                onClick = {
+                    onDismissRequest()
+                    onFolderSelected(folder.id)
+                }
+            )
+        }
+        DropdownMenuItem(
+            text = { Text(newFolderText) },
+            leadingIcon = {
+                Icon(
+                    imageVector = AppIcons.add,
+                    contentDescription = newFolderText
+                )
+            },
+            onClick = {
+                onDismissRequest()
+                onCreateFolderPressed()
+            }
+        )
+    }
+}
+
+@Composable
+private fun CreateFolderDialog(
+    onConfirm: (String) -> Unit = { _ -> },
+    onDismiss: () -> Unit = { }
+) {
+    InputDialog(
+        title = stringResource(R.string.note_screen_create_folder_dialog_title),
+        onConfirm = onConfirm,
+        onDismiss = onDismiss,
+        confirmText = stringResource(R.string.note_screen_create_folder_dialog_confirm_text),
+        dismissText = stringResource(R.string.note_screen_create_folder_dialog_dismiss_text),
+        inputLabel = stringResource(R.string.note_screen_create_folder_dialog_input_label)
+    )
+}
+
+@Composable
 @Preview(showBackground = true)
 private fun StateResult_Default_Preview() {
     TodoListTheme {
@@ -378,7 +498,9 @@ private data class ScaffoldActions(
     val onRenamePressed: () -> Unit = { },
     val onDeletePressed: () -> Unit = { },
     val onBackPressed: () -> Unit = { },
-    val onAddTaskPressed: () -> Unit = { }
+    val onAddTaskPressed: () -> Unit = { },
+    val onFolderSelected: (folderId: Long?) -> Unit = { },
+    val onCreateFolderPressed: () -> Unit = { }
 )
 
 private data class ItemActions(

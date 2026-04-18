@@ -35,7 +35,7 @@ fun TaskItem(
 ) {
     Row(
         modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 2.dp, vertical = 8.dp)
             .fillMaxWidth()
             .wrapContentHeight()
             .clickable(onClick = { onItemClicked(model.id) }),

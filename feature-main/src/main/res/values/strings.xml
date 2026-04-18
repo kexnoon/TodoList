@@ -89,6 +89,12 @@
     <string name="note_screen_rename_note_confirm">Rename</string>
     <string name="note_screen_rename_note_dismiss">Cancel</string>
     <string name="note_screen_rename_note_input_label">New title</string>#
+    <string name="note_screen_folder_chip_no_folder">No folder</string>
+    <string name="note_screen_folder_dropdown_new_folder">New folder</string>
+    <string name="note_screen_create_folder_dialog_title">Create folder</string>
+    <string name="note_screen_create_folder_dialog_confirm_text">Create</string>
+    <string name="note_screen_create_folder_dialog_dismiss_text">Cancel</string>
+    <string name="note_screen_create_folder_dialog_input_label">Folder name</string>
 
     <!-- Search bar -->
     <string name="search_bar_placeholder">Search</string>
