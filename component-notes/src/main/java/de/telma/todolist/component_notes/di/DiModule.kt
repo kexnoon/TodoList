@@ -39,7 +39,7 @@ val componentNotesModule = module {
 
     factory { GetNotesUseCase(get()) }
     factory { GetNotesInFolderUseCase(get()) }
-    factory { MoveNotesToFolderUseCase() }
+    factory { MoveNotesToFolderUseCase(get(), get(), get()) }
     factory { SetNoteFolderUseCase(get(), get(), get()) }
     factory { CreateNewNoteUseCase(get(), get(), get()) }
     factory { RenameNoteUseCase(get(), get(), get()) }
