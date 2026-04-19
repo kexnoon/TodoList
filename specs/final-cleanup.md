@@ -33,14 +33,14 @@
   - Dialog/event dispatch flow (show/dismiss event routing).
   - Navigation flow (back and post-delete behavior).
 - Delegate boundaries must be explicit via contracts/interfaces between ViewModel and delegates.
-- Delegates must not receive `ViewModel` instance directly; communication must use narrow callback contracts.
+- Delegates must not receive `ViewModel` instance directly; communication must use mutation-based contracts.
 - Remove `core-data`, `feature-example`, and `app-example` modules from project configuration and module dependency graph.
 - Fix app launcher visibility by correcting Android app entry configuration (manifest/build configuration) so one valid launcher entry point is exposed.
 - Update `README.md` to match actual modules, build/run instructions, architecture state, and current development workflow.
 - Add separate delegate documentation describing:
   - rationale for ViewModel splitting,
   - delegate ownership boundaries,
-  - callback contract rules,
+  - mutation contract rules,
   - DI/lifecycle rules,
   - testing approach for delegates.
 
@@ -89,10 +89,13 @@
 # implementation-final
 
 ## Implementation steps
-- Step 1 - Scope alignment and contracts:
+- Step 1 - Delegate split:
   - Confirm and lock delegate boundaries for MainScreen and NoteScreen.
-  - Keep ViewModel-to-delegate communication callback-based only (no ViewModel instance passing).
+  - Keep ViewModel-to-delegate communication mutation-based only (no ViewModel instance passing).
   - Keep ViewModel public APIs stable for UI call sites.
+  - Extract MainScreen responsibilities into delegates (notes/folders/dialog-navigation handlers as defined).
+  - Extract NoteScreen responsibilities into delegates (note content/tasks/folder/dialog-navigation handlers as defined).
+  - Maintain behavior parity and existing UI-facing API signatures.
 
 - Step 2 - Module cleanup:
   - Remove `core-data`, `feature-example`, and `app-example` from `settings.gradle.kts`.
@@ -104,12 +107,7 @@
   - Apply minimal fix so app is discoverable in launcher/home screen after install.
   - Verify app opens correctly from launcher.
 
-- Step 4 - Delegate refactor implementation:
-  - Extract MainScreen responsibilities into delegates (notes/folders/dialog-navigation handlers as defined).
-  - Extract NoteScreen responsibilities into delegates (note content/tasks/folder/dialog-navigation handlers as defined).
-  - Maintain behavior parity and existing UI-facing API signatures.
-
-- Step 5 - P1/P2 stability and cleanup fixes:
+- Step 4 - P1/P2 stability and cleanup fixes:
   - Fix nav event collection lifecycle in `MainActivity` to avoid duplicate collectors from recomposition.
   - Ensure `NoteScreenViewModel` note-observation flow is single-source and cancels/replaces previous observer jobs safely.
   - Split launcher and deep-link intent filters so launcher visibility is independent and deterministic.
@@ -119,10 +117,10 @@
   - Align NoteScreen folder-flow failures with dedicated error types instead of note-rename errors.
   - Remove unnecessary `async/await` wrappers where no parallel work exists.
 
-- Step 6 - Documentation update:
+- Step 5 - Documentation update:
   - Update `README.md` to reflect current module graph and setup.
   - Create separate delegates documentation in `docs` and link it from `README.md`.
 
-- Step 7 - Verification:
+- Step 6 - Verification:
   - Run relevant tests/build checks for touched areas.
   - Verify acceptance criteria and critical edge cases.
