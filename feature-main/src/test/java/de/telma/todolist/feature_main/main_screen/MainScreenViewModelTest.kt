@@ -14,6 +14,7 @@ import de.telma.todolist.component_notes.useCase.folder.RenameFolderUseCase
 import de.telma.todolist.component_notes.useCase.note.CreateNewNoteUseCase
 import de.telma.todolist.component_notes.useCase.note.DeleteNoteUseCase
 import de.telma.todolist.component_notes.useCase.note.GetNotesUseCase
+import de.telma.todolist.component_notes.useCase.note.MoveNotesToFolderUseCase
 import de.telma.todolist.core_ui.navigation.NavigationCoordinator
 import de.telma.todolist.core_ui.state.UiState
 import io.mockk.coEvery
@@ -47,6 +48,7 @@ class MainScreenViewModelTest {
     private lateinit var deleteFolderUseCase: DeleteFolderUseCase
     private lateinit var createNewNoteUseCase: CreateNewNoteUseCase
     private lateinit var deleteNoteUseCase: DeleteNoteUseCase
+    private lateinit var moveNotesToFolderUseCase: MoveNotesToFolderUseCase
     
     private lateinit var viewModel: MainScreenViewModel
 
@@ -62,6 +64,7 @@ class MainScreenViewModelTest {
         deleteFolderUseCase = mockk()
         createNewNoteUseCase = mockk()
         deleteNoteUseCase = mockk()
+        moveNotesToFolderUseCase = mockk()
         
         // Default mock for init
         coEvery { getNotesUseCase(any(), any()) } returns flowOf(emptyList())
@@ -75,7 +78,8 @@ class MainScreenViewModelTest {
             renameFolderUseCase,
             deleteFolderUseCase,
             createNewNoteUseCase,
-            deleteNoteUseCase
+            deleteNoteUseCase,
+            moveNotesToFolderUseCase
         )
     }
 
@@ -311,6 +315,141 @@ class MainScreenViewModelTest {
         coVerify(exactly = 1) { createNewNoteUseCase("Test", null) }
     }
 
+    @Test
+    fun `onMoveToFolderClicked should emit show move dialog event`() = runTest {
+        viewModel.onMoveToFolderClicked()
+
+        assertEquals(MainScreenUiEvents.ShowMoveToFolderDialog, viewModel.uiEvents.value)
+    }
+
+    @Test
+    fun `dismissMoveToFolderDialog should emit dismiss move dialog event`() = runTest {
+        viewModel.dismissMoveToFolderDialog()
+
+        assertEquals(MainScreenUiEvents.DismissMoveToFolderDialog, viewModel.uiEvents.value)
+    }
+
+    @Test
+    fun `onMoveToNoFolderConfirmed should move selected notes and exit selection mode on success`() = runTest {
+        val notes = listOf(
+            testNote.copy(id = 1L),
+            testNote.copy(id = 2L)
+        )
+        coEvery { getNotesUseCase(any(), any()) } returns flowOf(notes)
+        coEvery { moveNotesToFolderUseCase(any(), null) } returns MoveNotesToFolderUseCase.Result.SUCCESS
+
+        viewModel.getAllNotes()
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.onNoteSelected(1L, true)
+        viewModel.onMoveToNoFolderConfirmed()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify(exactly = 1) {
+            moveNotesToFolderUseCase(match { selected -> selected.map { it.id } == listOf(1L) }, null)
+        }
+        val state = (viewModel.uiState.value as UiState.Result).data
+        assertTrue(!state.isSelectionMode)
+    }
+
+    @Test
+    fun `onMoveToFolderConfirmed should move selected notes to target folder and exit selection mode on success`() = runTest {
+        val targetFolderId = 9L
+        val notes = listOf(
+            testNote.copy(id = 1L),
+            testNote.copy(id = 2L)
+        )
+        coEvery { getNotesUseCase(any(), any()) } returns flowOf(notes)
+        coEvery { moveNotesToFolderUseCase(any(), targetFolderId) } returns MoveNotesToFolderUseCase.Result.SUCCESS
+
+        viewModel.getAllNotes()
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.onNoteSelected(2L, true)
+        viewModel.onMoveToFolderConfirmed(targetFolderId)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify(exactly = 1) {
+            moveNotesToFolderUseCase(match { selected -> selected.map { it.id } == listOf(2L) }, targetFolderId)
+        }
+        val state = (viewModel.uiState.value as UiState.Result).data
+        assertTrue(!state.isSelectionMode)
+    }
+
+    @Test
+    fun `new folder move flow should create folder and move selected notes on success`() = runTest {
+        val createdFolderId = 77L
+        val notes = listOf(testNote.copy(id = 11L))
+        coEvery { getNotesUseCase(any(), any()) } returns flowOf(notes)
+        coEvery { createFolderUseCase("Work") } returns CreateFolderUseCase.Result.SUCCESS(createdFolderId)
+        coEvery { moveNotesToFolderUseCase(any(), createdFolderId) } returns MoveNotesToFolderUseCase.Result.SUCCESS
+
+        viewModel.getAllNotes()
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.onNoteSelected(11L, true)
+        viewModel.onCreateFolderForMoveClicked()
+        assertEquals(MainScreenUiEvents.ShowCreateFolderForMoveDialog, viewModel.uiEvents.value)
+
+        viewModel.createFolderForMove("Work")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify(exactly = 1) { createFolderUseCase("Work") }
+        coVerify(exactly = 1) {
+            moveNotesToFolderUseCase(match { selected -> selected.map { it.id } == listOf(11L) }, createdFolderId)
+        }
+        val state = (viewModel.uiState.value as UiState.Result).data
+        assertTrue(!state.isSelectionMode)
+    }
+
+    @Test
+    fun `new folder invalid name should keep selection mode active`() = runTest {
+        val notes = listOf(testNote.copy(id = 12L))
+        coEvery { getNotesUseCase(any(), any()) } returns flowOf(notes)
+        coEvery { createFolderUseCase("   ") } returns CreateFolderUseCase.Result.INVALID_NAME
+
+        viewModel.getAllNotes()
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.onNoteSelected(12L, true)
+        viewModel.createFolderForMove("   ")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify(exactly = 0) { moveNotesToFolderUseCase(any(), any()) }
+        val state = (viewModel.uiState.value as UiState.Result).data
+        assertTrue(state.isSelectionMode)
+    }
+
+    @Test
+    fun `new folder create failure should keep selection mode active`() = runTest {
+        val notes = listOf(testNote.copy(id = 14L))
+        coEvery { getNotesUseCase(any(), any()) } returns flowOf(notes)
+        coEvery { createFolderUseCase("Work") } returns CreateFolderUseCase.Result.FAILURE
+
+        viewModel.getAllNotes()
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.onNoteSelected(14L, true)
+        viewModel.createFolderForMove("Work")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify(exactly = 0) { moveNotesToFolderUseCase(any(), any()) }
+        val state = (viewModel.uiState.value as UiState.Result).data
+        assertTrue(state.isSelectionMode)
+    }
+
+    @Test
+    fun `move failure should keep selection mode active and emit move flow error event`() = runTest {
+        val notes = listOf(testNote.copy(id = 13L))
+        coEvery { getNotesUseCase(any(), any()) } returns flowOf(notes)
+        coEvery { moveNotesToFolderUseCase(any(), 3L) } returns MoveNotesToFolderUseCase.Result.FAILURE
+
+        viewModel.getAllNotes()
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.onNoteSelected(13L, true)
+        viewModel.onMoveToFolderConfirmed(3L)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(MainScreenUiEvents.ShowMoveFlowError, viewModel.uiEvents.value)
+        val state = (viewModel.uiState.value as UiState.Result).data
+        assertTrue(state.isSelectionMode)
+    }
+
     private fun setSelectedFolderId(folderId: Long?) {
         viewModel.onFolderSelected(folderId)
         testDispatcher.scheduler.advanceUntilIdle()
@@ -326,7 +465,8 @@ class MainScreenViewModelTest {
             renameFolderUseCase,
             deleteFolderUseCase,
             createNewNoteUseCase,
-            deleteNoteUseCase
+            deleteNoteUseCase,
+            moveNotesToFolderUseCase
         )
         testDispatcher.scheduler.advanceUntilIdle()
     }
