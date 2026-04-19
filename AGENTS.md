@@ -119,9 +119,9 @@
 - Tasks planning may be iterative. Document a list of tasks into a file only when the user explicitly approves it.
   - In contrast to the steps planning you don't need any headers like `# implementation-v1` in this file
   - Planing a task should include discussing with user these points:
-    - Define use cases for this step
-    - Define edge cases for this step
-    - Define domain layer, storage or network changes needed for these steps
+    - Define UseCases (as UseCases in domain layer) for this step
+    - Define business logic's edge cases for this step
+    - Define data layer, storage or network changes needed for these steps
     - Define general contracts for this step
     - Define UI layer changes (including whether or not additional composables are needed) for this step
     - Define tests needed for this step
