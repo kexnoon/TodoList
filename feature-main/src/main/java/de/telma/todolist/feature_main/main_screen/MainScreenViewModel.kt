@@ -342,12 +342,17 @@ sealed interface MainScreenUiEvents: BaseUiEvents {
     data object ShowCreateNewNoteDialog: MainScreenUiEvents
     data object ShowFilterDialog: MainScreenUiEvents
     data object ShowCreateFolderDialog: MainScreenUiEvents
+    data object ShowMoveToFolderDialog: MainScreenUiEvents
+    data object ShowCreateFolderForMoveDialog: MainScreenUiEvents
+    data object ShowMoveFlowError: MainScreenUiEvents
     data class ShowRenameFolderDialog(val folderId: Long, val currentName: String): MainScreenUiEvents
     data class ShowDeleteFolderDialog(val folderId: Long, val currentName: String): MainScreenUiEvents
     data object DismissDeleteDialog: MainScreenUiEvents
     data object DismissCreateNewNoteDialog: MainScreenUiEvents
     data object DismissFilterDialog: MainScreenUiEvents
     data object DismissCreateFolderDialog: MainScreenUiEvents
+    data object DismissMoveToFolderDialog: MainScreenUiEvents
+    data object DismissCreateFolderForMoveDialog: MainScreenUiEvents
     data object DismissRenameFolderDialog: MainScreenUiEvents
     data object DismissDeleteFolderDialog: MainScreenUiEvents
 }

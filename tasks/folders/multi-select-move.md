@@ -12,8 +12,6 @@
   - show/dismiss move dialog;
   - show/dismiss create-folder-from-move dialog;
   - move failure handling.
-- Lock the single-source exclusion rule:
-  - if selected notes have exactly one source folder, exclude that folder from move targets.
 
 ## Task 3.3 - Unit tests (red) for `MoveNotesToFolderUseCase`
 - Add tests for:
@@ -38,8 +36,7 @@
   - move to existing folder;
   - `New folder` success path (`create -> move -> exit selection mode`);
   - `New folder` invalid name/create failure path (selection mode stays active);
-  - generic move failure path (selection mode stays active);
-  - single-source exclusion behavior in move-target options.
+  - generic move failure path (selection mode stays active).
 
 ## Task 3.6 - Green implementation in `MainScreenViewModel`
 - Inject and wire `MoveNotesToFolderUseCase`.
@@ -50,7 +47,6 @@
 - Add `Move to folder` action to selection app bar.
 - Add move-target dialog with options in order:
   - `No folder`, existing folders, `New folder`.
-- Apply single-source exclusion when building target options.
 - Reuse existing `InputDialog` for `New folder` in move flow.
 - Add required string resources for action/dialog/error labels.
 
@@ -60,3 +56,14 @@
   - move flow works from multi-select;
   - `New folder` path works;
   - selection mode exits only after successful move.
+
+### Planning update: revert source-folder exclusion rule
+- Decision:
+  - Drop the rule that hides the source folder from move targets in single-source selection.
+- Reason:
+  - Keep Step 3 implementation simpler and reduce unnecessary UI branching.
+- What will be done instead:
+  - Move dialog always shows targets as:
+    - `No folder`,
+    - existing folders,
+    - `New folder`.
