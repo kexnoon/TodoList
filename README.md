@@ -38,6 +38,7 @@ Here you can read more about some technical aspects of this app:
 
 Here you can read more about some of the project's business features
 - [Search](docs/search_flow.md)
+- [Folders](docs/folders_feature.md)
 
 ## 🎯 Immediate Goals (2 weeks)
 - 🔍 **Search** – Quickly find notes by keywords ✅
