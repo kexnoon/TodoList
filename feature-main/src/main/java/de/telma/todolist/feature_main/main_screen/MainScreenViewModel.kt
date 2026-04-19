@@ -11,6 +11,7 @@ import de.telma.todolist.component_notes.useCase.folder.RenameFolderUseCase
 import de.telma.todolist.component_notes.useCase.note.CreateNewNoteUseCase
 import de.telma.todolist.component_notes.useCase.note.DeleteNoteUseCase
 import de.telma.todolist.component_notes.useCase.note.GetNotesUseCase
+import de.telma.todolist.component_notes.useCase.note.MoveNotesToFolderUseCase
 import de.telma.todolist.core_ui.base.BaseViewModel
 import de.telma.todolist.core_ui.navigation.NavEvent
 import de.telma.todolist.core_ui.navigation.NavigationCoordinator
@@ -37,7 +38,8 @@ class MainScreenViewModel(
     private val renameFolderUseCase: RenameFolderUseCase,
     private val deleteFolderUseCase: DeleteFolderUseCase,
     private val createNewNoteUseCase: CreateNewNoteUseCase,
-    private val deleteNotesUseCase: DeleteNoteUseCase
+    private val deleteNotesUseCase: DeleteNoteUseCase,
+    private val moveNotesToFolderUseCase: MoveNotesToFolderUseCase
 ): BaseViewModel<MainScreenState, MainScreenUiEvents?, MainScreenUiErrors>() {
     override var _uiState: MutableStateFlow<UiState<MainScreenState, MainScreenUiErrors>> = MutableStateFlow(UiState.Loading())
     override var _uiEvents: MutableStateFlow<MainScreenUiEvents?> = MutableStateFlow(null)
@@ -48,7 +50,6 @@ class MainScreenViewModel(
     var search: StateFlow<SearchModel> = _search
     private var getNotesJob: Job? = null
     private var getFoldersJob: Job? = null
-    private var mainScreenState = MainScreenState()
 
     init {
         observeFolders()
@@ -153,9 +154,7 @@ class MainScreenViewModel(
     fun deleteSelectedNotes() {
         viewModelScope.launch {
             dismissDeleteDialog()
-            val currentState = (_uiState.value as UiState.Result<MainScreenState>).data
-            val selectedNotesIds = currentState.notes.filter { it.isSelected }.map { it.id }
-            val selectedNotes = notes.filter { selectedNotesIds.contains(it.id) }
+            val selectedNotes = getSelectedNotes()
             val result = deleteNotesUseCase(selectedNotes)
             if(result == DeleteNoteUseCase.Result.SUCCESS){
                 onClearSelectionClicked()
@@ -192,6 +191,10 @@ class MainScreenViewModel(
 
     fun onClearSearchClicked() {
         _search.value = SearchModel()
+    }
+
+    fun getFoldersForMoveDialog(): List<Folder> {
+        return folders
     }
 
     fun showFilterDialog() {
@@ -234,6 +237,52 @@ class MainScreenViewModel(
         showUiEvent(MainScreenUiEvents.DismissDeleteFolderDialog)
     }
 
+    fun onMoveToFolderClicked() {
+        showUiEvent(MainScreenUiEvents.ShowMoveToFolderDialog)
+    }
+
+    fun dismissMoveToFolderDialog() {
+        showUiEvent(MainScreenUiEvents.DismissMoveToFolderDialog)
+    }
+
+    fun onCreateFolderForMoveClicked() {
+        showUiEvent(MainScreenUiEvents.ShowCreateFolderForMoveDialog)
+    }
+
+    fun dismissCreateFolderForMoveDialog() {
+        showUiEvent(MainScreenUiEvents.DismissCreateFolderForMoveDialog)
+    }
+
+    fun dismissMoveFlowErrorEvent() {
+        showUiEvent(MainScreenUiEvents.DismissMoveFlowError)
+    }
+
+    fun dismissFolderFlowErrorEvent() {
+        showUiEvent(MainScreenUiEvents.DismissFolderFlowError)
+    }
+
+    fun onMoveToNoFolderConfirmed() {
+        moveSelectedNotesToFolder(targetFolderId = null)
+    }
+
+    fun onMoveToFolderConfirmed(targetFolderId: Long) {
+        moveSelectedNotesToFolder(targetFolderId = targetFolderId)
+    }
+
+    fun createFolderForMove(name: String) {
+        viewModelScope.launch {
+            when (val result = createFolderUseCase(name)) {
+                is CreateFolderUseCase.Result.SUCCESS -> {
+                    dismissCreateFolderForMoveDialog()
+                    moveSelectedNotesToFolder(result.folderId)
+                }
+                else -> {
+                    showUiEvent(MainScreenUiEvents.ShowMoveFlowError)
+                }
+            }
+        }
+    }
+
     fun onFolderSelected(folderId: Long?) {
         updateScreenState { state ->
             state.copy(
@@ -268,8 +317,12 @@ class MainScreenViewModel(
                     onFolderSelected(result.folderId)
                 }
 
-                is CreateFolderUseCase.Result.INVALID_NAME -> Unit
-                is CreateFolderUseCase.Result.FAILURE -> Unit
+                is CreateFolderUseCase.Result.INVALID_NAME -> {
+                    showUiEvent(MainScreenUiEvents.ShowFolderFlowError)
+                }
+                is CreateFolderUseCase.Result.FAILURE -> {
+                    showUiEvent(MainScreenUiEvents.ShowFolderFlowError)
+                }
             }
         }
     }
@@ -278,8 +331,12 @@ class MainScreenViewModel(
         viewModelScope.launch {
             when (renameFolderUseCase(folderId, name)) {
                 is RenameFolderUseCase.Result.SUCCESS -> dismissRenameFolderDialog()
-                is RenameFolderUseCase.Result.INVALID_NAME -> Unit
-                is RenameFolderUseCase.Result.FAILURE -> Unit
+                is RenameFolderUseCase.Result.INVALID_NAME -> {
+                    showUiEvent(MainScreenUiEvents.ShowFolderFlowError)
+                }
+                is RenameFolderUseCase.Result.FAILURE -> {
+                    showUiEvent(MainScreenUiEvents.ShowFolderFlowError)
+                }
             }
         }
     }
@@ -294,7 +351,9 @@ class MainScreenViewModel(
                     }
                 }
 
-                is DeleteFolderUseCase.Result.FAILURE -> Unit
+                is DeleteFolderUseCase.Result.FAILURE -> {
+                    showUiEvent(MainScreenUiEvents.ShowFolderFlowError)
+                }
             }
         }
     }
@@ -308,12 +367,36 @@ class MainScreenViewModel(
         }
     }
 
+    private fun getSelectedNotes(): List<Note> {
+        val state = getCurrentState()
+        val selectedNoteIds = state.notes.filter { it.isSelected }.map { it.id }.toSet()
+        return notes.filter { selectedNoteIds.contains(it.id) }
+    }
+
+    private fun moveSelectedNotesToFolder(targetFolderId: Long?) {
+        viewModelScope.launch {
+            dismissMoveToFolderDialog()
+            val selectedNotes = getSelectedNotes()
+            if (selectedNotes.isEmpty()) {
+                return@launch
+            }
+
+            val moveResult = moveNotesToFolderUseCase(selectedNotes, targetFolderId)
+            when (moveResult) {
+                is MoveNotesToFolderUseCase.Result.SUCCESS -> onClearSelectionClicked()
+                is MoveNotesToFolderUseCase.Result.FAILURE -> {
+                    showUiEvent(MainScreenUiEvents.ShowMoveFlowError)
+                }
+            }
+        }
+    }
+
     private fun currentSelectedFolderId(): Long? {
         return getCurrentState().selectedFolderId
     }
 
     private fun getCurrentState(): MainScreenState {
-        return (_uiState.value as? UiState.Result<MainScreenState>)?.data ?: mainScreenState
+        return (_uiState.value as? UiState.Result<MainScreenState>)?.data ?: MainScreenState()
     }
 
     private fun isSearchActive(): Boolean {
@@ -321,9 +404,8 @@ class MainScreenViewModel(
     }
 
     private fun updateScreenState(transform: (MainScreenState) -> MainScreenState) {
-        val currentState = (_uiState.value as? UiState.Result<MainScreenState>)?.data ?: mainScreenState
+        val currentState = getCurrentState()
         val newState = transform(currentState)
-        mainScreenState = newState
         showResult(newState)
     }
 
@@ -345,6 +427,9 @@ sealed interface MainScreenUiEvents: BaseUiEvents {
     data object ShowMoveToFolderDialog: MainScreenUiEvents
     data object ShowCreateFolderForMoveDialog: MainScreenUiEvents
     data object ShowMoveFlowError: MainScreenUiEvents
+    data object DismissMoveFlowError: MainScreenUiEvents
+    data object ShowFolderFlowError: MainScreenUiEvents
+    data object DismissFolderFlowError: MainScreenUiEvents
     data class ShowRenameFolderDialog(val folderId: Long, val currentName: String): MainScreenUiEvents
     data class ShowDeleteFolderDialog(val folderId: Long, val currentName: String): MainScreenUiEvents
     data object DismissDeleteDialog: MainScreenUiEvents

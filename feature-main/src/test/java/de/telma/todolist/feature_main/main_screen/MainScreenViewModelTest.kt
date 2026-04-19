@@ -235,7 +235,8 @@ class MainScreenViewModelTest {
             renameFolderUseCase,
             deleteFolderUseCase,
             createNewNoteUseCase,
-            deleteNoteUseCase
+            deleteNoteUseCase,
+            moveNotesToFolderUseCase
         )
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -448,6 +449,20 @@ class MainScreenViewModelTest {
         assertEquals(MainScreenUiEvents.ShowMoveFlowError, viewModel.uiEvents.value)
         val state = (viewModel.uiState.value as UiState.Result).data
         assertTrue(state.isSelectionMode)
+    }
+
+    @Test
+    fun `dismissMoveFlowErrorEvent should emit dismiss move flow error event`() = runTest {
+        viewModel.dismissMoveFlowErrorEvent()
+
+        assertEquals(MainScreenUiEvents.DismissMoveFlowError, viewModel.uiEvents.value)
+    }
+
+    @Test
+    fun `dismissFolderFlowErrorEvent should emit dismiss folder flow error event`() = runTest {
+        viewModel.dismissFolderFlowErrorEvent()
+
+        assertEquals(MainScreenUiEvents.DismissFolderFlowError, viewModel.uiEvents.value)
     }
 
     private fun setSelectedFolderId(folderId: Long?) {

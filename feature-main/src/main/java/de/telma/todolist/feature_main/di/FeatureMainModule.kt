@@ -15,7 +15,8 @@ val featureMainModule = module {
             renameFolderUseCase = get(),
             deleteFolderUseCase = get(),
             createNewNoteUseCase = get(),
-            deleteNotesUseCase = get()
+            deleteNotesUseCase = get(),
+            moveNotesToFolderUseCase = get()
         )
     }
 

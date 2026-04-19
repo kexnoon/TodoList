@@ -37,6 +37,7 @@ fun MainScreenAppBar(
     modifier: Modifier,
     state: MainScreenAppBarState = MainScreenAppBarState.Default,
     onDeleteClick: () -> Unit = {},
+    onMoveToFolderClick: () -> Unit = {},
     onClearSelectionClick: () -> Unit = {}
 ) {
     val title = when (state) {
@@ -63,6 +64,12 @@ fun MainScreenAppBar(
             },
             actions = {
                 if (state is MainScreenAppBarState.Selection) {
+                    IconButton(onClick = onMoveToFolderClick) {
+                        Icon(
+                            imageVector = AppIcons.move,
+                            contentDescription = stringResource(R.string.main_screen_app_bar_action_move_to_folder)
+                        )
+                    }
                     IconButton(onClick = onDeleteClick) {
                         Icon(
                             imageVector = AppIcons.delete,

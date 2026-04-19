@@ -41,6 +41,7 @@ internal fun StateResult(
     result: MainScreenState,
     searchModel: SearchModel,
     onDeleteClick: () -> Unit = {},
+    onMoveToFolderClick: () -> Unit = {},
     onClearSelectionClick: () -> Unit = {},
     onNewNoteClick: () -> Unit = {},
     onItemClick: (Long) -> Unit = {},
@@ -69,6 +70,7 @@ internal fun StateResult(
                     modifier = Modifier.fillMaxWidth(),
                     state = appBarState,
                     onDeleteClick = onDeleteClick,
+                    onMoveToFolderClick = onMoveToFolderClick,
                     onClearSelectionClick = onClearSelectionClick
                 )
                 SearchBar(

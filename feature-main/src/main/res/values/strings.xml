@@ -7,6 +7,7 @@
     <string name="main_screen_app_bar_title_selection_mode">Selected: %1$d</string>
     <string name="main_screen_app_bar_title_search_mode">Search (%1$d)</string>
     <string name="main_screen_app_bar_action_delete">Delete</string>
+    <string name="main_screen_app_bar_action_move_to_folder">Move to folder</string>
     <string name="main_screen_app_bar_action_clear_selection">Clear Selection</string>
 
     <!-- NoteListItem -->
@@ -30,8 +31,14 @@
     <string name="main_screen_search_placeholder">No notes found for \"%1$s\"</string>
     <string name="main_screen_error_failed_to_create_new_note">Failed to create new note</string>
     <string name="main_screen_error_failed_to_delete_notes">Failed to delete selected notes</string>
+    <string name="main_screen_error_move_flow">Failed to move selected notes</string>
+    <string name="main_screen_error_folder_flow">Folder action failed</string>
     <string name="main_screen_folder_chip_all_notes">All Notes</string>
     <string name="main_screen_folder_chip_new_folder">New Folder</string>
+    <string name="main_screen_move_to_folder_dialog_title">Move to folder</string>
+    <string name="main_screen_move_to_folder_dialog_no_folder">No folder</string>
+    <string name="main_screen_move_to_folder_dialog_new_folder">New folder</string>
+    <string name="main_screen_move_to_folder_dialog_dismiss_text">Cancel</string>
     <string name="main_screen_create_folder_dialog_title">Create New Folder</string>
     <string name="main_screen_create_folder_dialog_input_label">Folder name</string>
     <string name="main_screen_create_folder_dialog_confirm_text">Create</string>

@@ -21,6 +21,7 @@ import de.telma.todolist.core_ui.state.UiState
 import de.telma.todolist.core_ui.theme.TodoListTheme
 import de.telma.todolist.feature_main.R
 import de.telma.todolist.feature_main.main_screen.composables.FilterDialog
+import de.telma.todolist.feature_main.main_screen.composables.MoveToFolderDialog
 import de.telma.todolist.feature_main.main_screen.states.*
 @Composable
 internal fun MainScreen(
@@ -34,8 +35,12 @@ internal fun MainScreen(
     var showNewNoteDialog by remember { mutableStateOf(false) }
     var showFilterDialog by remember { mutableStateOf(false) }
     var showCreateFolderDialog by remember { mutableStateOf(false) }
+    var showMoveToFolderDialog by remember { mutableStateOf(false) }
+    var showCreateFolderForMoveDialog by remember { mutableStateOf(false) }
     var showRenameFolderDialog by remember { mutableStateOf(false) }
     var showDeleteFolderDialog by remember { mutableStateOf(false) }
+    var showMoveFlowErrorDialog by remember { mutableStateOf(false) }
+    var showFolderFlowErrorDialog by remember { mutableStateOf(false) }
     var currentFolderId by remember { mutableStateOf<Long?>(null) }
     var currentFolderName by remember { mutableStateOf("") }
 
@@ -50,6 +55,7 @@ internal fun MainScreen(
                 result = result.data,
                 searchModel = searchModel,
                 onDeleteClick = { viewModel.onDeleteClicked() },
+                onMoveToFolderClick = { viewModel.onMoveToFolderClicked() },
                 onClearSelectionClick = { viewModel.onClearSelectionClicked() },
                 onNewNoteClick = { viewModel.onNewNoteClicked() },
                 onItemClick = { viewModel.toDetailsScreen(it) },
@@ -81,6 +87,23 @@ internal fun MainScreen(
             is MainScreenUiEvents.DismissFilterDialog -> showFilterDialog = false
             is MainScreenUiEvents.ShowCreateFolderDialog -> showCreateFolderDialog = true
             is MainScreenUiEvents.DismissCreateFolderDialog -> showCreateFolderDialog = false
+            is MainScreenUiEvents.ShowMoveToFolderDialog -> showMoveToFolderDialog = true
+            is MainScreenUiEvents.DismissMoveToFolderDialog -> showMoveToFolderDialog = false
+            is MainScreenUiEvents.ShowCreateFolderForMoveDialog -> {
+                showMoveToFolderDialog = false
+                showCreateFolderForMoveDialog = true
+            }
+            is MainScreenUiEvents.DismissCreateFolderForMoveDialog -> showCreateFolderForMoveDialog = false
+            is MainScreenUiEvents.ShowMoveFlowError -> {
+                showMoveFlowErrorDialog = true
+                viewModel.dismissMoveFlowErrorEvent()
+            }
+            is MainScreenUiEvents.DismissMoveFlowError -> Unit
+            is MainScreenUiEvents.ShowFolderFlowError -> {
+                showFolderFlowErrorDialog = true
+                viewModel.dismissFolderFlowErrorEvent()
+            }
+            is MainScreenUiEvents.DismissFolderFlowError -> Unit
             is MainScreenUiEvents.ShowRenameFolderDialog -> {
                 currentFolderId = event.folderId
                 currentFolderName = event.currentName
@@ -140,6 +163,30 @@ internal fun MainScreen(
             )
         }
 
+        if (showMoveToFolderDialog) {
+            MoveToFolderDialog(
+                folders = viewModel.getFoldersForMoveDialog(),
+                onMoveToNoFolder = { viewModel.onMoveToNoFolderConfirmed() },
+                onMoveToFolder = { folderId -> viewModel.onMoveToFolderConfirmed(folderId) },
+                onCreateFolder = { viewModel.onCreateFolderForMoveClicked() },
+                onDismiss = { viewModel.dismissMoveToFolderDialog() }
+            )
+        }
+
+        if (showCreateFolderForMoveDialog) {
+            InputDialog(
+                title = stringResource(R.string.main_screen_create_folder_dialog_title),
+                inputLabel = stringResource(R.string.main_screen_create_folder_dialog_input_label),
+                confirmText = stringResource(R.string.main_screen_create_folder_dialog_confirm_text),
+                dismissText = stringResource(R.string.main_screen_create_folder_dialog_dismiss_text),
+                onConfirm = {
+                    showCreateFolderForMoveDialog = false
+                    viewModel.createFolderForMove(it)
+                },
+                onDismiss = { viewModel.dismissCreateFolderForMoveDialog() }
+            )
+        }
+
         if (showRenameFolderDialog && currentFolderId != null) {
             InputDialog(
                 title = stringResource(R.string.main_screen_rename_folder_dialog_title),
@@ -166,6 +213,28 @@ internal fun MainScreen(
                     viewModel.deleteFolder(folderId)
                 },
                 onDismiss = { viewModel.dismissDeleteFolderDialog() }
+            )
+        }
+
+        if (showMoveFlowErrorDialog) {
+            BasicDialog(
+                title = stringResource(R.string.main_screen_error_title),
+                text = stringResource(R.string.main_screen_error_move_flow),
+                confirmText = stringResource(R.string.main_screen_error_retry),
+                dismissText = stringResource(R.string.main_screen_create_new_note_dialog_dismiss_text),
+                onConfirm = { showMoveFlowErrorDialog = false },
+                onDismiss = { showMoveFlowErrorDialog = false }
+            )
+        }
+
+        if (showFolderFlowErrorDialog) {
+            BasicDialog(
+                title = stringResource(R.string.main_screen_error_title),
+                text = stringResource(R.string.main_screen_error_folder_flow),
+                confirmText = stringResource(R.string.main_screen_error_retry),
+                dismissText = stringResource(R.string.main_screen_create_new_note_dialog_dismiss_text),
+                onConfirm = { showFolderFlowErrorDialog = false },
+                onDismiss = { showFolderFlowErrorDialog = false }
             )
         }
     }

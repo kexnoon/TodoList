@@ -11,6 +11,7 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.material.icons.outlined.Folder
+import androidx.compose.material.icons.outlined.ReplyAll
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.SortByAlpha
 
@@ -27,4 +28,5 @@ object AppIcons {
     val filter = Icons.Outlined.FilterAlt
     val sortOrder = Icons.AutoMirrored.Outlined.Sort
     val sortBy = Icons.Outlined.SortByAlpha
+    val move = Icons.Outlined.ReplyAll
 }
