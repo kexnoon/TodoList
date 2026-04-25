@@ -10,6 +10,7 @@
 - The repository still contains legacy/example modules (`core-data`, `feature-example`, `app-example`) that are no longer part of the intended architecture.
 - There is a blocking app startup issue: after installation, the app does not appear in launcher/home screen.
 - `README.md` does not fully reflect the current project state and architecture decisions.
+- For this feature you can ignore TDD since it's more about refactoring than adding new functionality
 
 ## Business rules
 - User-visible behavior must remain unchanged for both screens.
@@ -93,6 +94,13 @@
   - Confirm and lock delegate boundaries for MainScreen and NoteScreen.
   - Keep ViewModel-to-delegate communication mutation-based only (no ViewModel instance passing).
   - Keep ViewModel public APIs stable for UI call sites.
+  - Split oversized screen state inside ViewModels into focused internal state slices:
+    - MainScreen: notes, folders, search, dialogs, and non-sticky effects.
+    - NoteScreen: note content, tasks, folder assignment, dialogs, and non-sticky effects.
+  - Keep `UiState.Loading` and `UiState.Error` as root screen states for initial loading and fatal screen errors only.
+  - Build `UiState.Result` inside each ViewModel by combining internal state slices into the existing legacy screen state contract.
+  - Keep dialogs and one-off effects out of `UiState.Result` aggregation; expose them as dedicated ViewModel-owned flows for UI control and transient actions.
+  - Use non-sticky event delivery semantics for one-off effects to avoid replaying stale actions after recomposition or configuration changes.
   - Extract MainScreen responsibilities into delegates (notes/folders/dialog-navigation handlers as defined).
   - Extract NoteScreen responsibilities into delegates (note content/tasks/folder/dialog-navigation handlers as defined).
   - Maintain behavior parity and existing UI-facing API signatures.

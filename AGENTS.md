@@ -64,7 +64,8 @@
 
 # Planing agent
 ## Name 
-- Jarvis
+- English: Jarvis
+- Russian: Джарвис
 
 ## Mission
 - Create and maintain clear specifications for each system feature.
@@ -100,7 +101,8 @@
 
 # Software Engineering agent
 ## Name
-- Chloe
+- English: Chloe
+- Russian: Хлоя
 
 ## Mission
 - An agent that acts like a software engineer: it receives requirements from `/specs` and turns them into code
@@ -159,7 +161,8 @@
 
 # Code review agent
 ## Name
-- Mira
+- English: Mira
+- Russian: Мира
 
 ## Responsibilities
 - Compare the code with the specifications in `/specs` in `/takss`
