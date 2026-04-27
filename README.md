@@ -42,8 +42,6 @@ Here you can read more about some technical aspects of this app:
 - [Modularization](docs/modularization.md)
 - [Navigation](docs/navigation.md)
 - [Gradle Convention Plugins](docs/convention_plugins.md)
-- [Final cleanup decisions](docs/final_cleanup.md)
-- [ViewModel delegates refactor spec](specs/viewmodel-delegates.md)
 
 Here you can read more about the usage of Agentic AI in this project
 - [Agentic AI setup](docs/ai.md)
