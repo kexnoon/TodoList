@@ -6,7 +6,6 @@ This project was initially planned to be a simple note-taking application inspir
 
 While its features are minimal by design, the architecture is deliberately more complex to showcase my architectural skills. This includes practices and design patterns that would typically be considered over-engineering for an app of this size but serve to highlight capabilities in modular architecture, clean code, and modern Android development.
 
-
 ## Features
 - ✅ **Notes management**: create notes, read, update and delete
 - 🔍 **Search**: find notes by keywords
@@ -29,11 +28,7 @@ While its features are minimal by design, the architecture is deliberately more 
 :storage           → Data storage layer (currently using Room)
 ```
 
-## Build and Run
-
-- Debug app: `./gradlew :app:installDebug`
-- Build check: `./gradlew :app:assembleDebug`
-- Unit tests: `./gradlew testDebugUnitTest`
+## Documentation
 
 Modules documentation
 - [:component-notes](docs/component_notes.md)
@@ -50,19 +45,18 @@ Here you can read more about some of the project's business features
 - [Search](docs/search_flow.md)
 - [Folders](docs/folders_feature.md)
 
-## 🎯 Immediate Goals (2 weeks)
-- 🔍 **Search** – Quickly find notes by keywords ✅
-- 🗂 **Folders** – Organize notes into custom categories ✅
+## Screenshots
+
+![Screenshot 1](docs/screenshot_1.png)
+
+![Screenshot 2](docs/screenshot_2.png)
+
 ---
 
 ## 🤝 Contributing
 
 At this time, the project is not open for external contributions. However, feedback and suggestions are always welcome!
 
-## 📄 License
-
-[MIT License](./LICENSE) – feel free to use or adapt the codebase for your own projects.
-
 ## 🙋‍♂️ Author
 
-Developed with ❤️ by Telma Evelina Popova
+Developed with ❤️ by Telma Popova
