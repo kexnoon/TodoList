@@ -65,7 +65,7 @@ internal fun StateResult(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
-            Column(modifier = Modifier.padding(bottom = 12.dp)) {
+            Column(modifier = Modifier.padding(horizontal = 12.dp)) {
                 MainScreenAppBar(
                     modifier = Modifier.fillMaxWidth(),
                     state = appBarState,
@@ -74,12 +74,24 @@ internal fun StateResult(
                     onClearSelectionClick = onClearSelectionClick
                 )
                 SearchBar(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     input = searchModel.query ?: "",
                     state = if (searchModel.query.isNullOrEmpty()) SearchBarState.DEFAULT else SearchBarState.ACTIVE,
                     onInput = onSearchInput,
                     onClearClicked = onSearchClear,
                     onFilterClicked = onSearchFilterClicked,
+                )
+                SortBar(
+                    modifier = Modifier.fillMaxWidth(),
+                    searchModel = searchModel,
+                    onSortUpdate = onSortUpdate,
+                    folders = result.folders,
+                    selectedFolderId = result.selectedFolderId,
+                    onFolderSelected = onFolderSelected,
+                    onNewFolderPressed = onNewFolderPressed,
+                    onFolderRenameRequest = onFolderRenameRequest,
+                    onFolderDeleteRequest = onFolderDeleteRequest,
+                    showFolderChips = result.isFolderChipRowVisible,
                 )
             }
         },
@@ -99,18 +111,6 @@ internal fun StateResult(
             ) {
                 val isEmpty = result.notes.isEmpty()
 
-                SortBar(
-                    modifier = Modifier.padding(horizontal = 12.dp),
-                    searchModel = searchModel,
-                    onSortUpdate = onSortUpdate,
-                    folders = result.folders,
-                    selectedFolderId = result.selectedFolderId,
-                    onFolderSelected = onFolderSelected,
-                    onNewFolderPressed = onNewFolderPressed,
-                    onFolderRenameRequest = onFolderRenameRequest,
-                    onFolderDeleteRequest = onFolderDeleteRequest,
-                    showFolderChips = result.isFolderChipRowVisible,
-                )
                 if (isEmpty) {
                     val placeholderText = if (searchModel.query.isNullOrEmpty()) {
                         stringResource(R.string.main_screen_placeholder)
@@ -119,11 +119,12 @@ internal fun StateResult(
                     }
                     Box(
                         modifier = Modifier
+                            .padding(top = 4.dp)
                             .fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
                         TextBodyMedium(
-                            modifier = Modifier.padding(all = 16.dp),
+                            modifier = Modifier.padding(top = 8.dp, bottom = 16.dp, start = 16.dp, end = 16.dp),
                             textAlign = TextAlign.Center,
                             text = placeholderText
                         )

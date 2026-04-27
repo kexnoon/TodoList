@@ -5,7 +5,6 @@ object Modules {
     const val CORE_UI = "core-ui"
     const val STORAGE = "storage"
     const val COMPONENT_NOTES = "component-notes"
-    const val FEATURE_EXAMPLE = "feature-example"
     const val FEATURE_MAIN = "feature-main"
 }
 
@@ -21,9 +20,6 @@ val DependencyHandler.storage: ProjectDependency
 
 val DependencyHandler.componentNotes: ProjectDependency
     get() = projectByName(Modules.COMPONENT_NOTES)
-
-val DependencyHandler.featureExample: ProjectDependency
-    get() = projectByName(Modules.FEATURE_EXAMPLE)
 
 val DependencyHandler.featureMain: ProjectDependency
     get() = projectByName(Modules.FEATURE_MAIN)

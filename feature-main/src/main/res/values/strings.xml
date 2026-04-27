@@ -76,6 +76,8 @@
     <string name="note_screen_error_failed_to_rename_task">Failed to rename task (id = %1$d)</string>
     <string name="note_screen_error_failed_to_delete_task">Failed to delete task (id = %1$d)</string>
     <string name="note_screen_error_failed_to_sync_note_status">Failed to sync note status (id = %1$d)</string>
+    <string name="note_screen_error_failed_to_create_folder">Failed to create folder</string>
+    <string name="note_screen_error_failed_to_assign_folder">Failed to assign folder (note id = %1$d)</string>
 
     <string name="note_screen_task_rename_title">Rename task</string>
     <string name="note_screen_task_rename_confirm">Rename</string>

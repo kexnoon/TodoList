@@ -41,8 +41,7 @@ internal fun FolderChipRow(
     val newFolderText = stringResource(R.string.main_screen_folder_chip_new_folder)
 
     LazyRow(
-        modifier = modifier
-            .padding(vertical = 8.dp),
+        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         val allModelsModel = FilterChipModel(
@@ -51,10 +50,13 @@ internal fun FolderChipRow(
             onClick = { onFolderSelected(null) }
         )
         item(key = "all-notes") {
-            FilterChip(model = allModelsModel)
+            FilterChip(
+                modifier = Modifier.padding(vertical = 8.dp),
+                model = allModelsModel
+            )
         }
         items(folders, key = { folder -> folder.id }) { folder ->
-            Box {
+            Box(modifier = Modifier.padding(vertical = 8.dp)) {
                 val chipModel = FilterChipModel(
                     text = folder.name,
                     selected = selectedFolderId == folder.id,
@@ -110,7 +112,10 @@ internal fun FolderChipRow(
                 iconContentDescription = newFolderText,
                 onClick = onNewFolderPressed
             )
-            FilterChip(model = chipModel)
+            FilterChip(
+                modifier = Modifier.padding(vertical = 8.dp),
+                model = chipModel
+            )
         }
     }
 }

@@ -26,8 +26,6 @@ import de.telma.todolist.feature_main.note_screen.models.CurrentFolderModel
 import de.telma.todolist.feature_main.note_screen.models.TaskItemModel
 import de.telma.todolist.feature_main.note_screen.models.toTaskItemModel
 import de.telma.todolist.feature_main.utils.toCurrentFolderModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -102,14 +100,12 @@ class NoteScreenViewModel(
                 showError(NoteScreenUiErrors.TaskNotFound(taskId))
                 return@launch
             } else {
-                val result = async {
-                    updateTaskStatusUseCase(noteId, currentTask, currentTask.getOppositeStatus())
-                }.await()
+                val result = updateTaskStatusUseCase(noteId, currentTask, currentTask.getOppositeStatus())
 
                 if (result == UpdateTaskStatusUseCase.Result.FAILURE) {
                     showError(NoteScreenUiErrors.FailedToUpdateTaskStatus(taskId))
                 } else {
-                    sync(viewModelScope)
+                    sync()
                 }
             }
         }
@@ -119,7 +115,7 @@ class NoteScreenViewModel(
     fun deleteNote() {
         viewModelScope.launch {
             showUiEvent(NoteScreenUiEvents.DismissDialog)
-            val result = async { deleteNoteUseCase(currentNote) }.await()
+            val result = deleteNoteUseCase(currentNote)
             if (result) {
                 coordinator.execute(NavEvent.PopBack)
             } else {
@@ -135,7 +131,7 @@ class NoteScreenViewModel(
 
             val result = renameNoteUseCase(currentNote, newTitle)
             if (result == RenameNoteUseCase.Result.SUCCESS) {
-                sync(viewModelScope)
+                sync()
             } else {
                 showError(NoteScreenUiErrors.FailedToRenameNote(noteId))
             }
@@ -147,11 +143,11 @@ class NoteScreenViewModel(
         viewModelScope.launch {
             showUiEvent(NoteScreenUiEvents.DismissDialog)
 
-            val addTaskResult = async { createNewTaskUseCase(currentNote, title) }.await()
+            val addTaskResult = createNewTaskUseCase(currentNote, title)
             if (addTaskResult == CreateNewTaskUseCase.Result.FAILURE) {
                 showError(NoteScreenUiErrors.FailedToCreateNewTask)
             } else {
-                sync(viewModelScope)
+                sync()
             }
         }
     }
@@ -166,11 +162,11 @@ class NoteScreenViewModel(
                 return@launch
             }
 
-            val result = async { renameTaskUseCase(noteId, currentTask, newTitle) }.await()
+            val result = renameTaskUseCase(noteId, currentTask, newTitle)
             if (result == RenameTaskUseCase.Result.FAILURE) {
                 showError(NoteScreenUiErrors.FailedToRenameTask(taskId))
             } else {
-                sync(viewModelScope)
+                sync()
             }
         }
     }
@@ -183,11 +179,11 @@ class NoteScreenViewModel(
                 return@launch
             }
 
-            val result = async { deleteTaskUseCase(currentNote.id, currentTask) }.await()
+            val result = deleteTaskUseCase(currentNote.id, currentTask)
             if (result == DeleteTaskUseCase.Result.FAILURE)
                 showError(NoteScreenUiErrors.FailedToDeleteTask(taskId))
             else
-                sync(viewModelScope)
+                sync()
         }
     }
 
@@ -259,11 +255,11 @@ class NoteScreenViewModel(
                 }
 
                 CreateFolderUseCase.Result.INVALID_NAME -> {
-                    showError(NoteScreenUiErrors.FailedToRenameNote(noteId))
+                    showError(NoteScreenUiErrors.FailedToCreateFolder)
                 }
 
                 CreateFolderUseCase.Result.FAILURE -> {
-                    showError(NoteScreenUiErrors.FailedToRenameNote(noteId))
+                    showError(NoteScreenUiErrors.FailedToCreateFolder)
                 }
             }
         }
@@ -272,7 +268,7 @@ class NoteScreenViewModel(
     private suspend fun applyFolderSelection(targetFolderId: Long?): Boolean {
         val result = setNoteFolderUseCase(noteId, targetFolderId)
         if (result == SetNoteFolderUseCase.Result.FAILURE) {
-            showError(NoteScreenUiErrors.FailedToRenameNote(noteId))
+            showError(NoteScreenUiErrors.FailedToAssignFolder(noteId))
             return false
         }
 
@@ -302,8 +298,8 @@ class NoteScreenViewModel(
         }?.toCurrentFolderModel() ?: CurrentFolderModel(name = "No folder", folderId = null)
     }
 
-    private suspend fun sync(scope: CoroutineScope) {
-        val result = scope.async { syncNoteStatusUseCase(currentNote.id) }.await()
+    private suspend fun sync() {
+        val result = syncNoteStatusUseCase(currentNote.id)
         when (result) {
             SyncNoteStatusUseCase.Result.SyncSucceed -> {
                 getNoteById()
@@ -338,6 +334,8 @@ sealed interface NoteScreenUiErrors : BaseUiError {
     data class FailedToRenameTask(val taskId: Long) : NoteScreenUiErrors
     data class FailedToDeleteTask(val taskId: Long) : NoteScreenUiErrors
     data class FailedToSyncNoteStatus(val noteId: Long) : NoteScreenUiErrors
+    data object FailedToCreateFolder : NoteScreenUiErrors
+    data class FailedToAssignFolder(val noteId: Long) : NoteScreenUiErrors
 }
 
 data class NoteScreenState(

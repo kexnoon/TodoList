@@ -19,6 +19,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
         const val DATABASE_NAME = BuildConfig.DB_NAME
+        const val DATABASE_ASSET_NAME = "todo_list_dev.db"
     }
 
     abstract fun noteDao(): NoteDao

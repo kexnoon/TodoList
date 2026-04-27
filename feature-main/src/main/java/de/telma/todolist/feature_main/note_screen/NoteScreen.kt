@@ -230,6 +230,8 @@ private fun errorHandler(error: NoteScreenUiErrors): String {
         is NoteScreenUiErrors.FailedToRenameTask -> stringResource(R.string.note_screen_error_failed_to_rename_task, error.taskId)
         is NoteScreenUiErrors.FailedToDeleteTask -> stringResource(R.string.note_screen_error_failed_to_delete_task, error.taskId)
         is NoteScreenUiErrors.FailedToSyncNoteStatus -> stringResource(R.string.note_screen_error_failed_to_sync_note_status, error.noteId)
+        NoteScreenUiErrors.FailedToCreateFolder -> stringResource(R.string.note_screen_error_failed_to_create_folder)
+        is NoteScreenUiErrors.FailedToAssignFolder -> stringResource(R.string.note_screen_error_failed_to_assign_folder, error.noteId)
     }
 }
 

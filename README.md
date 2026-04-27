@@ -2,10 +2,15 @@
 
 ## 📘 Overview
 
-This project was initially planned to be a simple note-taking application inspired by the default notes app found on most smartphones (hence the name TodoList). However, after spending a lot of time on robust and scalable architecture, I've decided to turn this project into a full-scale task-managing application. Additionally I'm planning to add budgeting module for personal finances managment and transition this app to KMP and Compose Multiplatform so it could be released both on Android and iOs.
+This project was initially planned to be a simple note-taking application inspired by the default notes app found on most smartphones (hence the name TodoList). However, after spending a lot of time on robust and scalable architecture, I've decided to turn this project into a personal showcase project to demonstrate my skills in Jetpack Compose, Android architecture and Agentic AI.
 
-While its features are (so far) minimal by design, the architecture is deliberately more complex to showcase my skills as a developer. This includes practices and design patterns that would typically be considered over-engineering for an app of this size but serve to highlight capabilities in modular architecture, clean code, and modern Android development.
+While its features are minimal by design, the architecture is deliberately more complex to showcase my architectural skills. This includes practices and design patterns that would typically be considered over-engineering for an app of this size but serve to highlight capabilities in modular architecture, clean code, and modern Android development.
 
+
+## Features
+- ✅ **Notes management**: create notes, read, update and delete
+- 🔍 **Search**: find notes by keywords
+- 🗂 **Folders**: organize notes into custom categories
 
 ## 🛠 Tech Stack
 
@@ -13,6 +18,7 @@ While its features are (so far) minimal by design, the architecture is deliberat
 - **Jetpack Compose**
 - **Koin**
 - **Room**
+- **Codex** for agentic AI
 
 ## 📚 Project Structure
 
@@ -20,13 +26,17 @@ While its features are (so far) minimal by design, the architecture is deliberat
 
 ```
 :app               → Base application module
-:app-example       → Demo app showcasing a simplified version of architecture and navigation
 :core-ui           → Shared UI components (navigation, design system, etc.)
 :feature-main      → Main feature module for viewing, creating, and editing notes
-:feature-example   → Sample feature used in :app-example
-:component_notes   → Business logic for notes management
+:component-notes   → Business logic for notes management
 :storage           → Data storage layer (currently using Room)
 ```
+
+## Build and Run
+
+- Debug app: `./gradlew :app:installDebug`
+- Build check: `./gradlew :app:assembleDebug`
+- Unit tests: `./gradlew testDebugUnitTest`
 
 Modules documentation
 - [:component-notes](docs/component_notes.md)
@@ -35,6 +45,11 @@ Here you can read more about some technical aspects of this app:
 - [Modularization](docs/modularization.md)
 - [Navigation](docs/navigation.md)
 - [Gradle Convention Plugins](docs/convention_plugins.md)
+- [Final cleanup decisions](docs/final_cleanup.md)
+- [ViewModel delegates refactor spec](specs/viewmodel-delegates.md)
+
+Here you can read more about the usage of Agentic AI in this project
+- [Agentic AI setup](docs/ai.md)
 
 Here you can read more about some of the project's business features
 - [Search](docs/search_flow.md)
@@ -42,12 +57,12 @@ Here you can read more about some of the project's business features
 
 ## 🎯 Immediate Goals (2 weeks)
 - 🔍 **Search** – Quickly find notes by keywords ✅
-- 🗂 **Folders** – Organize notes into custom categories
+- 🗂 **Folders** – Organize notes into custom categories ✅
 ---
 
 ## 🤝 Contributing
 
-At this time, the project is in an early development phase and not open for external contributions. However, feedback and suggestions are always welcome!
+At this time, the project is not open for external contributions. However, feedback and suggestions are always welcome!
 
 ## 📄 License
 

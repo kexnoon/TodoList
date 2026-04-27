@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -52,7 +53,7 @@ fun SortBar(
     ) {
         if (showFolderChips) {
             FolderChipRow(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).padding(bottom = 8.dp),
                 folders = folders,
                 selectedFolderId = selectedFolderId,
                 onFolderSelected = onFolderSelected,

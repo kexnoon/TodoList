@@ -155,7 +155,6 @@ object Modules {
     const val CORE_UI = "core-ui"
     const val STORAGE = "storage"
     const val COMPONENT_NOTES = "component-notes"
-    const val FEATURE_EXAMPLE = "feature-example"
     const val FEATURE_MAIN = "feature-main"
 }
 

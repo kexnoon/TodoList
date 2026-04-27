@@ -12,10 +12,8 @@ This document outlines the modularization approach implemented in the project. T
 
 ```
 :app                   - Main glue module. Hosts MainActivity, DI, and NavHost
-:app-example           - Alternative app entry point for running example screens
 :core-ui               - Navigation DSL and reusable UI components
 :feature-main          - Main feature of the application
-:feature-example       - Set of dummy/test screens
 :component-notes       - Notes business logic, including use cases and repository
 :storage               - Room database and local data source
 ```
@@ -28,7 +26,7 @@ This document outlines the modularization approach implemented in the project. T
 
 > This is a pragmatic choice. Splitting domain and data modules at this scale would create excessive granularity.
 >
-- `feature-main` and `feature-example` provide Composables, ViewModels and Screens for each of feature and UI logic.
+- `feature-main` provides Composables, ViewModels and Screens for feature and UI logic.
 - `:storage` includes Room database, with its entities and DAOs. Potentially can be also used for some form of internal storage
 
 ### 2. Navigation Strategy
@@ -52,13 +50,10 @@ fun NavGraphBuilder.exampleScreens() {
 internal fun NavGraphBuilder.dummyScreenOne() { ... }
 ```
 
-> Start destination must remain constant — that’s why we separated  :app-example from .app, so we could have two navigations with static starting point for each.
->
-
 ### 3. Dependency Injection
 
 - Koin is used.
-- DI is scoped to `:app` and `:app-example` only.
+- DI is scoped to `:app`.
 - Bridge module for UI will **not** be introduced. DI stays in glue modules.
 
 > Future migrations to Hilt are possible if Koin becomes limiting.
@@ -86,7 +81,6 @@ object Modules {
     const val CORE_UI = "core-ui"
     const val STORAGE = "storage"
     const val COMPONENT_NOTES = "component-notes"
-    const val FEATURE_EXAMPLE = "feature-example"
     const val FEATURE_MAIN = "feature-main"
 }
 
@@ -102,9 +96,6 @@ val DependencyHandler.storage: ProjectDependency
 
 val DependencyHandler.componentNotes: ProjectDependency
     get() = projectByName(Modules.COMPONENT_NOTES)
-
-val DependencyHandler.featureExample: ProjectDependency
-    get() = projectByName(Modules.FEATURE_EXAMPLE)
 
 val DependencyHandler.featureMain: ProjectDependency
     get() = projectByName(Modules.FEATURE_MAIN)
@@ -122,18 +113,16 @@ dependencies {
 
 ## Technical Constraints
 
-### 1. Flavors vs. Separate App Modules
+### 1. App Module Scope
 
-Initial idea was to use product flavors (`main`, `example`) for switching between app configurations. However, this led to undesirable build variants like `exampleRelease`, which would never be shipped. To avoid this:
-
-- `:app` hosts the production logic
-- `:app-example` is a fully separate entry point for testing and debugging feature-example
+- `:app` hosts the production logic and the only launcher entry point.
+- Legacy example modules were removed from active Gradle configuration during final cleanup.
 
 ### 2. DI Scope and bridge module
 
 - Centralized Koin setup across modules became too verbose
 - The idea of a DI bridge module, however, was rejected
-- All DI setup lives in `:app` and `:app-example`, following the glue-module idea
+- App-level DI setup lives in `:app`, following the glue-module idea.
 
 ### 3. Gradle and Dependency Resolution
 

@@ -103,7 +103,8 @@ class NoteScreenViewModelFolderFlowTest : NoteScreenViewModelTestBase() {
         invokeViewModelMethod("createFolderAndAssign", "   ")
         advanceUntilIdle()
 
-        assertIs<UiState.Error<NoteScreenUiErrors>>(viewModel.uiState.value)
+        val error = assertIs<UiState.Error<NoteScreenUiErrors>>(viewModel.uiState.value)
+        assertEquals(NoteScreenUiErrors.FailedToCreateFolder, error.uiError)
     }
 
     @Test
@@ -115,6 +116,7 @@ class NoteScreenViewModelFolderFlowTest : NoteScreenViewModelTestBase() {
         invokeViewModelMethod("createFolderAndAssign", "Work")
         advanceUntilIdle()
 
-        assertIs<UiState.Error<NoteScreenUiErrors>>(viewModel.uiState.value)
+        val error = assertIs<UiState.Error<NoteScreenUiErrors>>(viewModel.uiState.value)
+        assertEquals(NoteScreenUiErrors.FailedToAssignFolder(NOTE_ID), error.uiError)
     }
 }

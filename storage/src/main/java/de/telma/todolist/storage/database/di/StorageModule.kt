@@ -13,7 +13,7 @@ val storageModule = module {
                 name = AppDatabase.DATABASE_NAME
             )
             .fallbackToDestructiveMigration(true)
-            .createFromAsset("${AppDatabase.DATABASE_NAME}.db")
+            .createFromAsset(AppDatabase.DATABASE_ASSET_NAME)
             .build()
     }
 

@@ -24,13 +24,11 @@ import de.telma.todolist.component_notes.useCase.note.SyncNoteStatusUseCase
 import de.telma.todolist.component_notes.useCase.note.UpdateNoteStatusUseCase
 import de.telma.todolist.component_notes.useCase.task.UpdateTaskStatusUseCase
 import org.koin.dsl.module
-import java.time.Clock
 
 val componentNotesModule = module {
     factory<FolderRepository> { FolderRepositoryImpl(get()) }
     factory<NoteRepository> { NoteRepositoryImpl(get()) }
     factory<TaskRepository> { TaskRepositoryImpl(get()) }
-    factory<Clock> { Clock.systemUTC() }
 
     factory { GetFoldersUseCase(get()) }
     factory { CreateFolderUseCase(get(), get()) }
