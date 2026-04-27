@@ -47,9 +47,10 @@ Here you can read more about some of the project's business features
 
 ## Screenshots
 
-![Screenshot 1](docs/screenshot_1.png)
-
-![Screenshot 2](docs/screenshot_2.png)
+<p>
+  <img src="docs/screenshot_1.png" width="220" alt="Screenshot 1">
+  <img src="docs/screenshot_2.png" width="220" alt="Screenshot 2">
+</p>
 
 ---
 
