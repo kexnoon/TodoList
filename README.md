@@ -21,9 +21,6 @@ While its features are minimal by design, the architecture is deliberately more 
 - **Codex** for agentic AI
 
 ## 📚 Project Structure
-
-![Modules Diagram](docs/modules_diagram.png)
-
 ```
 :app               → Base application module
 :core-ui           → Shared UI components (navigation, design system, etc.)
